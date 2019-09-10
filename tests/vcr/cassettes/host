@@ -1,0 +1,67 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "POST",
+                "uri": "http://localhost:8080/api/jwt",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.21.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "text/plain"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 201,
+                    "message": ""
+                },
+                "headers": {
+                    "Content-Length": [
+                        "209"
+                    ],
+                    "X-XSS-Protection": [
+                        "1; mode=block"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Expires": [
+                        "0"
+                    ],
+                    "Date": [
+                        "Wed, 10 Apr 2019 08:03:27 GMT"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Type": [
+                        "text/plain;charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ]
+                },
+                "body": {
+                    "string": "eyJhbGciOiJIUzI1NiJ9.eyJjcmVhdGVkIjoxNTU0ODgzNDA3MDAzLCJyb2xlcyI6WyJST0xFX0hPU1QiXSwiaWQiOiIyOTJlM2ZlYS1hODc4LTQ3YmEtYmQyOS1kMDM3ODhiNGU5ZDEiLCJleHAiOjE1NTU0ODgyMDd9.uiCEP7TrLPk9Q6C9_dxmNH0Jkx3z4p0lVXBQgYf0k4c"
+                }
+            }
+        }
+    ]
+}

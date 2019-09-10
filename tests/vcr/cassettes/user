@@ -1,0 +1,67 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "PUT",
+                "uri": "http://localhost:8080/api/jwt",
+                "body": "{\"login\": \"user@mendelu.cz\", \"password\": \"user\"}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.21.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "text/plain"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "48"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 201,
+                    "message": ""
+                },
+                "headers": {
+                    "Content-Length": [
+                        "243"
+                    ],
+                    "X-XSS-Protection": [
+                        "1; mode=block"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Expires": [
+                        "0"
+                    ],
+                    "Date": [
+                        "Wed, 10 Apr 2019 08:03:10 GMT"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Type": [
+                        "text/plain;charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ]
+                },
+                "body": {
+                    "string": "eyJhbGciOiJIUzI1NiJ9.eyJjcmVhdGVkIjoxNTU0ODgzMzkwMTc2LCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWQiOiI2YWZkZWI3Ni1hNmVlLTRkMGItYjA3YS0wY2MwZWU5YmE4ODUiLCJleHAiOjE1NTU0ODgxOTAsInVzZXIiOiJ1c2VyQG1lbmRlbHUuY3oifQ.Q-fRcVnt4mE6eV8DP7TAS7Ce_AOTrd8p1oMFDV6HbIM"
+                }
+            }
+        }
+    ]
+}

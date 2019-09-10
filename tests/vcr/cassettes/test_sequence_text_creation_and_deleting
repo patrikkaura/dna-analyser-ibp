@@ -1,0 +1,129 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "POST",
+                "uri": "http://localhost:8080/api/sequence/import/text",
+                "body": "{\"circular\": true, \"data\": \"ATTCGTTTAGGG\", \"format\": \"PLAIN\", \"name\": \"Test\", \"tags\": [\"testovaci\", \"test\"], \"type\": \"DNA\"}",
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.21.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "application/json"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-type": [
+                        "application/json"
+                    ],
+                    "Authorization": [
+                        "eyJhbGciOiJIUzI1NiJ9.eyJjcmVhdGVkIjoxNTU0ODgzMzkwMTc2LCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWQiOiI2YWZkZWI3Ni1hNmVlLTRkMGItYjA3YS0wY2MwZWU5YmE4ODUiLCJleHAiOjE1NTU0ODgxOTAsInVzZXIiOiJ1c2VyQG1lbmRlbHUuY3oifQ.Q-fRcVnt4mE6eV8DP7TAS7Ce_AOTrd8p1oMFDV6HbIM"
+                    ],
+                    "Content-Length": [
+                        "123"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 201,
+                    "message": ""
+                },
+                "headers": {
+                    "X-XSS-Protection": [
+                        "1; mode=block"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Expires": [
+                        "0"
+                    ],
+                    "Date": [
+                        "Wed, 10 Apr 2019 08:03:15 GMT"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Transfer-Encoding": [
+                        "chunked"
+                    ],
+                    "Content-Type": [
+                        "application/json;charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ]
+                },
+                "body": {
+                    "string": "{\"payload\":{\"id\":\"9128d4dd-5cac-436d-b5b8-346d75cff3be\",\"name\":\"Test\",\"created\":\"2019-04-10T08:03:15.009+0000\",\"type\":\"DNA\",\"circular\":true,\"length\":12,\"ncbi\":null,\"tags\":[\"test\",\"testovaci\"],\"fastaComment\":null,\"nucleicCounts\":{\"A\":2,\"C\":1,\"G\":4,\"T\":5}},\"batch\":{\"name\":\"Import plain format: Test\",\"status\":\"WAITING\",\"created\":\"2019-04-10T08:03:15.027+0000\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "DELETE",
+                "uri": "http://localhost:8080/api/sequence/9128d4dd-5cac-436d-b5b8-346d75cff3be",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.21.0"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-type": [
+                        "application/json"
+                    ],
+                    "Authorization": [
+                        "eyJhbGciOiJIUzI1NiJ9.eyJjcmVhdGVkIjoxNTU0ODgzMzkwMTc2LCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWQiOiI2YWZkZWI3Ni1hNmVlLTRkMGItYjA3YS0wY2MwZWU5YmE4ODUiLCJleHAiOjE1NTU0ODgxOTAsInVzZXIiOiJ1c2VyQG1lbmRlbHUuY3oifQ.Q-fRcVnt4mE6eV8DP7TAS7Ce_AOTrd8p1oMFDV6HbIM"
+                    ],
+                    "Content-Length": [
+                        "0"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 204,
+                    "message": ""
+                },
+                "headers": {
+                    "X-XSS-Protection": [
+                        "1; mode=block"
+                    ],
+                    "X-Content-Type-Options": [
+                        "nosniff"
+                    ],
+                    "Expires": [
+                        "0"
+                    ],
+                    "Date": [
+                        "Wed, 10 Apr 2019 08:03:17 GMT"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Cache-Control": [
+                        "no-cache, no-store, max-age=0, must-revalidate"
+                    ]
+                },
+                "body": {
+                    "string": ""
+                }
+            }
+        }
+    ]
+}
