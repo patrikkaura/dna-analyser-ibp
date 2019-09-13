@@ -1,14 +1,10 @@
 # g4killer_interface.py
 # !/usr/bin/env python3
-"""Library with G4killer interface object
-Available classes:
-G4Killer - interface for interaction with g4killer api
-"""
+
 import pandas as pd
 
-from ..callers.g4killer_caller import G4KillerAnalyseFactory
-from ..callers.user_caller import User
 from .tool_interface import ToolInterface
+from ..callers import G4KillerAnalyseFactory, User
 
 
 class G4Killer(ToolInterface):
@@ -17,19 +13,13 @@ class G4Killer(ToolInterface):
     def __init__(self, user: User):
         self.__user = user
 
-    def run_tool(self, origin_sequence: str, threshold: float) -> pd.DataFrame:
-        """Run G4killer tool
-        
-        Arguments:
-            origin_sequence {str} -- [original sequence]
-            threshold {float} -- [g4hunter target gscore]
-        
-        Returns:
-            pd.DataFrame -- [dataframe with g4killer result]
+    def run_tool(self, *, origin_sequence: str, threshold: float, on_complementary: bool = True) -> pd.DataFrame:
         """
-       
-        gkill = G4KillerAnalyseFactory(
-            user=self.__user, origin_sequence=origin_sequence, threshold=threshold
-        ).analyse
-
+        Run G4killer tool
+        :param origin_sequence: original sequence
+        :param threshold: g4hunter target gscore
+        :param on_complementary: True if use for C sequence False for G sequence
+        :return: dataframe with g4killer result
+        """
+        gkill = G4KillerAnalyseFactory(user=self.__user, origin_sequence=origin_sequence, threshold=threshold, on_complementary=on_complementary).analyse
         return gkill.get_dataframe().T

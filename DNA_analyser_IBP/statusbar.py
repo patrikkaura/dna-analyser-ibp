@@ -1,34 +1,22 @@
 # statusbar.py
 # !/usr/bin/env python3
-"""
-File with statusbar function used as indicator for callers
-Available functions:
-- status_bar: function implementing tqdm statusbar
-"""
 
 import time
+from tqdm import tqdm
 from typing import Callable
 
-from tqdm import tqdm
-
-from .callers.g4hunter_caller import G4HunterAnalyse, g4_load_by_id
-from .callers.sequence_caller import seq_load_by_id
-from .callers.user_caller import User
+from .callers import G4HunterAnalyse, g4_load_by_id, seq_load_by_id, User
 
 
-def status_bar(user: User, func: Callable, name: str, cls_switch: bool):
-    """Start status bar
-    
-    Arguments:
-        user {User} -- [user for auth]
-        func {Callable} -- [function decorated by statusbar]
-        name {str} -- [name to statusbar field]
-        cls_switch {bool} -- [True = SequenceModel, False = AnalyseModel]
-    
-    Returns:
-        [type] -- [depend on func argument]
+def status_bar(user: User, func: Callable, name: str, cls_switch: bool) -> None:
     """
-
+    TQDM status bar
+    :param user: user for auth
+    :param func: function decorated by statusbar
+    :param name: statusbart name field
+    :param cls_switch: True = SequenceModel, False = AnalyseModel
+    :return:
+    """
     # tqdm status bar
     with tqdm(
             desc=f"Sequence {name} uploading"

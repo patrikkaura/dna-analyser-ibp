@@ -1,9 +1,5 @@
 # tool_interface.py
 # !/usr/bin/env python3
-"""Library with Tool abstract class.
-Available classes:
-ToolInterface - abstract metaclass for another interfaces
-"""
 
 import pandas as pd
 

@@ -1,22 +1,16 @@
 # g4hunter_interface.py
 # !/usr/bin/env python3
-"""Library with G4hunter interface object
-Available classes:
-G4Hunter - interface for interaction with g4hunter api
-"""
 
-import time
 import os
-import matplotlib.pyplot as plt
+import time
 import pandas as pd
+import matplotlib.pyplot as plt
+from typing import List, Union, Optional
 
 from .analyse_interface import AnalyseInterface
 from ..statusbar import status_bar
-
-from typing import List, Union
-from ..callers.user_caller import User
-
-from ..callers.g4hunter_caller import (
+from ..callers import (
+    User,
     G4HunterAnalyseFactory,
     g4_delete_analyse,
     g4_export_csv,
@@ -33,137 +27,89 @@ class G4Hunter(AnalyseInterface):
     def __init__(self, user: User):
         self.__user = user
 
-    def load_all(self, filter_tag: List[str] = None) -> pd.DataFrame:
-        """Return all or filtered g4hunter analyses in dataframe
-        
-        Keyword Arguments:
-            filter_tag {List[str]} -- [tags for analyse filtering] (default: {None})
-        
-        Returns:
-            pd.DataFrame -- [dataframe with g4hunter analyses]
+    def load_all(self, *, filter_tag: List[Optional[str]] = None) -> pd.DataFrame:
         """
-
+        Return all or filtered g4hunter analyses in dataframe
+        :param filter_tag: tags for analyse filtering
+        :return: dataframe with g4hunter analyses
+        """
         g4 = [g4 for g4 in g4_load_all(user=self.__user, filter_tag=filter_tag)]
         data = pd.concat([g.get_dataframe() for g in g4], ignore_index=True)
-        
         return data
 
-    def load_by_id(self, id: str) -> pd.DataFrame:
-        """Return g4hunter analyses in dataframe
-        
-        Arguments:
-            id {str} -- [g4hunter analyse id]
-        
-        Returns:
-            pd.DataFrame -- [dataframe with g4hunter analyses]
+    def load_by_id(self, *, id: str) -> pd.DataFrame:
         """
-
+        Return g4hunter analyses in dataframe
+        :param id: g4hunter analyse id
+        :return: dataframe with g4hunter analyse
+        """
         g4 = g4_load_by_id(user=self.__user, id=id)
-        
         return g4.get_dataframe()
 
-    def load_results(self, g4hunter_analyse: pd.Series) -> pd.DataFrame:
-        """Return g4hunter analyses results in dataframe
-        
-        Arguments:
-            g4hunter_analyse {pd.Series} -- [g4hunter analyse series]
-        
-        Returns:
-            pd.DataFrame -- [dataframe with g4hunter results]
+    def load_results(self, *, g4hunter_analyse: pd.Series) -> pd.DataFrame:
         """
-
+        Return g4hunter analyses results in dataframe
+        :param g4hunter_analyse: g4hunter analyse series
+        :return: dataframe with g4hunter results
+        """
         if isinstance(g4hunter_analyse, pd.Series):
             return g4_load_result(user=self.__user, id=g4hunter_analyse["id"])
         else:
             raise ("You have to insert pd.Series")
 
-    def load_heatmap(
-        self,
-        g4hunter_analyse: pd.Series,
-        segment_count: int = 31,
-        coverage: bool = False,
-    ):
-        """Return seaborn graph with heatmap
-        
-        Arguments:
-            g4hunter_analyse {pd.Series} -- [g4hunter analyse series]
-        
-        Keyword Arguments:
-            segment_count {int} -- [number of heatmap segments] (default: {31})
-            coverage {bool} -- [True = coverage heatmap False = count heatmap] (default: {False})
+    def load_heatmap(self, *, g4hunter_analyse: pd.Series, segment_count: Optional[int] = 31, coverage: Optional[bool] = False) -> None:
         """
-
+        Return seaborn graph with heatmap
+        :param g4hunter_analyse: g4hunter analyse series
+        :param segment_count: number of heatmap segments
+        :param coverage: True = coverage heatmap False = count heatmap
+        :return: seaborn graph with g4hunter heatmap
+        """
         if isinstance(g4hunter_analyse, pd.Series):
-            data = g4_load_heatmap(
-                user=self.__user, id=g4hunter_analyse["id"], segment_count=segment_count
-            )
-
-            ax = data[["coverage" if coverage else "count"]].plot(
-                kind="bar", figsize=(14, 8), legend=True, fontsize=12
-            )
+            data = g4_load_heatmap(user=self.__user, id=g4hunter_analyse["id"], segment_count=segment_count)
+            ax = data[["coverage" if coverage else "count"]].plot(kind="bar", figsize=(14, 8), legend=True, fontsize=12)
             ax.set_xlabel("segments", fontsize=12)
             ax.set_ylabel("coverage [%/100]" if coverage else "count [-]", fontsize=12)
-            
             plt.grid(color="k", linestyle="-", linewidth=0.1)
             plt.show()
         else:
             raise ("You have to insert pd.Series")
 
-    def analyse_creator(
-        self,
-        sequence: Union[pd.DataFrame, pd.Series],
-        tags: List[str],
-        threshold: float,
-        window_size: int,
-    ):
-        """Create G4hunter analyse
-        
-        Arguments:
-            sequence {Union[pd.DataFrame, pd.Series]} -- [sequence/s to analyse]
-            tags {List[str]} -- [tags for analyse filtering]
-            threshold {float} -- [g4hunter threshold recommended 1.2]
-            window_size {int} -- [g4hunter window size recommended 25]
+    def analyse_creator(self, *, sequence: Union[pd.DataFrame, pd.Series], tags: List[Optional[str]], threshold: float, window_size: int) -> None:
         """
-
+        Create G4hunter analyse
+        :param sequence: one or many sequences to analyse
+        :param tags: tags for analyse filtering
+        :param threshold: g4hunter threshold recommended 1.2
+        :param window_size: g4hunter window size recommended 25
+        :return:
+        """
         # start g4hunter analyse factory
         if isinstance(sequence, pd.DataFrame):
             for _, row in sequence.iterrows():
-                status_bar(
+                status_bar(user=self.__user, func=lambda: G4HunterAnalyseFactory(
                     user=self.__user,
-                    func=lambda: G4HunterAnalyseFactory(
-                        user=self.__user,
-                        id=row["id"],
-                        tags=tags,
-                        threshold=threshold,
-                        window_size=window_size,
-                    ),
-                    name=row["name"],
-                    cls_switch=False,
-                )
-        else:
-            status_bar(
-                user=self.__user,
-                func=lambda: G4HunterAnalyseFactory(
-                    user=self.__user,
-                    id=sequence["id"],
+                    id=row["id"],
                     tags=tags,
                     threshold=threshold,
                     window_size=window_size,
-                ),
-                name=sequence["name"],
-                cls_switch=False,
-            )
+                ), name=row["name"], cls_switch=False)
+        else:
+            status_bar(user=self.__user, func=lambda: G4HunterAnalyseFactory(
+                user=self.__user,
+                id=sequence["id"],
+                tags=tags,
+                threshold=threshold,
+                window_size=window_size,
+            ), name=sequence["name"], cls_switch=False)
 
-    def export_csv(
-        self, g4hunter_analyse: Union[pd.DataFrame, pd.Series], out_path: str
-    ):
-        """[summary]
-        
-        Arguments:
-            g4hunter_analyse {Union[pd.DataFrame, pd.Series]} -- [g4hunter analyse dataframe / series]
-            out_path {str} -- [absolute path to output folder]
+    def export_csv(self, *, g4hunter_analyse: Union[pd.DataFrame, pd.Series], out_path: str) -> None:
         """
-
+        Export G4Hunter analyses result into csv files
+        :param g4hunter_analyse: g4hunter analyse dataframe / series
+        :param out_path: absolute path to output folder
+        :return:
+        """
         if isinstance(g4hunter_analyse, pd.Series):
             _id = g4hunter_analyse["id"]
             name = g4hunter_analyse["title"]
@@ -185,17 +131,15 @@ class G4Hunter(AnalyseInterface):
                     new_file.write(data)
                 print(f"file created -> {file_path}")
 
-    def delete(self, g4hunter_analyse: Union[pd.DataFrame, pd.Series]):
-        """Delete g4hunter analyse
-        
-        Arguments:
-            g4hunter_pandas {Union[pd.DataFrame, pd.Series]} -- [g4hunter analyse dataframe / series]
+    def delete(self, *, g4hunter_analyse: Union[pd.DataFrame, pd.Series]) -> None:
         """
-
+        Delete G4Hunter analyse
+        :param g4hunter_analyse: g4hunter analyse dataframe / series
+        :return:
+        """
         if isinstance(g4hunter_analyse, pd.DataFrame):
             for _, row in g4hunter_analyse.iterrows():
                 _id = row["id"]
-               
                 if g4_delete_analyse(user=self.__user, id=_id):
                     print(f"G4hunter {_id} was deleted")
                     time.sleep(1)
@@ -203,7 +147,6 @@ class G4Hunter(AnalyseInterface):
                     print("G4hunter cannot be deleted")
         else:
             _id = g4hunter_analyse["id"]
-            
             if g4_delete_analyse(user=self.__user, id=_id):
                 print(f"G4hunter {_id} was deleted")
             else:

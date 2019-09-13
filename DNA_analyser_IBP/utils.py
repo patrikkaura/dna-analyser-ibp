@@ -1,24 +1,19 @@
 # utils.py
 # !/usr/bin/env python3
-"""
-Module with support functions used in multiple files.
-"""
 
-import pandas as pd
+
 import re
+import pandas as pd
 from requests import Response
+from typing import Union, Optional
 
 
-def generate_dataframe(res: dict or list) -> pd.DataFrame:
-    """Generate dataframe for given dict / list
-    
-    Arguments:
-        res {dictorlist} -- [response dict / list]
-    
-    Returns:
-        pd.DataFrame -- [dataframe with response data]
+def generate_dataframe(res: Union[dict, list]) -> pd.DataFrame:
     """
-
+    Generate dataframe from given dict/list
+    :param res: response dict/list
+    :return: dataframe with response data
+    """
     if isinstance(res, list):
         data = pd.DataFrame().from_records(res, columns=res[0].keys())
         return data
@@ -27,39 +22,22 @@ def generate_dataframe(res: dict or list) -> pd.DataFrame:
 
 
 def validate_email(email: str) -> bool:
-    """[summary]
-    
-    Arguments:
-        value {str} -- [email string]
-    
-    Returns:
-        bool -- [if True email is valid else False]
     """
-
+    Validate email address
+    :param email: tested string
+    :return: True is string is valid email else False
+    """
     return bool(re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email))
 
 
-def validate_key_response(
-        response: Response, status_code: int, payload_key: str = None
-) -> dict:
-    """Validate and convert json response to dict
-    
-    Arguments:
-        response {Response} -- [resposne data from requests]
-        status_code {int} -- [response status code]
-    
-    Keyword Arguments:
-        payload_key {str} -- [dict key for data] (default: {None})
-    
-    Raises:
-        ValueError: [no data in payload key]
-        ValueError: [no payload key or data]
-        ConnectionError: [wrong status code]
-    
-    Returns:
-        dict -- [dict from json]
+def validate_key_response(response: Response, status_code: int, payload_key: Optional[str] = None) -> dict:
     """
-
+    Validate and convert JSON response to dictionary
+    :param response: HTTP response
+    :param status_code: HTTP status code
+    :param payload_key: payload key for validation
+    :return: dictionary from payload json
+    """
     if response.status_code == status_code:
         data = response.json()
         if payload_key and data:
@@ -76,20 +54,12 @@ def validate_key_response(
 
 
 def validate_text_response(response: Response, status_code: int) -> str:
-    """Validate text data and convert to str
-    
-    Arguments:
-        response {Response} -- [resposne data from requests]
-        status_code {int} -- [response status code]
-    
-    Raises:
-        ValueError: [no data in payload text]
-        ConnectionError: [wrong status code]
-    
-    Returns:
-        str -- [string with data]
     """
-
+    Validate and convert Text response to dictionary
+    :param response: HTTP response
+    :param status_code: HTTP status code
+    :return: string with response
+    """
     if response.status_code == status_code:
         if response.text:
             return response.text
