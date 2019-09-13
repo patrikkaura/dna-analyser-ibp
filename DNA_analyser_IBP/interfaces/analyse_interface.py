@@ -1,13 +1,8 @@
 # api_interface.py
 # !/usr/bin/env python3
-"""Library with Api abstract class.
-Available classes:
-ApiInterface - abstract metaclass for another interfaces
-"""
 
-from typing import List, Union
 import pandas as pd
-
+from typing import List, Union
 from abc import ABCMeta, abstractmethod
 
 

@@ -1,20 +1,12 @@
 # sequence_caller.py
 # !/usr/bin/env python3
-"""Library with Sequence object.
-Available classes:
-- Sequence: Sequence object
-- TextSequenceFactory: sequence factory from raw text
-- NCBISequenceFactory: sequence factory from NCBI database
-- FileSequenceFactory: sequence factory from local file
-"""
 
 import abc
 import json
-from typing import Generator, List, Union
-
+import requests
 import pandas as pd
 from requests_toolbelt import MultipartEncoder
-import requests
+from typing import Generator, List, Union, Optional
 
 from .user_caller import User
 from ..utils import validate_key_response, validate_text_response
@@ -42,14 +34,11 @@ class SequenceModel:
         return f"<Sequence {self.id} {self.name} {self.type}>"
 
     def get_dataframe(self) -> pd.DataFrame:
-        """Returns pandas dataframe for current object
-        
-        Returns:
-            pd.DataFrame -- [pandas dataframe of analyse object]
         """
-        data = pd.DataFrame().from_records(
-            self.__dict__, columns=self.__dict__.keys(), index=[0]
-        )
+        Return pandas dataframe for current object
+        :return: dataframe with object data
+        """
+        data = pd.DataFrame().from_records(self.__dict__, columns=self.__dict__.keys(), index=[0])
         return data
 
 
@@ -68,206 +57,124 @@ class SequenceFactory(metaclass=abc.ABCMeta):
 class TextSequenceFactory(SequenceFactory):
     """Sequence factory used for generating sequence from raw text or text file"""
 
-    def create_sequence(
-        self,
-        user: User,
-        circular: bool,
-        data: str,
-        name: str,
-        tags: List[str],
-        sequence_type: str,
-    ) -> Union[SequenceModel, Exception]:
-        """Text sequence factory
-        
-        Arguments:
-            user {User} -- [user for auth]
-            circular {bool} -- [True if sequence is circular False if not]
-            data {str} -- [string data with sequence]
-            name {str} -- [sequence name]
-            tags {List[str]} -- [tags for sequence filtering]
-            sequence_type {str} -- [string DNA / RNA]
-        
-        Returns:
-            Union[SequenceModel, Exception] -- [Sequence object]
+    def create_sequence(self, user: User, circular: bool, data: str, name: str, tags: List[Optional[str]], sequence_type: str) -> Union[SequenceModel, Exception]:
         """
+        Text sequence factory
+        :param user: user for auth
+        :param circular: True if sequence is circular False if not
+        :param data: string data with sequence
+        :param name: sequence name
+        :param tags: tags for sequence filtering
+        :param sequence_type: string DNA / RNA
+        :return: Sequence object
+        """
+        header = {"Content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": user.jwt}
+        data = json.dumps({
+            "circular": circular,
+            "data": data,
+            "format": "PLAIN",
+            "name": name,
+            "tags": tags,
+            "type": sequence_type})
 
-        header = {
-            "Content-type": "application/json",
-            "Accept": "application/json",
-            "Authorization": user.jwt,
-        }
-        data = json.dumps(
-            {
-                "circular": circular,
-                "data": data,
-                "format": "PLAIN",
-                "name": name,
-                "tags": tags,
-                "type": sequence_type,
-            }
-        )
-
-        response = requests.post(
-            f"{user.server}/sequence/import/text", headers=header, data=data
-        )
-        data = validate_key_response(
-            response=response, status_code=201, payload_key="payload"
-        )
+        response = requests.post(f"{user.server}/sequence/import/text", headers=header, data=data)
+        data = validate_key_response(response=response, status_code=201, payload_key="payload")
         return SequenceModel(**data)
 
 
 class FileSequenceFactory(SequenceFactory):
     """Sequence factory used for generating sequence from file"""
 
-    def create_sequence(
-        self,
-        user: User,
-        circular: bool,
-        file_path: str,
-        name: str,
-        tags: List[str],
-        sequence_type: str,
-        format: str,
-    ) -> Union[SequenceModel, Exception]:
-        """File sequence factory
-        
-        Arguments:
-            user {User} -- [user for auth]
-            circular {bool} -- [True if sequence is circular False if not]
-            file_path {str} -- [absolute path to sequence file]
-            name {str} -- [sequence name]
-            tags {List[str]} -- [tags for sequence filtering]
-            sequence_type {str} -- [string DNA / RNA]
-            format {str} -- [string FASTA / PLAIN]
-        
-        Returns:
-            Union[SequenceModel, Exception] -- [Sequence object]
+    def create_sequence(self, user: User, circular: bool, file_path: str, name: str, tags: List[Optional[str]], sequence_type: str, format: str) -> Union[SequenceModel, Exception]:
         """
+        File sequence factory
+        :param user: user for auth
+        :param circular: True if sequence is circular False if not
+        :param file_path: absolute path to sequence file
+        :param name: sequence name
+        :param tags: tags for sequence filtering
+        :param sequence_type: string DNA / RNA
+        :param format: string FASTA / PLAIN
+        :return: Sequence object
+        """
+        data = json.dumps({
+            "circular": circular,
+            "format": format,
+            "name": name,
+            "tags": tags,
+            "type": sequence_type})
+        multi_encoder = MultipartEncoder(fields={"json": data, "file": ("filename", open(file_path, "rb"))})
+        header = {"Content-type": multi_encoder.content_type,
+                  "Accept": "application/json",
+                  "Authorization": user.jwt}
 
-        data = json.dumps(
-            {
-                "circular": circular,
-                "format": format,
-                "name": name,
-                "tags": tags,
-                "type": sequence_type,
-            }
-        )
-        multi_encoder = MultipartEncoder(
-            fields={"json": data, "file": ("filename", open(file_path, "rb"))}
-        )
-        header = {
-            "Content-type": multi_encoder.content_type,
-            "Accept": "application/json",
-            "Authorization": user.jwt,
-        }
-
-        response = requests.post(
-            f"{user.server}/sequence/import/file", headers=header, data=multi_encoder
-        )
-        data = validate_key_response(
-            response=response, status_code=201, payload_key="payload"
-        )
+        response = requests.post(f"{user.server}/sequence/import/file", headers=header, data=multi_encoder)
+        data = validate_key_response(response=response, status_code=201, payload_key="payload")
         return SequenceModel(**data)
 
 
 class NCBISequenceFactory(SequenceFactory):
     """Sequence factory used for generating sequence from NCBI database"""
 
-    def create_sequence(
-        self, user: User, circular: bool, name: str, tags: List[str], ncbi_id: str
-    ) -> Union[SequenceModel, Exception]:
-        """NCBI sequence factory
-        
-        Arguments:
-            user {User} -- [user for auth]
-            circular {bool} -- [True if sequence is circular False if not]
-            name {str} -- [sequence name]
-            tags {List[str]} -- [tags for sequence filtering]
-            ncbi_id {str} -- [sequence id from (https://www.ncbi.nlm.nih.gov/)]
-        
-        Returns:
-            Union[SequenceModel, Exception] -- [Sequence object]
+    def create_sequence(self, user: User, circular: bool, name: str, tags: List[Optional[str]], ncbi_id: str) -> Union[SequenceModel, Exception]:
         """
+        NCBI sequence factory
+        :param user: user for auth
+        :param circular: True if sequence is circular False if not
+        :param name: sequence name
+        :param tags: tags for sequence filtering
+        :param ncbi_id: sequence id from (https://www.ncbi.nlm.nih.gov/)
+        :return: Sequence object
+        """
+        ncbi = [{"circular": circular,
+                 "name": name,
+                 "ncbiId": ncbi_id,
+                 "tags": tags,
+                 "type": "DNA"}]
+        data = json.dumps({"circular": circular, "ncbis": ncbi, "tags": tags, "type": "DNA"})
+        header = {"Content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": user.jwt}
 
-        ncbi = [
-            {
-                "circular": circular,
-                "name": name,
-                "ncbiId": ncbi_id,
-                "tags": tags,
-                "type": "DNA",
-            }
-        ]
-        data = json.dumps(
-            {"circular": circular, "ncbis": ncbi, "tags": tags, "type": "DNA"}
-        )
-        header = {
-            "Content-type": "application/json",
-            "Accept": "application/json",
-            "Authorization": user.jwt,
-        }
-
-        response = requests.post(
-            f"{user.server}/sequence/import/ncbi", headers=header, data=data
-        )
-        data = validate_key_response(
-            response=response, status_code=201, payload_key="items"
-        )
+        response = requests.post(f"{user.server}/sequence/import/ncbi", headers=header, data=data)
+        data = validate_key_response(response=response, status_code=201, payload_key="items")
         return SequenceModel(**data[0])
 
 
-def seq_load_data(
-    user: User, id: str, data_len: int, pos: int, seq_len: int
-) -> Union[str, Exception]:
-    """Return string with part of sequence
-    
-    Arguments:
-        user {User} -- [user for auth]
-        id {str} -- [sequence id]
-        data_len {int} -- [data string length] 
-        pos {int} -- [data start position]
-        seq_len {int} -- [sequence length for check]
-    
-    Raises:
-        ValueError: [if position < 0 datalen < 1000]
-    
-    Returns:
-        Union[str, Exception] -- [String with data]
+def seq_load_data(user: User, id: str, data_len: int, pos: int, seq_len: int) -> Union[str, Exception]:
     """
-
+    Return string with part of sequence
+    :param user: user for auth
+    :param id: sequence id
+    :param data_len: data string length
+    :param pos: data start position
+    :param seq_len: sequence length for check
+    :return: String with part of sequence data
+    """
     if pos >= 0 and 0 < data_len <= 1000 and pos + data_len <= seq_len:
-        header = {
-            "Content-type": "application/json",
-            "Accept": "text/plain",
-            "Authorization": user.jwt,
-        }
+        header = {"Content-type": "application/json",
+                  "Accept": "text/plain",
+                  "Authorization": user.jwt}
         params = {"len": data_len, "pos": pos}
 
-        response = requests.get(
-            f"{user.server}/sequence/{id}/data", headers=header, params=params
-        )
+        response = requests.get(f"{user.server}/sequence/{id}/data", headers=header, params=params)
         return validate_text_response(response=response, status_code=200)
     else:
         raise ValueError("Values out of range.")
 
 
 def seq_delete(user: User, id: str) -> bool:
-    """Delete sequence by sequence id
-    
-    Arguments:
-        user {User} -- [user id]
-        id {str} -- [sequence id]
-    
-    Returns:
-        bool -- [True if delete is successfull False if not]
     """
-
-    header = {
-        "Content-type": "application/json",
-        "Accept": "*/*",
-        "Authorization": user.jwt,
-    }
+    Delete sequence by id
+    :param user: user for auth
+    :param id: sequence id
+    :return: True if delete is successfull False if not
+    """
+    header = {"Content-type": "application/json",
+              "Accept": "*/*",
+              "Authorization": user.jwt}
 
     response = requests.delete(f"{user.server}/sequence/{id}", headers=header)
     if response.status_code == 204:
@@ -275,58 +182,38 @@ def seq_delete(user: User, id: str) -> bool:
     return False
 
 
-def seq_load_all(
-    user: User, filter_tag: List[str]
-) -> Union[Generator[SequenceModel, None, None], Exception]:
-    """List of all sequences
-    
-    Arguments:
-        user {User} -- [user for auth]
-        filter_tag {List[str]} -- [tags for filtering dataframe]
-    
-    Returns:
-        Union[Generator[SequenceModel, None, None], Exception] -- [Sequence object generator]
+def seq_load_all(user: User, filter_tag: List[Optional[str]]) -> Union[Generator[SequenceModel, None, None], Exception]:
     """
-
-    header = {
-        "Content-type": "application/json",
-        "Accept": "application/json",
-        "Authorization": user.jwt,
-    }
-    params = {
-        "order": "ASC",
-        "requestForAll": "true",
-        "pageSize": "ALL",
-        "tags": filter_tag if filter_tag else "",
-    }
+    Load all sequences
+    :param user: user for auth
+    :param filter_tag: tags for filtering all sequences
+    :return: Sequence object generator]
+    """
+    header = {"Content-type": "application/json",
+              "Accept": "application/json",
+              "Authorization": user.jwt}
+    params = {"order": "ASC",
+              "requestForAll": "true",
+              "pageSize": "ALL",
+              "tags": filter_tag if filter_tag else str()}
 
     response = requests.get(f"{user.server}/sequence", headers=header, params=params)
-    data = validate_key_response(
-        response=response, status_code=200, payload_key="items"
-    )
+    data = validate_key_response(response=response, status_code=200, payload_key="items")
     for record in data:
         yield SequenceModel(**record)
 
 
 def seq_load_by_id(user: User, id: str) -> Union[SequenceModel, Exception]:
-    """List one sequence by id
-    
-    Arguments:
-        user {User} -- [user for auth]
-        id {str} -- [sequence id]
-    
-    Returns:
-        Union[SequenceModel, Exception] -- [SequenceModel object]
     """
-
-    header = {
-        "Content-type": "application/json",
-        "Accept": "application/json",
-        "Authorization": user.jwt,
-    }
+    Load sequence by id
+    :param user: user for auth
+    :param id: sequence id
+    :return: Sequence object
+    """
+    header = {"Content-type": "application/json",
+              "Accept": "application/json",
+              "Authorization": user.jwt}
 
     response = requests.get(f"{user.server}/sequence/{id}", headers=header)
-    data = validate_key_response(
-        response=response, status_code=200, payload_key="payload"
-    )
+    data = validate_key_response(response=response, status_code=200, payload_key="payload")
     return SequenceModel(**data)

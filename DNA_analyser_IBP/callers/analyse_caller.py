@@ -1,13 +1,7 @@
 # analyse_caller.py
 # !/usr/bin/env python3
-"""Library with Analyse object.
-Available classes:
-Analyse - class for derived  classes g4hunter, palindrome, p53 ...
-AnalyseFactory - abstract class for FACTORY METHOD pattern
-"""
 
 import abc
-
 import pandas as pd
 
 
@@ -23,14 +17,11 @@ class AnalyseModel:
         self.sequence_id = kwargs.pop("sequenceId")
 
     def get_dataframe(self) -> pd.DataFrame:
-        """Returns pandas dataframe for current object
-        
-        Returns:
-            pd.DataFrame -- [pandas dataframe of analyse object]
         """
-        data_frame = pd.DataFrame().from_records(
-            self.__dict__, columns=self.__dict__.keys(), index=[0]
-        )
+        Return pandas dataframe for current object
+        :return: dataframe with object data
+        """
+        data_frame = pd.DataFrame().from_records(self.__dict__, columns=self.__dict__.keys(), index=[0])
         return data_frame
 
 

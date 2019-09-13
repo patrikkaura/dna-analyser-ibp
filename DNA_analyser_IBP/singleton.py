@@ -1,8 +1,5 @@
 # singleton.py
 # !/usr/bin/env python3
-"""
-Module with Singleton metaclass used in Api class.
-"""
 
 
 class Singleton(type):

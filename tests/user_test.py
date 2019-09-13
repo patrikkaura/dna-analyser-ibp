@@ -1,41 +1,35 @@
 import pytest
 
+from . import DEV_URL
 from DNA_analyser_IBP.callers.user_caller import User
 
 
-from . import vcr_instance
-
-
 @pytest.fixture(scope="module")
-@vcr_instance.use_cassette
 def host():
-    return User(email="host", password="host", server="http://localhost:8080/api")
+    return User(email="host", password="host", server=DEV_URL)
 
 
 @pytest.fixture(scope="module")
-@vcr_instance.use_cassette
 def user():
-    return User(
-        email="user@mendelu.cz", password="user", server="http://localhost:8080/api"
-    )
+    return User(email="user@mendelu.cz", password="user", server=DEV_URL)
 
 
-def test_user_creation(user):
-    """It should create user and test it's features."""
-    assert isinstance(user.id, str)
-    assert isinstance(user.jwt, str)
-    assert user.id == "6afdeb76-a6ee-4d0b-b07a-0cc0ee9ba885"
+class TestUser:
 
+    def test_user_creation(self, user):
+        """It should create user and test it's features."""
+        assert isinstance(user.id, str)
+        assert isinstance(user.jwt, str)
+        assert user.id == "cc599bcd-3099-4897-84eb-cd549da38f41"
 
-def test_host_creation(host):
-    """It should create host user and test it's features."""
-    assert isinstance(host.id, str)
-    assert isinstance(host.jwt, str)
-    assert host.email == "host"
-    assert host._password == "host"
+    def test_host_creation(self, host):
+        """It should create host user and test it's features."""
+        assert isinstance(host.id, str)
+        assert isinstance(host.jwt, str)
+        assert host.email == "host"
+        assert host._password == "host"
 
-
-def test_not_existing_user():
-    """It should test not logged user."""
-    with pytest.raises(Exception):
-        User(email="example@exampl.cz", password="example")
+    def test_not_existing_user(self):
+        """It should test not logged user."""
+        with pytest.raises(Exception):
+            User(email="example@exampl.cz", password="example")
