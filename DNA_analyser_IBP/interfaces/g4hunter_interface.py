@@ -27,13 +27,13 @@ class G4Hunter(AnalyseInterface):
     def __init__(self, user: User):
         self.__user = user
 
-    def load_all(self, *, filter_tag: List[Optional[str]] = None) -> pd.DataFrame:
+    def load_all(self, filter_tag: Optional[List[str]] = None) -> pd.DataFrame:
         """
         Return all or filtered g4hunter analyses in dataframe
-        :param filter_tag: tags for analyse filtering
+        :param filter_tag: tags for analyse filtering [default=None]
         :return: dataframe with g4hunter analyses
         """
-        g4 = [g4 for g4 in g4_load_all(user=self.__user, filter_tag=filter_tag)]
+        g4 = [g4 for g4 in g4_load_all(user=self.__user, filter_tag=filter_tag if filter_tag is not None else list())]
         data = pd.concat([g.get_dataframe() for g in g4], ignore_index=True)
         return data
 
@@ -57,12 +57,12 @@ class G4Hunter(AnalyseInterface):
         else:
             raise ("You have to insert pd.Series")
 
-    def load_heatmap(self, *, g4hunter_analyse: pd.Series, segment_count: Optional[int] = 31, coverage: Optional[bool] = False) -> None:
+    def load_heatmap(self, segment_count: Optional[int] = 31, coverage: Optional[bool] = False, *, g4hunter_analyse: pd.Series) -> None:
         """
         Return seaborn graph with heatmap
         :param g4hunter_analyse: g4hunter analyse series
-        :param segment_count: number of heatmap segments
-        :param coverage: True = coverage heatmap False = count heatmap
+        :param segment_count: number of heatmap segments [default=31]
+        :param coverage: True = coverage heatmap False = count heatmap [default=False]
         :return: seaborn graph with g4hunter heatmap
         """
         if isinstance(g4hunter_analyse, pd.Series):
@@ -75,11 +75,11 @@ class G4Hunter(AnalyseInterface):
         else:
             raise ("You have to insert pd.Series")
 
-    def analyse_creator(self, *, sequence: Union[pd.DataFrame, pd.Series], tags: List[Optional[str]], threshold: float, window_size: int) -> None:
+    def analyse_creator(self, tags: Optional[List[str]] = None, *, sequence: Union[pd.DataFrame, pd.Series], threshold: float, window_size: int) -> None:
         """
         Create G4hunter analyse
         :param sequence: one or many sequences to analyse
-        :param tags: tags for analyse filtering
+        :param tags: tags for analyse filtering [default=None]
         :param threshold: g4hunter threshold recommended 1.2
         :param window_size: g4hunter window size recommended 25
         :return:
@@ -90,7 +90,7 @@ class G4Hunter(AnalyseInterface):
                 status_bar(user=self.__user, func=lambda: G4HunterAnalyseFactory(
                     user=self.__user,
                     id=row["id"],
-                    tags=tags,
+                    tags=self._process_tags(tags, row['tags']),
                     threshold=threshold,
                     window_size=window_size,
                 ), name=row["name"], cls_switch=False)
@@ -98,10 +98,24 @@ class G4Hunter(AnalyseInterface):
             status_bar(user=self.__user, func=lambda: G4HunterAnalyseFactory(
                 user=self.__user,
                 id=sequence["id"],
-                tags=tags,
+                tags=self._process_tags(tags, sequence['tags']),
                 threshold=threshold,
                 window_size=window_size,
             ), name=sequence["name"], cls_switch=False)
+
+    @staticmethod
+    def _process_tags(tags: List[str], sequence_tags: str) -> List[Optional[str]]:
+        """
+        Return original tags / strip tags from sequence dataframe or return empty list()
+        :param tags: tags given as function parameter
+        :param sequence_tags: sequence dataframe tags
+        :return:
+        """
+        if tags is not None:
+            return tags
+        elif sequence_tags:
+            return [tag.strip() for tag in sequence_tags.split(',')]
+        return list()
 
     def export_csv(self, *, g4hunter_analyse: Union[pd.DataFrame, pd.Series], out_path: str) -> None:
         """

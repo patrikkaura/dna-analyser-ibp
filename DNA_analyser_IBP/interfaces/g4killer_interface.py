@@ -13,12 +13,12 @@ class G4Killer(ToolInterface):
     def __init__(self, user: User):
         self.__user = user
 
-    def run_tool(self, *, origin_sequence: str, threshold: float, on_complementary: bool = True) -> pd.DataFrame:
+    def run_tool(self, on_complementary: bool = False, *, origin_sequence: str, threshold: float) -> pd.DataFrame:
         """
         Run G4killer tool
         :param origin_sequence: original sequence
         :param threshold: g4hunter target gscore
-        :param on_complementary: True if use for C sequence False for G sequence
+        :param on_complementary: True if use for C sequence False for G sequence [default=False]
         :return: dataframe with g4killer result
         """
         gkill = G4KillerAnalyseFactory(user=self.__user, origin_sequence=origin_sequence, threshold=threshold, on_complementary=on_complementary).analyse

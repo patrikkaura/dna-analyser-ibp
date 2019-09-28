@@ -195,7 +195,7 @@ def seq_load_all(user: User, filter_tag: List[Optional[str]]) -> Union[Generator
     params = {"order": "ASC",
               "requestForAll": "true",
               "pageSize": "ALL",
-              "tags": filter_tag if filter_tag else str()}
+              "tags": filter_tag}
 
     response = requests.get(f"{user.server}/sequence", headers=header, params=params)
     data = validate_key_response(response=response, status_code=200, payload_key="items")
