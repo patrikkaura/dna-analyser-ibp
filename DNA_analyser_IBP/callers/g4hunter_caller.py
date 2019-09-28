@@ -32,7 +32,7 @@ class G4HunterAnalyse(AnalyseModel):
 class G4HunterAnalyseFactory(AnalyseFactory):
     """G4Hunter factory used for generating analyse for given sequence"""
 
-    def create_analyse(self, user: User, id: str, tags: List[Optional[str]], threshold: float, window_size: int) -> Union[G4HunterAnalyse, Exception]:
+    def create_analyse(self, user: User, id: str, tags: Optional[List[str]], threshold: float, window_size: int) -> Union[G4HunterAnalyse, Exception]:
         """
         G4hunter analyse factory
         :param user: user for auth

@@ -2,7 +2,7 @@
 # !/usr/bin/env python3
 
 import pandas as pd
-from typing import List, Union
+from typing import List, Union, Optional
 from abc import ABCMeta, abstractmethod
 
 
@@ -10,7 +10,7 @@ class AnalyseInterface(metaclass=ABCMeta):
     """Interface for api endpoint caller has to have at least this methods"""
 
     @abstractmethod
-    def load_all(self, filter_tag: List[str]) -> pd.DataFrame:
+    def load_all(self, filter_tag: Optional[List[str]]) -> pd.DataFrame:
         raise NotImplementedError("You should implement this!")
 
     @abstractmethod

@@ -7,7 +7,7 @@ with open(path.join(this_dir, "README.MD"), encoding="utf-8") as f:
 
 setup(
     name="dna_analyser_ibp",
-    version="1.5.1",
+    version="1.5.2",
     description="DNA analyser API wrapper tool for Jupiter notebooks.",
     long_description=long_description,
     long_description_content_type="text/markdown",
