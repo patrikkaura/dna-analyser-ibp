@@ -6,7 +6,7 @@ import json
 import requests
 import pandas as pd
 from requests_toolbelt import MultipartEncoder
-from typing import Generator, List, Union, Optional
+from typing import Generator, List, Union, Optional, Tuple
 
 from .user_caller import User
 from ..utils import validate_key_response, validate_text_response
@@ -25,13 +25,22 @@ class SequenceModel:
         self.ncbi = kwargs.pop("ncbi")
         self.tags = ", ".join(kwargs.pop("tags"))
         self.fasta_comment = kwargs.pop("fastaComment")
-        self.nucleic_count = str(kwargs.pop("nucleicCounts"))
+        self.gc_count, self.nucleic_count = self.set_gc_count(kwargs.pop("nucleicCounts"))
 
     def __str__(self):
-        return f"id: {self.id} name: {self.name} type: {self.type}"
+        return f"Sequence {self.id} {self.name} {self.type}"
 
     def __repr__(self):
         return f"<Sequence {self.id} {self.name} {self.type}>"
+
+    def set_gc_count(self, nucleic_dict) -> Tuple[Optional[int], Optional[str]]:
+        """
+        Set gc count from nucleic count dict
+        :return:
+        """
+        if nucleic_dict is not None:
+            return int(nucleic_dict.get('C', 0)) + int(nucleic_dict.get('G', 0)), str(nucleic_dict)
+        return None, None
 
     def get_dataframe(self) -> pd.DataFrame:
         """

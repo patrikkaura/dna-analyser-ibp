@@ -123,7 +123,7 @@ class TestSequence:
     def test_load_all_sequence_filtered(self, user):
         """It should test loading filtered list of all sequences."""
 
-        sq_lst = [se for se in seq_load_all(user=user, filter_tag=["pes"])]
+        sq_lst = [se for se in seq_load_all(user=user, filter_tag=[""])]
         assert len(sq_lst) == 1
         assert isinstance(sq_lst[0], SequenceModel)
         assert sq_lst[0].tags == "pes"

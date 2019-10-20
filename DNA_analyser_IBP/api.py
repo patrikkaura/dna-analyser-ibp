@@ -20,7 +20,8 @@ class Api(metaclass=Singleton):
         """
         # retrieving data from user, default = host accont
         email = input("Enter your email\t") or "host"
-        password = getpass("Enter your password\t") or "host"
+        password = getpass("Enter your password\t", stream=None) or "host"
+        print(f'User {email} try to login ...')
 
         self.user = User(email=email, password=password, server=server)
         self.sequence = Sequence(user=self.user)

@@ -20,6 +20,7 @@ from .sequence_caller import (
     seq_load_data,
     SequenceModel
 )
+from .batch_caller import BatchCaller
 from .user_caller import User
 
 __all__ = [
@@ -44,4 +45,5 @@ __all__ = [
     "seq_load_by_id",
     "seq_load_all",
     "seq_delete",
+    "BatchCaller"
 ]
