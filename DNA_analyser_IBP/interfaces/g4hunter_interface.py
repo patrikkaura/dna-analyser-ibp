@@ -130,7 +130,7 @@ class G4Hunter(AnalyseInterface):
             file_path = os.path.join(out_path, f"{name}_{_id}.csv")
 
             with open(file_path, "w") as new_file:
-                data = g4_export_csv(user=self.__user, id=_id)
+                data = g4_export_csv(user=self.__user, id=_id, aggregate=True)
                 new_file.write(data)
             print(f"file created -> {file_path}")
         # export multiple analyses
@@ -141,7 +141,7 @@ class G4Hunter(AnalyseInterface):
                 file_path = os.path.join(out_path, f"{name}_{_id}.csv")
 
                 with open(file_path, "w") as new_file:
-                    data = g4_export_csv(user=self.__user, id=_id)
+                    data = g4_export_csv(user=self.__user, id=_id, aggregate=True)
                     new_file.write(data)
                 print(f"file created -> {file_path}")
 

@@ -5,7 +5,9 @@ import time
 from tqdm import tqdm
 from typing import Callable
 
-from .callers import G4HunterAnalyse, g4_load_by_id, seq_load_by_id, User
+from .callers import User, BatchCaller
+
+BATCH_STATUS = ('WAITING', 'RUNNING', 'FAILED', 'FINISH')
 
 
 def status_bar(user: User, func: Callable, name: str, cls_switch: bool) -> None:
@@ -31,15 +33,19 @@ def status_bar(user: User, func: Callable, name: str, cls_switch: bool) -> None:
         while True:
             pbar.update(50 - pbar.n)  # withou it doesn't work don't know why
             if obj and cls_switch:
-                if obj.length is not None:  # that means if finnished
+                status = BatchCaller.get_sequence_batch_status(sequence=obj, user=user)
+                if status == "FINISH":  # that means if finnished
                     pbar.update(50)  # complete to to 100 %
                     return None
-                else:
-                    obj = seq_load_by_id(user=user, id=obj.id)  # reload object
+                elif status == "FAILED":
+                    print(f"Uploading sequence {obj.name} FAILED")
+                    return None
             if obj and not cls_switch:
-                if obj.finished is not None:  # that means analyse finnished
+                status = BatchCaller.get_analyse_batch_status(analyse=obj, user=user)
+                if status == "FINISH":  # that means analyse finnished
                     pbar.update(50)  # complete to to 100 %
                     return None
-                if isinstance(obj, G4HunterAnalyse):
-                    obj = g4_load_by_id(user=user, id=obj.id)  # reload g4hunter object
+                elif status == "FAILED":
+                    print(f"Analyse {obj.name} FAILED")
+                    return None
             time.sleep(1)
