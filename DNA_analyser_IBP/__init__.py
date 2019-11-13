@@ -1,4 +1,4 @@
 from .api import Api
 
 __all__ = ["Api"]
-__version__ = "v1.5.3"
+__version__ = "v1.5.5"

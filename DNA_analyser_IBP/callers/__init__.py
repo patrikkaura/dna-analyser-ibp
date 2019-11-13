@@ -15,6 +15,7 @@ from .sequence_caller import (
     NCBISequenceFactory,
     TextSequenceFactory,
     seq_delete,
+    seq_nucleic_count,
     seq_load_all,
     seq_load_by_id,
     seq_load_data,
@@ -44,6 +45,7 @@ __all__ = [
     "seq_load_data",
     "seq_load_by_id",
     "seq_load_all",
+    "seq_nucleic_count",
     "seq_delete",
     "BatchCaller"
 ]
