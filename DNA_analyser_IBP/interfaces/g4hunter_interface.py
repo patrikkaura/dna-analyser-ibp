@@ -164,4 +164,4 @@ class G4Hunter(AnalyseInterface):
             if g4_delete_analyse(user=self.__user, id=_id):
                 print(f"G4hunter {_id} was deleted")
             else:
-                print(f"G4hunter cannot be deleted")
+                print(f"G4hunter {_id} cannot be deleted")

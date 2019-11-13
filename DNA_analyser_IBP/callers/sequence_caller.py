@@ -226,3 +226,19 @@ def seq_load_by_id(user: User, id: str) -> Union[SequenceModel, Exception]:
     response = requests.get(f"{user.server}/sequence/{id}", headers=header)
     data = validate_key_response(response=response, status_code=200, payload_key="payload")
     return SequenceModel(**data)
+
+
+def seq_nucleic_count(user: User, id: str) -> bool:
+    """
+    Run nucleic count of sequence by given id
+    :param user: user for auth
+    :param id: sequence id
+    :return: True if re-count is successfull False if not
+    """
+    header = {"Accept": "*/*",
+              "Authorization": user.jwt}
+
+    response = requests.patch(f"{user.server}/sequence/{id}/nucleic-counts", headers=header)
+    if response.status_code == 200:
+        return True
+    return False

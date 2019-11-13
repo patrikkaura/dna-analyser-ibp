@@ -2,7 +2,7 @@
     <img src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/raw/master/docs/logo.png" alt='logo' width='300px'>
     <br/>
     <br/>
-    <img src="https://img.shields.io/badge/version-1.5.4-brightgreen.svg" alt='version'/>
+    <img src="https://img.shields.io/badge/version-1.5.5-brightgreen.svg" alt='version'/>
     <img src="https://img.shields.io/badge/python-3.6-brightgreen.svg" alt='python_version'/>
     <img src="https://img.shields.io/badge/python-3.7-brightgreen.svg" alt='python_version'/>
     <img src='https://img.shields.io/badge/licence-GNU%20v3.0-blue.svg' alt='licence'/>
@@ -39,6 +39,7 @@ python >= 3.6
 - [x] change in analyses tagging (default=sequence_tags) - version 1.5.2
 - [x] GC counter in sequence tables, progress status works with batch - version 1.5.3
 - [x] Bug fix (batch) - version 1.5.4
+- [x] Add nucleic-count tool for re-counting feature - version 1.5.5
 - [ ] palindrome analyser
 - [ ] feature map overlaping
 

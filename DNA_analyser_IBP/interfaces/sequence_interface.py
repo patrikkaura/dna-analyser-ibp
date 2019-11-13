@@ -15,6 +15,7 @@ from ..callers import (
     seq_load_all,
     seq_load_by_id,
     seq_load_data,
+    seq_nucleic_count,
 )
 
 
@@ -130,8 +131,7 @@ class Sequence:
     def delete(self, *, sequence_dataframe: Union[pd.DataFrame, pd.Series]) -> None:
         """
         Delete sequence
-        :param sequence_dataframe:
-            sequence_dataframe {Union[pd.DataFrame, pd.Series]} -- [
+        :param sequence_dataframe: sequence dataframe / series
         :return:
         """
         if isinstance(sequence_dataframe, pd.DataFrame):
@@ -147,4 +147,23 @@ class Sequence:
             if seq_delete(user=self.__user, id=_id):
                 print(f"Sequence {_id} was deleted")
             else:
-                print("Sequence cannot be deleted")
+                print(f"Sequence {_id} cannot be deleted")
+
+    def nucleic_count(self, *, sequence_dataframe: Union[pd.DataFrame, pd.Series]) -> None:
+        """
+        Re-count nuclecic in given sequence table
+        :param sequence_dataframe: sequence dataframe / series to re-count
+        :return:
+        """
+        if isinstance(sequence_dataframe, pd.DataFrame):
+            for _, row in sequence_dataframe.iterrows():
+                _id = row["id"]
+                if seq_nucleic_count(user=self.__user, id=_id):
+                    print(f"Sequence {_id} was re-counted")
+                else:
+                    print(f"Sequence {_id} cannot be re-counted")
+
+
+
+
+
