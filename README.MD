@@ -29,20 +29,9 @@ python >= 3.6
 * matplotlib >= 3.0.3
 * tqdm >= 4.28
 
-### Features
+### Changelog
 
-- [x] g4hunter analyser - version 1.0
-- [x] g4killer analyser - version 1.1
-- [x] g4hunter heatmap - version 1.3
-- [x] p53 predictor tool - version 1.4
-- [x] new documentation minor fixes + refactoring - version 1.5.1
-- [x] change in analyses tagging (default=sequence_tags) - version 1.5.2
-- [x] GC counter in sequence tables, progress status works with batch - version 1.5.3
-- [x] Bug fix (batch) - version 1.5.4
-- [x] Add nucleic-count tool for re-counting feature - version 1.5.5
-- [ ] palindrome analyser
-- [ ] feature map overlaping
-
+Project changelog can be found at [CHANGELOG.md](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/blob/master/CHANGELOG.MD).
 
 ### Installing
 
@@ -55,7 +44,6 @@ pipenv install dna-analyser-ibp
 ```commandline
 pip install dna-analyser-ibp
 ```
-
 
 ### Quick start
 
@@ -102,7 +90,6 @@ API.g4killer.run_tool(origin_sequence='AATTATTTGGAAAGGGGGGGTTTTCCGA', threshold=
 API.p53.run_tool(sequence='GGACATGCCCGGGCATGTCC') 
 ```
 
-
 ### Tests
 
 To run tests only when downloaded directly from this repository.
@@ -115,7 +102,8 @@ pytest -v tests/
 
 * **Patrik Kaura** - *Main developer* - [patrikkaura](https://gitlab.com/PatrikKaura/)
 * **Jan Kolomaznik** - *Supervisor* - [jankolomaznik](https://github.com/Kolomaznik)
+* **Jiří Šťastný** - *Supervisor*
 
 ## License
 
-This project is licensed under the GPL-3.0 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPL-3.0 License - see the [LICENSE.md](LICENSE.md) file for details.
