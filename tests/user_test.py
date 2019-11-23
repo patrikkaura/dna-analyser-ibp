@@ -11,7 +11,7 @@ def host():
 
 @pytest.fixture(scope="module")
 def user():
-    return User(email="user@mendelu.cz", password="user", server=DEV_URL)
+    return User(email="test@python.cz", password="test", server=DEV_URL)
 
 
 class TestUser:
@@ -20,7 +20,7 @@ class TestUser:
         """It should create user and test it's features."""
         assert isinstance(user.id, str)
         assert isinstance(user.jwt, str)
-        assert user.id == "cc599bcd-3099-4897-84eb-cd549da38f41"
+        assert user.id == "2a1d8c92-4b7e-4b37-b703-7abde3308d2b"
 
     def test_host_creation(self, host):
         """It should create host user and test it's features."""
@@ -28,8 +28,3 @@ class TestUser:
         assert isinstance(host.jwt, str)
         assert host.email == "host"
         assert host._password == "host"
-
-    def test_not_existing_user(self):
-        """It should test not logged user."""
-        with pytest.raises(Exception):
-            User(email="example@exampl.cz", password="example")

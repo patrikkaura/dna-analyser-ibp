@@ -17,12 +17,14 @@ from ..callers import (
     seq_load_data,
     seq_nucleic_count,
 )
+from ..utils import exception_handler
 
 
 class Sequence:
     def __init__(self, user: User):
         self.__user = user
 
+    @exception_handler
     def load_all(self, filter_tag: Optional[List[str]] = None) -> pd.DataFrame:
         """
         Return all or filtered sequences in dataframe
@@ -33,6 +35,7 @@ class Sequence:
         data = pd.concat([s.get_dataframe() for s in seq], ignore_index=True)
         return data
 
+    @exception_handler
     def load_by_id(self, *, id: str) -> pd.DataFrame:
         """
         Return sequence in dataframe
@@ -42,6 +45,7 @@ class Sequence:
         seq = seq_load_by_id(user=self.__user, id=id)
         return seq.get_dataframe()
 
+    @exception_handler
     def load_data(self, data_length: Optional[int] = 100, possition: Optional[int] = 0, *, sequence: pd.Series) -> str:
         """
         Return slice of sequence data in string
@@ -59,6 +63,7 @@ class Sequence:
         else:
             raise ("You have to insert pd.Series")
 
+    @exception_handler
     def text_creator(self, circular: bool = True, tags: Optional[List[str]] = None, sequence_type: str = 'DNA', *, data: str, name: str) -> None:
         """
         Create sequence from string
@@ -82,6 +87,7 @@ class Sequence:
                    name=name,
                    cls_switch=True)
 
+    @exception_handler
     def ncbi_creator(self, tags: Optional[List[str]] = None, circular: bool = True, *, name: str, ncbi_id: str) -> None:
         """
         Create sequence from NCBI
@@ -103,6 +109,7 @@ class Sequence:
                    name=name,
                    cls_switch=True)
 
+    @exception_handler
     def file_creator(self, tags: Optional[List[str]] = None, circular: bool = True, sequence_type: str = 'DNA', *, file_path: str, name: str, format: str) -> None:
         """
         Create sequence from TEXT / FASTA file
@@ -128,6 +135,7 @@ class Sequence:
                    name=name,
                    cls_switch=True)
 
+    @exception_handler
     def delete(self, *, sequence_dataframe: Union[pd.DataFrame, pd.Series]) -> None:
         """
         Delete sequence

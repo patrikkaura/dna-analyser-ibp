@@ -1,1 +1,1 @@
-DEV_URL = 'https://bioinformatika.pef.mendelu.cz/api'
+DEV_URL = 'http://bioinformatics.ibp.cz:8888/api'

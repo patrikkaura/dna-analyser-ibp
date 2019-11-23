@@ -8,12 +8,13 @@ import requests
 from datetime import datetime
 from typing import Union
 
-from ..utils import validate_email, validate_text_response
+from ..utils import validate_email, validate_text_response, exception_handler
 
 
 class User:
     """User class providing information for current user"""
 
+    @exception_handler
     def __init__(self, email: str, password: str, server: str):
         """
         Init and autologin user
@@ -38,6 +39,7 @@ class User:
     def __repr__(self):
         return f"<User {self.id}>"
 
+    @exception_handler
     def _sign_in(self) -> Union[tuple, Exception]:
         """
         Sign in at http://bioinformatics.ibp.cz:8888/api
