@@ -14,13 +14,13 @@ Tool for creating palindrome, p53, and G-quadruplex analysis. Work as API wrappe
 Currently working with localhost instance of DNA analyser server working on http://bioinformatics.ibp.cz computational core but can be switched 
 to local instance of server.
 
-## Getting Started
+# Getting Started
 
-### Prerequisites
+## Prerequisites
 
 python >= 3.6
 
-### Dependencies
+## Dependencies
 
 * requests >= 2.20
 * requests-toolbelt >= 0.9.1
@@ -29,22 +29,21 @@ python >= 3.6
 * matplotlib >= 3.0.3
 * tqdm >= 4.28
 
+## Changelog
+
+### Version 1.5.5 (2019-11-13)
+
 ### Features
+- Add nucleci re-count endpoint (PATCH) into sequence interaces [[5f28b338](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/tree/5f28b3389fbc1cd72b9d32037538216338d65742)]
+```python
+# re-count process
+SEQUENCES = API.sequence.load_all() # load sequences
+API.sequence.nucleic_count(sequence_dataframe=SEQUENCES) # re-count sequences
+```
 
-- [x] g4hunter analyser - version 1.0
-- [x] g4killer analyser - version 1.1
-- [x] g4hunter heatmap - version 1.3
-- [x] p53 predictor tool - version 1.4
-- [x] new documentation minor fixes + refactoring - version 1.5.1
-- [x] change in analyses tagging (default=sequence_tags) - version 1.5.2
-- [x] GC counter in sequence tables, progress status works with batch - version 1.5.3
-- [x] Bug fix (batch) - version 1.5.4
-- [x] Add nucleic-count tool for re-counting feature - version 1.5.5
-- [ ] palindrome analyser
-- [ ] feature map overlaping
+The rest of project changelog can be found at [CHANGELOG.md](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/blob/master/CHANGELOG.MD).
 
-
-### Installing
+## Installing
 
 To install test version from [Pypi](https://pypi.org/project/dna-analyser-ibp/).
 
@@ -56,8 +55,7 @@ pipenv install dna-analyser-ibp
 pip install dna-analyser-ibp
 ```
 
-
-### Quick start
+## Quick start
 
 DNA analyser uses pandas `dataframe` or pandas `series`. Firstly the user  has to create `Api` object and login to API.
 ```python
@@ -92,7 +90,7 @@ Last step to see results of g4hunter analysis.
 sapiens = API.g4hunter.load_all(filter_tag=['Homo']) # returns dataframe
 API.g4hunter.load_results(g4hunter_analyse=sapiens.iloc[0]) # iloc[0] to select row from dataframe
 ```
-### P53 / G4KILLER TOOL
+## P53 / G4KILLER TOOL
 To run simple tools using plain text input.
 ```python
 # implements g4killer algorithm for generating sequence with lower gscore
@@ -102,8 +100,7 @@ API.g4killer.run_tool(origin_sequence='AATTATTTGGAAAGGGGGGGTTTTCCGA', threshold=
 API.p53.run_tool(sequence='GGACATGCCCGGGCATGTCC') 
 ```
 
-
-### Tests
+## Tests
 
 To run tests only when downloaded directly from this repository.
 
@@ -115,7 +112,8 @@ pytest -v tests/
 
 * **Patrik Kaura** - *Main developer* - [patrikkaura](https://gitlab.com/PatrikKaura/)
 * **Jan Kolomaznik** - *Supervisor* - [jankolomaznik](https://github.com/Kolomaznik)
+* **Jiří Šťastný** - *Supervisor*
 
 ## License
 
-This project is licensed under the GPL-3.0 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPL-3.0 License - see the [LICENSE.md](LICENSE.md) file for details.
