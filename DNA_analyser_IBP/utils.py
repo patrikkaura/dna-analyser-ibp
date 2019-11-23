@@ -4,8 +4,23 @@
 
 import re
 import pandas as pd
+from functools import wraps
 from requests import Response
 from typing import Union, Optional
+from time import time
+
+
+def exception_handler(fn):
+    """Handle exception"""
+
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as e:
+            print(f'Error: {e}')
+
+    return wrapper
 
 
 def generate_dataframe(res: Union[dict, list]) -> pd.DataFrame:

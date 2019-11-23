@@ -9,7 +9,7 @@ from DNA_analyser_IBP.callers import (
 
 @pytest.fixture(scope="module")
 def user():
-    return User(email="host", password="host", server=DEV_URL)
+    return User(email="test@python.cz", password="test", server=DEV_URL)
 
 
 @pytest.fixture(scope="module")

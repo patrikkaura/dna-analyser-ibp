@@ -5,6 +5,7 @@ import pandas as pd
 
 from .tool_interface import ToolInterface
 from ..callers import User, P53AnalyseFactory
+from ..utils import exception_handler
 
 
 class P53(ToolInterface):
@@ -13,6 +14,7 @@ class P53(ToolInterface):
     def __init__(self, user: User):
         self.__user = user
 
+    @exception_handler
     def run_tool(self, *, sequence: str) -> pd.DataFrame:
         """
         Run P53 tool

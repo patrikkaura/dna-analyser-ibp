@@ -5,6 +5,7 @@ import pandas as pd
 
 from .tool_interface import ToolInterface
 from ..callers import G4KillerAnalyseFactory, User
+from ..utils import exception_handler
 
 
 class G4Killer(ToolInterface):
@@ -13,6 +14,7 @@ class G4Killer(ToolInterface):
     def __init__(self, user: User):
         self.__user = user
 
+    @exception_handler
     def run_tool(self, on_complementary: bool = False, *, origin_sequence: str, threshold: float) -> pd.DataFrame:
         """
         Run G4killer tool

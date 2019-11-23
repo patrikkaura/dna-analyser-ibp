@@ -19,6 +19,7 @@ from ..callers import (
     g4_load_result,
     g4_load_heatmap,
 )
+from ..utils import exception_handler
 
 
 class G4Hunter(AnalyseInterface):
@@ -27,6 +28,7 @@ class G4Hunter(AnalyseInterface):
     def __init__(self, user: User):
         self.__user = user
 
+    @exception_handler
     def load_all(self, filter_tag: Optional[List[str]] = None) -> pd.DataFrame:
         """
         Return all or filtered g4hunter analyses in dataframe
@@ -37,6 +39,7 @@ class G4Hunter(AnalyseInterface):
         data = pd.concat([g.get_dataframe() for g in g4], ignore_index=True)
         return data
 
+    @exception_handler
     def load_by_id(self, *, id: str) -> pd.DataFrame:
         """
         Return g4hunter analyses in dataframe
@@ -46,6 +49,7 @@ class G4Hunter(AnalyseInterface):
         g4 = g4_load_by_id(user=self.__user, id=id)
         return g4.get_dataframe()
 
+    @exception_handler
     def load_results(self, *, g4hunter_analyse: pd.Series) -> pd.DataFrame:
         """
         Return g4hunter analyses results in dataframe
@@ -57,6 +61,7 @@ class G4Hunter(AnalyseInterface):
         else:
             raise ("You have to insert pd.Series")
 
+    @exception_handler
     def load_heatmap(self, segment_count: Optional[int] = 31, coverage: Optional[bool] = False, *, g4hunter_analyse: pd.Series) -> None:
         """
         Return seaborn graph with heatmap
@@ -75,6 +80,7 @@ class G4Hunter(AnalyseInterface):
         else:
             raise ("You have to insert pd.Series")
 
+    @exception_handler
     def analyse_creator(self, tags: Optional[List[str]] = None, *, sequence: Union[pd.DataFrame, pd.Series], threshold: float, window_size: int) -> None:
         """
         Create G4hunter analyse
@@ -117,6 +123,7 @@ class G4Hunter(AnalyseInterface):
             return [tag.strip() for tag in sequence_tags.split(',')]
         return list()
 
+    @exception_handler
     def export_csv(self, *, g4hunter_analyse: Union[pd.DataFrame, pd.Series], out_path: str) -> None:
         """
         Export G4Hunter analyses result into csv files
@@ -145,6 +152,7 @@ class G4Hunter(AnalyseInterface):
                     new_file.write(data)
                 print(f"file created -> {file_path}")
 
+    @exception_handler
     def delete(self, *, g4hunter_analyse: Union[pd.DataFrame, pd.Series]) -> None:
         """
         Delete G4Hunter analyse

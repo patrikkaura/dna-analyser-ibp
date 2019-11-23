@@ -6,7 +6,7 @@ from DNA_analyser_IBP.callers import P53Analyse, P53AnalyseFactory, User
 
 @pytest.fixture(scope="module")
 def user():
-    return User(email="host", password="host", server=DEV_URL)
+    return User(email="test@python.cz", password="test", server=DEV_URL)
 
 
 class TestP53:
