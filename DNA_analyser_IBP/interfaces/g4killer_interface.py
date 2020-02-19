@@ -15,13 +15,17 @@ class G4Killer(ToolInterface):
         self.__user = user
 
     @exception_handler
-    def run_tool(self, on_complementary: bool = False, *, origin_sequence: str, threshold: float) -> pd.DataFrame:
+    def run(self, complementary: bool = False, *, sequence: str, threshold: float) -> pd.DataFrame:
         """
         Run G4killer tool
-        :param origin_sequence: original sequence
-        :param threshold: g4hunter target gscore
-        :param on_complementary: True if use for C sequence False for G sequence [default=False]
-        :return: dataframe with g4killer result
+
+        Args:
+            complementary (bool): True if use for C sequence False for G sequence [default=False]
+            sequence (str): original sequence
+            threshold (float): G4hunter target score in interval (0;4)
+
+        Returns:
+            pd.DataFrame: Dataframe with G4killer result
         """
-        gkill = G4KillerAnalyseFactory(user=self.__user, origin_sequence=origin_sequence, threshold=threshold, on_complementary=on_complementary).analyse
-        return gkill.get_dataframe().T
+        result = G4KillerAnalyseFactory(user=self.__user, sequence=sequence, threshold=threshold, complementary=complementary).analyse
+        return result.get_dataframe().T

@@ -1,7 +1,7 @@
 import pytest
 from pandas import DataFrame
 
-from DNA_analyser_IBP.utils import generate_dataframe, validate_email
+from DNA_analyser_IBP.utils import generate_dataframe, validate_email, normalize_name
 
 
 class TestUTils:
@@ -25,7 +25,7 @@ class TestUTils:
     def test_generate_dataframe_dict(self):
         """It should test generating dataframe from dict."""
         dct = {"id": "somebulshit", "name": "idontknow", "ncbi": "20000"}
-        data_frame = generate_dataframe(res=dct)
+        data_frame = generate_dataframe(response=dct)
         assert isinstance(data_frame, DataFrame)
         assert data_frame.shape == (1, 3)
 
@@ -37,6 +37,19 @@ class TestUTils:
             {"id": "somebulshit", "name": "idontknow", "ncbi": "20000"},
             {"id": "somebulshit", "name": "idontknow", "ncbi": "20000"},
         ]
-        data_frame = generate_dataframe(res=lst_of_dicts)
+        data_frame = generate_dataframe(response=lst_of_dicts)
         assert isinstance(data_frame, DataFrame)
         assert data_frame.shape == (4, 3)
+
+    @pytest.mark.parametrize(
+        ["original_name", "normalized_name"],
+        [
+            ("user@user.com", "useruser.com"),
+            ("usr@@!//??.ccc", "usr.ccc"),
+            ("%\\wwwr.ss", "wwwr.ss"),
+        ],
+    )
+    def test_normalize_name(self, original_name, normalized_name):
+        """It should test name normalization."""
+        result = normalize_name(name=original_name)
+        assert result == normalized_name

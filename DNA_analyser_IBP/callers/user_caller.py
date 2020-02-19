@@ -5,10 +5,8 @@
 import jwt
 import json
 import requests
-from datetime import datetime
-from typing import Union
 
-from ..utils import validate_email, validate_text_response, exception_handler
+from ..utils import validate_email, validate_text_response, exception_handler, Logger
 
 
 class User:
@@ -18,9 +16,11 @@ class User:
     def __init__(self, email: str, password: str, server: str):
         """
         Init and autologin user
-        :param email: user email
-        :param password: user passwod
-        :param server: http://bioinformatics.ibp.cz:8888/api
+
+        Args:
+            email (str): user email
+            password (str): user password
+            server (str): api server address [Default=http://bioinformatics.ibp.cz:8888/api]
         """
         if email == "host" or validate_email(email):
             self.server = server  # api address
@@ -29,9 +29,9 @@ class User:
             # params obtained by server
             self.jwt, self.id, self.expire_at = self._sign_in()  # /api/jwt
             # if obtained then success print
-            print(f"User {self.email} logged in: {datetime.utcnow()}")
+            Logger.info(f"User {self.email} logged in!")
         else:
-            raise ValueError("Wrong email format.")
+            Logger.error(f"Wrong email format!")
 
     def __str__(self):
         return f"User {self.id}"
@@ -40,10 +40,12 @@ class User:
         return f"<User {self.id}>"
 
     @exception_handler
-    def _sign_in(self) -> Union[tuple, Exception]:
+    def _sign_in(self) -> tuple:
         """
         Sign in at http://bioinformatics.ibp.cz:8888/api
-        :return:JWT string, user id, expiration date
+
+        Returns:
+            tuple: JWT string, user id, expiration date
         """
         header = {"Content-type": "application/json", "Accept": "text/plain"}
 

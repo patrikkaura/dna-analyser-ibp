@@ -8,6 +8,8 @@ pytest = "*"
 vcrpy = "*"
 jupyter = "*"
 black = "*"
+sphinx = "*"
+sphinx-markdown-builder = "*"
 
 [packages]
 requests = "*"

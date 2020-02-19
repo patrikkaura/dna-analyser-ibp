@@ -1,20 +1,17 @@
-import time
-
 import pytest
+
+import time
 import pandas as pd
 from . import DEV_URL
 
 from DNA_analyser_IBP.callers import (
     SequenceModel,
+    SequenceMethods,
+    TextSequenceFactory,
     User,
     G4HunterAnalyse,
     G4HunterAnalyseFactory,
-    g4_delete_analyse,
-    g4_load_by_id,
-    g4_load_all,
-    g4_export_csv,
-    TextSequenceFactory,
-    seq_delete
+    G4HunterMethods,
 )
 
 
@@ -55,7 +52,7 @@ def g4_analyse():
 
 @pytest.fixture(scope="module")
 def load_first_g4(user):
-    g4_lst = [g4 for g4 in g4_load_all(user, filter_tag=[])]
+    g4_lst = [g4 for g4 in G4HunterMethods.load_all(user, tags=[])]
     return g4_lst[0]
 
 
@@ -73,12 +70,12 @@ class TestG4Hunter:
     def test_g4_hunter_creation_and_deleting(self, user):
         """It should create g4hunter analyse + then deletes it."""
 
-        test =  TextSequenceFactory(user=user,
+        test = TextSequenceFactory(user=user,
                                    circular=True,
                                    data="ATTCGTTTAGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGggG",
                                    name="Test",
                                    tags=["testovaci", "test"],
-                                   sequence_type="DNA").sequence
+                                   nucleic_type="DNA").sequence
 
         factory = G4HunterAnalyseFactory(
             user=user,
@@ -91,46 +88,35 @@ class TestG4Hunter:
         assert isinstance(analyse, G4HunterAnalyse)
         assert analyse.title == "Test"
         time.sleep(2)
-        res = g4_delete_analyse(user=user, id=analyse.id)
+        res = G4HunterMethods.delete(user=user, id=analyse.id)
         assert res
-        res = seq_delete(user=user, id=test.id)
+        res = SequenceMethods.delete(user=user, id=test.id)
         assert res
 
     def test_g4hunter_fail_delete(self, user, g4_analyse):
         """It should test deleting non existing analyse."""
-        res = g4_delete_analyse(user, id=g4_analyse.id)
+        res = G4HunterMethods.delete(user, id=g4_analyse.id)
         assert res is False
-
-    @pytest.mark.parametrize(["threshold", "window_size"], [(0, 10), (5, 10), (2, 200), (2, 2)])
-    def test_g4hunter_analyse_factory_for_wrong_values(self, user, sequence, threshold, window_size):
-        """It should throw exception for wrong values"""
-
-        with pytest.raises(ValueError):
-            _ = G4HunterAnalyseFactory(user=user,
-                                       id=sequence.id,
-                                       tags=["test", "sequence"],
-                                       threshold=threshold,
-                                       window_size=window_size)
 
     def test_load_all_g4hunters(self, user):
         """It should test retrieving list with all g4hunter analyses"""
 
-        g4_lst = [g4 for g4 in g4_load_all(user, filter_tag=[])]
+        g4_lst = [g4 for g4 in G4HunterMethods.load_all(user, tags=[])]
         assert isinstance(g4_lst[0], G4HunterAnalyse)
 
     def test_load_g4hunter_by_id(self, user, load_first_g4):
         """It should return same g4hunter analyse with same id"""
 
-        compare_g4 = g4_load_by_id(user, id=load_first_g4.id)
+        compare_g4 = G4HunterMethods.load_by_id(user, id=load_first_g4.id)
         assert isinstance(compare_g4, G4HunterAnalyse)
         assert load_first_g4.id == compare_g4.id
 
     def test_exporting_g4analyse_to_csv(self, user, load_first_g4):
         """It should return string with csv for save to file"""
 
-        data_aggregate = g4_export_csv(user, id=load_first_g4.id, aggregate=True)
+        data_aggregate = G4HunterMethods.export_csv(user, id=load_first_g4.id, aggregate=True)
         assert isinstance(data_aggregate, str)
-        data_full = g4_export_csv(user, id=load_first_g4.id, aggregate=False)
+        data_full = G4HunterMethods.export_csv(user, id=load_first_g4.id, aggregate=False)
         assert isinstance(data_full, str)
         assert len(data_aggregate) < len(data_full)
 
