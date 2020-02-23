@@ -5,17 +5,14 @@
 import json
 import requests
 import pandas as pd
-from typing import Union
 
 from .analyse_caller import AnalyseFactory
 from .user_caller import User
-from ..utils import validate_key_response
+from ..utils import validate_key_response, Logger
 
-
-# TODO: fix same as on website
 
 class G4KillerAnalyse:
-    """G4Killer analyse object desctroi guanin quadruplex and change gscore"""
+    """G4Killer analyse object destroy guanin quadruplex and lower G-score"""
 
     def __init__(self, **kwargs):
         self.origin_score = kwargs.pop("originScore")
@@ -36,7 +33,9 @@ class G4KillerAnalyse:
     def get_dataframe(self) -> pd.DataFrame:
         """
         Return pandas dataframe for current object
-        :return: dataframe with object data
+
+        Returns:
+            pd.DataFrame: dataframe with object data
         """
         data_frame = pd.DataFrame().from_records(self.__dict__, columns=self.__dict__.keys(), index=[0])
         return data_frame
@@ -45,24 +44,28 @@ class G4KillerAnalyse:
 class G4KillerAnalyseFactory(AnalyseFactory):
     """G4Killer factory used to generate analyse for given sequence string"""
 
-    def create_analyse(self, user: User, origin_sequence: str, threshold: float, on_complementary: bool) -> Union[G4KillerAnalyse, Exception]:
+    def create_analyse(self, user: User, sequence: str, threshold: float, complementary: bool) -> G4KillerAnalyse:
         """
         G4killer analyse factory
-        :param user: user for auth
-        :param origin_sequence: origin sequence for killer procedure
-        :param threshold: target g4hunter score
-        :param on_complementary: True if use for C sequence False for G sequence
-        :return: G4Killer object
+
+        Args:
+            user (User): user for auth
+            sequence (str): origin sequence for G4Killer procedure
+            threshold (float): target g4hunter score in interval (0;4)
+            complementary (bool): True if use for C sequence False for G sequence
+
+        Returns:
+            G4KillerAnalyse: G4KillerAnalyse object
         """
         # check range of parameters
         if 0 <= threshold <= 4:
             header = {"Content-type": "application/json",
                       "Accept": "application/json",
                       "Authorization": user.jwt}
-            data = json.dumps({"sequence": origin_sequence, "threshold": threshold, "onComplementary": "true" if on_complementary else "false"})
+            data = json.dumps({"sequence": sequence, "threshold": threshold, "onComplementary": "true" if complementary else "false"})
 
             response = requests.post(f"{user.server}/analyse/g4killer", headers=header, data=data)
             data = validate_key_response(response=response, status_code=201)
             return G4KillerAnalyse(**data)
         else:
-            raise ValueError("Value threshold out of range")
+            Logger.error("Value threshold out of interval (0;4)!")

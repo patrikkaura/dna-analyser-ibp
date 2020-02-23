@@ -10,5 +10,5 @@ class ToolInterface(metaclass=ABCMeta):
     """Interface for api endpoint caller has to have at least this methods"""
 
     @abstractmethod
-    def run_tool(self, *args) -> pd.DataFrame:
+    def run(self, *args) -> pd.DataFrame:
         raise NotImplementedError("You should implement this!")
