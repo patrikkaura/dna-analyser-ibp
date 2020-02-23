@@ -29,23 +29,27 @@ python >= 3.6
 * matplotlib >= 3.0.3
 * tqdm >= 4.28
 
-<<<<<<< HEAD
 ## Changelog
 
-### Version 1.5.5 (2019-11-13)
+# Version 2.0.0 (2020-02-24)
 
-### Features
-- Add nucleci re-count endpoint (PATCH) into sequence interaces [[5f28b338](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/tree/5f28b3389fbc1cd72b9d32037538216338d65742)]
-```python
-# re-count process
-SEQUENCES = API.sequence.load_all() # load sequences
-API.sequence.nucleic_count(sequence_dataframe=SEQUENCES) # re-count sequences
-```
-=======
-### Changelog
+### Feature
 
-Project changelog can be found at [CHANGELOG.md](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/blob/master/CHANGELOG.MD).
->>>>>>> 03dd76aaf9d626d38b5c07c5d4297bdd8cac7918
+- MultiFasta uploader
+- Sphinx documentation
+- Anotation downloader
+- Anotation parser
+- G4Hunter heatmap downloader
+
+### Fix
+
+- G4Hunter heatmap method add aggregation parameter [default=True]
+
+### Refactoring
+
+- Changes in all doc strings (Goolgle style)
+- Sequence methods encapsulated into SequenceMethods object
+- G4Hunter methods encapsulated into G4HunterMethods object
 
 The rest of project changelog can be found at [CHANGELOG.md](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/blob/master/CHANGELOG.MD).
 
@@ -61,11 +65,7 @@ pipenv install dna-analyser-ibp
 pip install dna-analyser-ibp
 ```
 
-<<<<<<< HEAD
 ## Quick start
-=======
-### Quick start
->>>>>>> 03dd76aaf9d626d38b5c07c5d4297bdd8cac7918
 
 DNA analyser uses `pandas.Dataframe` or `pandas.Series`. Firstly the user  has to create `Api` object and login to API.
 ```python
@@ -110,11 +110,7 @@ API.g4killer.run(sequence='AATTATTTGGAAAGGGGGGGTTTTCCGA', threshold=0.5)
 API.p53.run(sequence='GGACATGCCCGGGCATGTCC') 
 ```
 
-<<<<<<< HEAD
 ## Tests
-=======
-### Tests
->>>>>>> 03dd76aaf9d626d38b5c07c5d4297bdd8cac7918
 
 To run tests only when downloaded directly from this repository.
 
