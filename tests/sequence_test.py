@@ -1,17 +1,14 @@
-import time
 import pytest
-import pandas as pd
 
+import time
+import pandas as pd
 from . import DEV_URL
 from DNA_analyser_IBP.callers import (
     FileSequenceFactory,
     NCBISequenceFactory,
     SequenceModel,
+    SequenceMethods,
     TextSequenceFactory,
-    seq_delete,
-    seq_load_all,
-    seq_load_by_id,
-    seq_load_data,
     User
 )
 
@@ -74,12 +71,12 @@ class TestSequence:
                                       data="ATTCGTTTAGGG",
                                       name="Test",
                                       tags=["testovaci", "test"],
-                                      sequence_type="DNA")
+                                      nucleic_type="DNA")
         text_sequence = factory.sequence
         assert isinstance(text_sequence, SequenceModel)
         assert text_sequence.name == "Test"
         time.sleep(2)
-        res = seq_delete(user=host, id=text_sequence.id)
+        res = SequenceMethods.delete(user=host, id=text_sequence.id)
         assert res is True
 
     def test_sequence_ncbi_creation_and_deleting(self, host):
@@ -94,7 +91,7 @@ class TestSequence:
         assert isinstance(ncbi_sequence, SequenceModel)
         assert ncbi_sequence.name == "Theobroma cacao chloroplast"
         time.sleep(2)
-        res = seq_delete(user=host, id=ncbi_sequence.id)
+        res = SequenceMethods.delete(user=host, id=ncbi_sequence.id)
         assert res is True
 
     @pytest.mark.skip(reason="Have no file in gitlab pipeline to upload")
@@ -112,28 +109,28 @@ class TestSequence:
         assert isinstance(file_sequence, SequenceModel)
         assert file_sequence.name == "Saccharomyces cerevisiae"
         time.sleep(2)
-        res = seq_delete(user=host, id=file_sequence.id)
+        res = SequenceMethods.delete(user=host, id=file_sequence.id)
         assert res is True
 
     def test_sequence_fail_delete(self, host, sequence):
         """It should test deleting non existing sequence."""
 
-        res = seq_delete(user=host, id=sequence.id)
+        res = SequenceMethods.delete(user=host, id=sequence.id)
         assert res is False
 
     def test_load_all_sequence_filtered(self, user):
         """It should test loading filtered list of all sequences."""
 
-        sq_lst = [se for se in seq_load_all(user=user, filter_tag=[""])]
-        assert len(sq_lst) == 7
+        sq_lst = [se for se in SequenceMethods.load_all(user=user, tags=[""])]
+        assert len(sq_lst) == 11
         assert isinstance(sq_lst[0], SequenceModel)
 
     def test_load_sequence_by_id(self, user):
         """It should return same object as first object in load all sequence."""
 
-        sq_lst = [se for se in seq_load_all(user, filter_tag=[""])]
+        sq_lst = [se for se in SequenceMethods.load_all(user, tags=[""])]
         test_sequence = sq_lst[0]
-        compare_sequence = seq_load_by_id(user, id=test_sequence.id)
+        compare_sequence = SequenceMethods.load_by_id(user, id=test_sequence.id)
         assert isinstance(test_sequence, SequenceModel)
         assert test_sequence.id == compare_sequence.id
 
@@ -141,31 +138,22 @@ class TestSequence:
         """It should return exception for loading sequence with shitty id."""
 
         with pytest.raises(Exception):
-            seq_load_by_id(user, id="random_id")
+            SequenceMethods.load_by_id(user, id="random_id")
 
     def test_loading_sequence_data(self, user):
         """It should return data of given sequence."""
 
-        sq_lst = [se for se in seq_load_all(user=user, filter_tag=[""])]
-        data = seq_load_data(user, id=sq_lst[0].id, data_len=100, pos=0)
+        sq_lst = [se for se in SequenceMethods.load_all(user=user, tags=[""])]
+        data = SequenceMethods.load_data(user, id=sq_lst[0].id, length=100, possiotion=0, sequence_length=2000)
         assert isinstance(data, str)
         assert len(data) == 100
         # time.sleep(1)
 
-    @pytest.mark.parametrize(
-        ["_len", "pos", "seq_len"],
-        [(-10, 10, 100), (-20, -200, 100), (20, -211, 100), (10, 10, 19)],
-    )
-    def test_loading_sequence_data(self, user, _len, pos, seq_len):
-        sq_lst = [se for se in seq_load_all(user, filter_tag=[""])]
-        with pytest.raises(ValueError):
-            _ = seq_load_data(user=user, id=sq_lst[0].id, data_len=_len, pos=pos, seq_len=seq_len)
-
     def test_load_all_sequence_not_filtered(self, user):
         """It should test loading list of all sequences."""
 
-        sq_lst = [se for se in seq_load_all(user, filter_tag=[])]
-        assert len(sq_lst) == 7
+        sq_lst = [se for se in SequenceMethods.load_all(user, tags=[])]
+        assert len(sq_lst) == 11
         assert isinstance(sq_lst[0], SequenceModel)
 
     def test_wrong_data_to_text_sequence_factory(self, user):
@@ -179,7 +167,7 @@ class TestSequence:
                                     tags=["testovaci", "test"],
                                     _type="DNA")
 
-    def test_sequence_factory_for_wrong_server(user, sequence):
+    def test_sequence_factory_for_wrong_server(self, user, sequence):
         """It should test raising connection error for wrong server"""
         usr = user
         usr.server = "http://some_html_bullshit.cz"

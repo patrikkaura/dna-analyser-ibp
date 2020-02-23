@@ -19,7 +19,9 @@ class AnalyseModel:
     def get_dataframe(self) -> pd.DataFrame:
         """
         Return pandas dataframe for current object
-        :return: dataframe with object data
+
+        Returns:
+            pd.DataFrame: dataframe with object data
         """
         data_frame = pd.DataFrame().from_records(self.__dict__, columns=self.__dict__.keys(), index=[0])
         return data_frame

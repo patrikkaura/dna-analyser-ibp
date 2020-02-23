@@ -21,16 +21,3 @@ class TestP53:
         assert len(sequence) == p53.length
         assert p53.difference == -7.61
         assert p53.affinity == 1
-
-    @pytest.mark.parametrize(
-        ["sequence", "e"],
-        [("AATTATA", ValueError),
-         ("", ValueError),
-         ("AATATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", ValueError),
-         ("        ", ValueError)],
-    )
-    def test_p53_exception(self, user, sequence, e):
-        """It should raise exception for wrong sequence len"""
-
-        with pytest.raises(e):
-            _ = P53AnalyseFactory(user=user, sequence=sequence)

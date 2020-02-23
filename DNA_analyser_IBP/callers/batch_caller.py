@@ -2,21 +2,27 @@
 # !/usr/bin/env python3
 
 import requests
+from .analyse_caller import AnalyseModel
+from .sequence_caller import SequenceModel
+from .user_caller import User
 
 
 class BatchCaller:
     """Batch class used in all models to check progress"""
 
     @staticmethod
-    def get_sequence_batch_status(sequence, user) -> str:
+    def get_sequence_batch_status(sequence: SequenceModel, user: User) -> str:
         """
         Return sequence batch status (CREATED, WAITING, RUNNING, FINISH, FAILED)
-        :param sequence: sequence object [id]
-        :param user: user for auth
-        :return:
+
+        Args:
+            sequence (SequenceModel): Sequence object
+            user (User): user for auth
+
+        Returns:
+            str: FINISH|FAILED
         """
-        header = {"Accept": "application/json",
-                  "Authorization": user.jwt}
+        header = {"Accept": "application/json", "Authorization": user.jwt}
 
         response = requests.get(f"{user.server}/batch/cz.mendelu.dnaAnalyser.sequence.Sequence/{sequence.id}", headers=header)
         if response.status_code == 200 and response.text:
@@ -27,15 +33,19 @@ class BatchCaller:
         return "FAILED"
 
     @staticmethod
-    def get_analyse_batch_status(analyse, user) -> str:
+    def get_analyse_batch_status(analyse: AnalyseModel, user: User) -> str:
         """
-        Return g4hjunter batch status (CREATED, WAITING, RUNNING, FINISH, FAILED)
-        :param g4hunter: g4hunter object [id]
-        :param user:
-        :return:
+        Return sequence batch status (CREATED, WAITING, RUNNING, FINISH, FAILED)
+
+        Args:
+            analyse (AnalyseModel): Analyse object
+            user (User): user for auth
+
+        Returns:
+            str: FINISH|FAILED
         """
-        header = {"Accept": "application/json",
-                  "Authorization": user.jwt}
+
+        header = {"Accept": "application/json", "Authorization": user.jwt}
 
         response = requests.get(f"{user.server}/batch/cz.mendelu.dnaAnalyser.analyse.g4hunter.G4Hunter/{analyse.id}", headers=header)
         if response.status_code == 200 and response.text:

@@ -1,4 +1,24 @@
-# Version 1.5.6 (2019-x-x)
+# Version 2.0.0 (2020-02-24)
+
+### Feature
+
+- MultiFasta uploader
+- Sphinx documentation
+- Anotation downloader
+- Anotation parser
+- G4Hunter heatmap downloader
+
+### Fix
+
+- G4Hunter heatmap method add aggregation parameter [default=True]
+
+### Refactoring
+
+- Changes in all doc strings (Goolgle style)
+- Sequence methods encapsulated into SequenceMethods object
+- G4Hunter methods encapsulated into G4HunterMethods object
+
+# Version 1.5.6 (2019-11-13)
 
 ###  Chore
 

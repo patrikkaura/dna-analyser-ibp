@@ -5,11 +5,11 @@
 import json
 import requests
 import pandas as pd
-from typing import Generator, List, Union, Optional
+from typing import Generator, List, Optional
 
 from .user_caller import User
 from .analyse_caller import AnalyseFactory, AnalyseModel
-from ..utils import generate_dataframe, validate_key_response, validate_text_response
+from ..utils import generate_dataframe, validate_key_response, validate_text_response, Logger
 
 
 class G4HunterAnalyse(AnalyseModel):
@@ -32,15 +32,19 @@ class G4HunterAnalyse(AnalyseModel):
 class G4HunterAnalyseFactory(AnalyseFactory):
     """G4Hunter factory used for generating analyse for given sequence"""
 
-    def create_analyse(self, user: User, id: str, tags: Optional[List[str]], threshold: float, window_size: int) -> Union[G4HunterAnalyse, Exception]:
+    def create_analyse(self, user: User, id: str, tags: Optional[List[str]], threshold: float, window_size: int) -> G4HunterAnalyse:
         """
         G4hunter analyse factory
-        :param user: user for auth
-        :param id: sequence id
-        :param tags: analyse tags
-        :param threshold: threshold for g4hunter algorithm recommended 1.2
-        :param window_size: window size for g4hunter algorithm recommended 25
-        :return: G4Hunter object
+
+        Args:
+            user (User): user for auth
+            id (str): sequence id
+            tags (Optional[List[str]]): analyse tags
+            threshold (float): threshold for g4hunter algorithm recommended 1.2
+            window_size (int): window size for g4hunter algorithm recommended 25
+
+        Returns:
+            G4HunterAnalyse: G4Hunter object
         """
         # check range of parameters
         if 0.1 <= threshold <= 4 and 10 <= window_size <= 100:
@@ -57,109 +61,136 @@ class G4HunterAnalyseFactory(AnalyseFactory):
             data = validate_key_response(response=response, status_code=201, payload_key="payload")
             return G4HunterAnalyse(**data)
         else:
-            raise ValueError("Value window size or threshold out of range.")
+            Logger.error("Value window size or threshold out of range!")
 
 
-def g4_delete_analyse(user: User, id: str) -> bool:
-    """
-    Delete analyse by id
-    :param user: user for auth
-    :param id: g4hunter analyse id
-    :return: True if delete is successfull False if not
-    """
-    header = {"Content-type": "application/json",
-              "Accept": "*/*",
-              "Authorization": user.jwt}
+class G4HunterMethods:
+    """G4HunterMethods holds all g4hunter server methods"""
 
-    response = requests.delete(f"{user.server}/analyse/g4hunter/{id}", headers=header)
-    if response.status_code == 204:
-        return True
-    return False
+    @staticmethod
+    def delete(user: User, id: str) -> bool:
+        """
+        Delete analyse by id
 
+        Args:
+            user (User): user for auth
+            id (str): g4hunter analyse id
+        Returns:
+            bool: True if delete is successfull False if not
+        """
+        header = {"Content-type": "application/json",
+                  "Accept": "*/*",
+                  "Authorization": user.jwt}
 
-def g4_load_by_id(user: User, id: str) -> Union[G4HunterAnalyse, Exception]:
-    """
-    Load one g4hunter analyse by id
-    :param user: user for auth
-    :param id: g4hunter analyse id
-    :return: G4Hunter object
-    """
-    header = {"Content-type": "application/json",
-              "Accept": "application/json",
-              "Authorization": user.jwt}
+        response = requests.delete(f"{user.server}/analyse/g4hunter/{id}", headers=header)
+        if response.status_code == 204:
+            return True
+        return False
 
-    response = requests.get(f"{user.server}/analyse/g4hunter/{id}", headers=header)
-    data = validate_key_response(response=response, status_code=200, payload_key="payload")
-    return G4HunterAnalyse(**data)
+    @staticmethod
+    def load_by_id(user: User, id: str) -> G4HunterAnalyse:
+        """
+        Load one g4hunter analyse by id
 
+        Args:
+            user (User): user for auth
+            id (str): g4hunter analyse id
 
-def g4_load_all(user: User, filter_tag: List[Optional[str]]) -> Union[Generator[G4HunterAnalyse, None, None], Exception]:
-    """
-    Load all g4hunter analyses
-    :param user: user for auth
-    :param filter_tag: filter tag for loading
-    :return: G4Hunter object generator
-    """
-    header = {"Content-type": "application/json",
-              "Accept": "application/json",
-              "Authorization": user.jwt}
-    params = {"order": "ASC",
-              "requestForAll": "true",
-              "pageSize": "ALL",
-              "tags": filter_tag or list()}
+        Returns:
+            G4HunterAnalyse: G4Hunter object
+        """
+        header = {"Content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": user.jwt}
 
-    response = requests.get(f"{user.server}/analyse/g4hunter", headers=header, params=params)
-    data = validate_key_response(response=response, status_code=200, payload_key="items")
-    for record in data:
-        yield G4HunterAnalyse(**record)
+        response = requests.get(f"{user.server}/analyse/g4hunter/{id}", headers=header)
+        data = validate_key_response(response=response, status_code=200, payload_key="payload")
+        return G4HunterAnalyse(**data)
 
+    @staticmethod
+    def load_all(user: User, tags: List[Optional[str]]) -> Generator[G4HunterAnalyse, None, None]:
+        """
+        Load all g4hunter analyses
 
-def g4_load_result(user: User, id: str) -> Union[pd.DataFrame, Exception]:
-    """
-    Load G4Hunter analyse result
-    :param user: user for auth
-    :param id: g4hunter analyse id
-    :return: DataFrame with results
-    """
-    header = {"Content-type": "application/json",
-              "Accept": "application/json",
-              "Authorization": user.jwt}
-    params = {"order": "ASC", "requestForAll": "true", "pageSize": "ALL"}
+        Args:
+            user (User): user for auth
+            tags (List[Optional[str]]): filter tag for loading
 
-    response = requests.get(f"{user.server}/analyse/g4hunter/{id}/quadruplex", headers=header, params=params)
-    data = validate_key_response(response=response, status_code=200, payload_key="items")
-    return generate_dataframe(res=data)
+        Returns:
+            Generator[G4HunterAnalyse, None, None], Exception: G4Hunter object generator
+        """
+        header = {"Content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": user.jwt}
+        params = {"order": "ASC",
+                  "requestForAll": "true",
+                  "pageSize": "ALL",
+                  "tags": tags or list()}
 
+        response = requests.get(f"{user.server}/analyse/g4hunter", headers=header, params=params)
+        data = validate_key_response(response=response, status_code=200, payload_key="items")
+        for record in data:
+            yield G4HunterAnalyse(**record)
 
-def g4_export_csv(user: User, id: str, aggregate: bool = True) -> Union[str, Exception]:
-    """
-    Export G4Hunter results as csv output
-    :param user: user for auth
-    :param id: g4hunter analyse id
-    :param aggregate: True if aggregate results else False
-    :return: csv file in string
-    """
-    header = {"Accept": "text/plain", "Authorization": user.jwt}
-    params = {"aggregate": "true" if aggregate else "false"}
+    @staticmethod
+    def load_result(user: User, id: str) -> pd.DataFrame:
+        """
+        Load G4Hunter analyse result
 
-    response = requests.get(f"{user.server}/analyse/g4hunter/{id}/quadruplex.csv", headers=header, params=params)
-    csv_str = validate_text_response(response=response, status_code=200)
-    return csv_str
+        Args:
+            user (User): user for auth
+            id (str): g4hunter analyse id
 
+        Returns:
+            pd.DataFrame: DataFrame with G4Hunter results
+        """
+        header = {"Content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": user.jwt}
+        params = {"order": "ASC", "requestForAll": "true", "pageSize": "ALL"}
 
-def g4_load_heatmap(user: User, id: str, segment_count: int) -> Union[pd.DataFrame, Exception]:
-    """
-    Download heatmap data for G4Hunter analyse
-    :param user: user for auth
-    :param id: g4hunter analyse id
-    :param segment_count: number of heatmap segments
-    :return: DataFrame with segment data
-    """
-    header = {"Content-type": "application/json",
-              "Accept": "application/json",
-              "Authorization": user.jwt}
-    params = {"segments": segment_count}
+        response = requests.get(f"{user.server}/analyse/g4hunter/{id}/quadruplex", headers=header, params=params)
+        data = validate_key_response(response=response, status_code=200, payload_key="items")
+        return generate_dataframe(response=data)
 
-    response = requests.get(f"{user.server}/analyse/g4hunter/{id}/heatmap", headers=header, params=params)
-    data = validate_key_response(response=response, status_code=200, payload_key="data")
-    return pd.DataFrame(data=data)
+    @staticmethod
+    def export_csv(user: User, id: str, aggregate: bool = True) -> str:
+        """
+        Export G4Hunter results as csv output
+
+        Args:
+            user (User): user for atuh
+            id (str): g4hunter analyse id
+            aggregate (bool): True if aggregate results else False
+
+        Returns:
+            str: csv file in string
+        """
+        header = {"Accept": "text/plain", "Authorization": user.jwt}
+        params = {"aggregate": "true" if aggregate else "false"}
+
+        response = requests.get(f"{user.server}/analyse/g4hunter/{id}/quadruplex.csv", headers=header, params=params)
+        csv_str = validate_text_response(response=response, status_code=200)
+        return csv_str
+
+    @staticmethod
+    def load_heatmap(user: User, id: str, segments: int) -> pd.DataFrame:
+        """
+        Download heatmap data for G4Hunter analyse
+
+        Args:
+            user (User): user for auth
+            id (str): g4hunter analyse id
+            segments (int): number of heatmap segments
+
+        Returns:
+            pd.DataFrame: dataFrame with heatmap data
+        """
+        header = {"Content-type": "application/json",
+                  "Accept": "application/json",
+                  "Authorization": user.jwt}
+        params = {"segments": segments}
+
+        response = requests.get(f"{user.server}/analyse/g4hunter/{id}/heatmap", headers=header, params=params)
+        data = validate_key_response(response=response, status_code=200, payload_key="data")
+        return pd.DataFrame(data=data)

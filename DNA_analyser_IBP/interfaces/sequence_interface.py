@@ -11,13 +11,9 @@ from ..callers import (
     NCBISequenceFactory,
     TextSequenceFactory,
     FileSequenceFactory,
-    seq_delete,
-    seq_load_all,
-    seq_load_by_id,
-    seq_load_data,
-    seq_nucleic_count,
+    SequenceMethods
 )
-from ..utils import exception_handler
+from ..utils import exception_handler, Logger, normalize_name, _multifasta_parser
 
 
 class Sequence:
@@ -25,13 +21,17 @@ class Sequence:
         self.__user = user
 
     @exception_handler
-    def load_all(self, filter_tag: Optional[List[str]] = None) -> pd.DataFrame:
+    def load_all(self, tags: Optional[List[str]] = None) -> pd.DataFrame:
         """
         Return all or filtered sequences in dataframe
-        :param filter_tag: tags for sequence filtering [default=None]
-        :return: dataframe with sequences
+
+        Args:
+            tags (Optional[List[str]]): tags for sequence filtering [default=None]
+
+        Returns:
+            pd.DataFrame: Dataframe with sequences
         """
-        seq = [se for se in seq_load_all(user=self.__user, filter_tag=filter_tag if filter_tag is not None else list())]
+        seq = [se for se in SequenceMethods.load_all(user=self.__user, tags=tags if tags is not None else list())]
         data = pd.concat([s.get_dataframe() for s in seq], ignore_index=True)
         return data
 
@@ -39,50 +39,60 @@ class Sequence:
     def load_by_id(self, *, id: str) -> pd.DataFrame:
         """
         Return sequence in dataframe
-        :param id: sequence id
-        :return: dataframe with sequence
+
+        Args:
+            id (str): sequence id
+
+        Returns:
+            pd.DataFrame: Dataframe with sequence
         """
-        seq = seq_load_by_id(user=self.__user, id=id)
+        seq = SequenceMethods.load_by_id(user=self.__user, id=id)
         return seq.get_dataframe()
 
     @exception_handler
-    def load_data(self, data_length: Optional[int] = 100, possition: Optional[int] = 0, *, sequence: pd.Series) -> str:
+    def load_data(self, length: Optional[int] = 100, possition: Optional[int] = 0, *, sequence: pd.Series) -> str:
         """
         Return slice of sequence data in string
-        :param sequence: sequence series
-        :param data_length: sequence length [default=100]
-        :param possition: start position [default=0]
-        :return: part of sequence data
+
+        Args:
+            length (Optional[int]): sequence data length in interval <0;1000> [default=100]
+            possition (Optional[int]): data start position [default=0]
+            sequence (pd.Series): sequence in pd.Series
+
+        Returns:
+            str: sequence data
         """
         if isinstance(sequence, pd.Series):
-            return seq_load_data(user=self.__user,
-                                 id=sequence["id"],
-                                 data_len=data_length,
-                                 pos=possition,
-                                 seq_len=sequence["length"])
+            return SequenceMethods.load_data(user=self.__user,
+                                             id=sequence["id"],
+                                             length=length,
+                                             possiotion=possition,
+                                             sequence_length=sequence["length"])
         else:
-            raise ("You have to insert pd.Series")
+            Logger.error("Parameter sequence have to be pd.Series!")
 
     @exception_handler
-    def text_creator(self, circular: bool = True, tags: Optional[List[str]] = None, sequence_type: str = 'DNA', *, data: str, name: str) -> None:
+    def text_creator(self, circular: bool = True, tags: Optional[List[str]] = None, nucleic_type: str = 'DNA', *, string: str, name: str) -> None:
         """
         Create sequence from string
-        :param circular: True if sequence is circular False if not [default=True]
-        :param data: sequence string
-        :param name: sequence name
-        :param tags: tags for sequence filtering [default=None]
-        :param sequence_type: string DNA / RNA [default=DNA]
-        :return:
+
+        Args:
+            circular (bool): True if sequence is circular False if not [default=True]
+            tags (Optional[List[str]]): tags for sequence filtering [default=None]
+            nucleic_type (str): string DNA|RNA [default=DNA]
+            string (str): sequence string
+            name (str): sequence name
         """
+        name = normalize_name(name=name)
         # start Text sequence factory
         status_bar(user=self.__user,
                    func=lambda: TextSequenceFactory(
                        user=self.__user,
                        circular=circular,
-                       data=data,
+                       data=string,
                        name=name,
                        tags=tags if tags is not None else list(),
-                       sequence_type=sequence_type,
+                       nucleic_type=nucleic_type,
                    ),
                    name=name,
                    cls_switch=True)
@@ -91,12 +101,14 @@ class Sequence:
     def ncbi_creator(self, tags: Optional[List[str]] = None, circular: bool = True, *, name: str, ncbi_id: str) -> None:
         """
         Create sequence from NCBI
-        :param circular: True if sequence is circular False if not [default=True]
-        :param name: sequence name
-        :param tags: tags for sequence filtering [default=None]
-        :param ncbi_id: sequence id from https://www.ncbi.nlm.nih.gov/
-        :return:
+
+        Args:
+            tags (Optional[List[str]]): tags for sequence filtering [default=None]
+            circular (bool): True if sequence is circular False if not [default=True]
+            name (str): sequence name
+            ncbi_id (str): sequence id from https://www.ncbi.nlm.nih.gov/
         """
+        name = normalize_name(name=name)
         # start NCBI sequence factory
         status_bar(user=self.__user,
                    func=lambda: NCBISequenceFactory(
@@ -110,68 +122,93 @@ class Sequence:
                    cls_switch=True)
 
     @exception_handler
-    def file_creator(self, tags: Optional[List[str]] = None, circular: bool = True, sequence_type: str = 'DNA', *, file_path: str, name: str, format: str) -> None:
+    def file_creator(self, tags: Optional[List[str]] = None, circular: bool = True, nucleic_type: str = 'DNA', *, path: str, name: str, format: str) -> None:
         """
-        Create sequence from TEXT / FASTA file
-        :param circular: True if sequence is circular False if not [default=True]
-        :param file_path: absolute path to file
-        :param name: sequence name
-        :param tags: tags for sequence filtering
-        :param sequence_type: string DNA / RNA [default=DNA]
-        :param format: string FASTA / PLAIN
-        :return:
+        Create sequence from [TEXT|FASTA] file
+
+        Args:
+            tags (Optional[List[str]]): tags for sequence filtering [default=None]
+            circular (bool): True if sequence is circular False if not [default=True]
+            name (str): sequence name
+            nucleic_type (str): string DNA|RNA [default=DNA]
+            format (str): string FASTA|PLAIN
+            path (str): absolute path to [TEXT|FASTA] file
         """
+        name = normalize_name(name=name)
         # start File sequence factory
         status_bar(user=self.__user,
                    func=lambda: FileSequenceFactory(
                        user=self.__user,
                        circular=circular,
-                       file_path=file_path,
+                       path=path,
                        name=name,
                        tags=tags if tags is not None else list(),
-                       sequence_type=sequence_type,
+                       nucleic_type=nucleic_type,
                        format=format,
                    ),
                    name=name,
                    cls_switch=True)
 
     @exception_handler
-    def delete(self, *, sequence_dataframe: Union[pd.DataFrame, pd.Series]) -> None:
+    def multifasta_creator(self, tags: Optional[List[str]] = None, circular: bool = False, *, path: str, nucleic_type: str) -> None:
         """
-        Delete sequence
-        :param sequence_dataframe: sequence dataframe / series
-        :return:
+        Create sequence from [MultiFASTA] file
+
+        Args:
+            tags (Optional[List[str]]): tags for sequence filtering [default=None]
+            circular (bool): True if sequence is circular False if not [default=True]
+            nucleic_type (str): string DNA|RNA [default=DNA]
+            path (str): absolute path to [TEXT|FASTA] file
         """
-        if isinstance(sequence_dataframe, pd.DataFrame):
-            for _, row in sequence_dataframe.iterrows():
+        for sequence_name, sequence_nucleic in _multifasta_parser(path=path):
+            sequence_name = normalize_name(name=sequence_name)
+            status_bar(user=self.__user,
+                       func=lambda: TextSequenceFactory(
+                           user=self.__user,
+                           circular=circular,
+                           data=sequence_nucleic,
+                           name=sequence_name,
+                           tags=tags if tags is not None else list(),
+                           nucleic_type=nucleic_type,
+                       ),
+                       name=sequence_name,
+                       cls_switch=True)
+
+    @exception_handler
+    def delete(self, *, sequence: Union[pd.DataFrame, pd.Series]) -> None:
+        """
+        Delete sequence by given dataframe|series
+
+        Args:
+            sequence (Union[pd.DataFrame, pd.Series]): sequence or multiple sequences
+        """
+        if isinstance(sequence, pd.DataFrame):
+            for _, row in sequence.iterrows():
                 _id = row["id"]
-                if seq_delete(user=self.__user, id=_id):
-                    print(f"Sequence {_id} was deleted")
+                if SequenceMethods.delete(user=self.__user, id=_id):
+                    Logger.info(f"Sequence {_id} was deleted!")
                     time.sleep(1)
                 else:
-                    print("Sequence cannot be deleted")
+                    Logger.error(f"Sequence {_id} cannot be deleted!")
         else:
-            _id = sequence_dataframe["id"]
-            if seq_delete(user=self.__user, id=_id):
-                print(f"Sequence {_id} was deleted")
+            _id = sequence["id"]
+            if SequenceMethods.delete(user=self.__user, id=_id):
+                Logger.info(f"Sequence {_id} was deleted!")
             else:
-                print(f"Sequence {_id} cannot be deleted")
+                Logger.error(f"Sequence {_id} cannot be deleted!")
 
-    def nucleic_count(self, *, sequence_dataframe: Union[pd.DataFrame, pd.Series]) -> None:
+    @exception_handler
+    def nucleic_count(self, *, sequence: Union[pd.DataFrame, pd.Series]) -> None:
         """
-        Re-count nuclecic in given sequence table
-        :param sequence_dataframe: sequence dataframe / series to re-count
-        :return:
+        Re-count nucleotides for given sequence dataframe|series
+
+        Args:
+            sequence (Union[pd.DataFrame, pd.Series]): sequence or multiple sequences
         """
-        if isinstance(sequence_dataframe, pd.DataFrame):
-            for _, row in sequence_dataframe.iterrows():
+        if isinstance(sequence, pd.DataFrame):
+            for _, row in sequence.iterrows():
                 _id = row["id"]
-                if seq_nucleic_count(user=self.__user, id=_id):
-                    print(f"Sequence {_id} was re-counted")
+                if SequenceMethods.nucleic_count(user=self.__user, id=_id):
+                    Logger.info(f"Sequence {_id} nucleotides was re-counted!")
                 else:
-                    print(f"Sequence {_id} cannot be re-counted")
-
-
-
-
-
+                    Logger.error(f"Sequence {_id} nucleotides cannot be re-counted!")

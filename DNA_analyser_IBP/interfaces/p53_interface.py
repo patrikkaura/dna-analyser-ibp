@@ -15,11 +15,15 @@ class P53(ToolInterface):
         self.__user = user
 
     @exception_handler
-    def run_tool(self, *, sequence: str) -> pd.DataFrame:
+    def run(self, *, sequence: str) -> pd.DataFrame:
         """
         Run P53 tool
-        :param sequence: sequence to analyse of length 20
-        :return: dataframe with p53 result
+
+        Args:
+            sequence (str): sequence [length=20] to analyse
+
+        Returns:
+            pd.DataFrame: Dataframe with P53predictor result
         """
         p53kill = P53AnalyseFactory(user=self.__user, sequence=sequence.strip()).analyse
         return p53kill.get_dataframe().T

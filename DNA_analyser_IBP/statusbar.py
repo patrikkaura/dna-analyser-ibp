@@ -5,6 +5,7 @@ import time
 from tqdm import tqdm
 from typing import Callable
 
+from .utils import Logger
 from .callers import User, BatchCaller
 
 BATCH_STATUS = ('WAITING', 'RUNNING', 'FAILED', 'FINISH')
@@ -13,17 +14,18 @@ BATCH_STATUS = ('WAITING', 'RUNNING', 'FAILED', 'FINISH')
 def status_bar(user: User, func: Callable, name: str, cls_switch: bool) -> None:
     """
     TQDM status bar
-    :param user: user for auth
-    :param func: function decorated by statusbar
-    :param name: statusbart name field
-    :param cls_switch: True = SequenceModel, False = AnalyseModel
-    :return:
+
+    Args:
+        user (User): user for auth
+        func (Callable): function decorated by statusbar
+        name (str): name field
+        cls_switch (bool): True = SequenceModel, False = AnalyseModel
     """
     # tqdm status bar
     with tqdm(
-            desc=f"Sequence {name} uploading"
+            desc=f"Uploading sequence {name}"
             if cls_switch
-            else f"Analyse {name} processing",
+            else f"Analysing sequence {name}",
             unit=" % uploaded" if cls_switch else " % processed",
             ascii=True,
     ) as pbar:
@@ -38,7 +40,7 @@ def status_bar(user: User, func: Callable, name: str, cls_switch: bool) -> None:
                     pbar.update(50)  # complete to to 100 %
                     return None
                 elif status == "FAILED":
-                    print(f"Uploading sequence {obj.name} FAILED")
+                    Logger.error(f"Uploading sequence {obj.name} failed!")
                     return None
             if obj and not cls_switch:
                 status = BatchCaller.get_analyse_batch_status(analyse=obj, user=user)
@@ -46,6 +48,6 @@ def status_bar(user: User, func: Callable, name: str, cls_switch: bool) -> None:
                     pbar.update(50)  # complete to to 100 %
                     return None
                 elif status == "FAILED":
-                    print(f"Analyse {obj.name} FAILED")
+                    Logger.error(f"Analyse {obj.name} failed!")
                     return None
             time.sleep(1)
