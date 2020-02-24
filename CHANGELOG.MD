@@ -2,21 +2,22 @@
 
 ### Feature
 
-- MultiFasta uploader
-- Sphinx documentation
-- Anotation downloader
-- Anotation parser
-- G4Hunter heatmap downloader
-
+- MultiFasta uploader [[729d20](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/tree/729d20da3e7348206000a7783b3cd414d8d8b061)]
+- Sphinx documentation [[729d20](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/tree/729d20da3e7348206000a7783b3cd414d8d8b061)]
+- Anotation downloader [[58a038](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commit/58a03840d37a8bf492cb5282eee195f89d5d0584)]
+- Anotation parser [[58a038](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commit/58a03840d37a8bf492cb5282eee195f89d5d0584)]
+- Anotation + G4Hunter analyse intersection [[58a038](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commit/58a03840d37a8bf492cb5282eee195f89d5d0584)]
+- G4Hunter heatmap downloader [[58a038](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commit/58a03840d37a8bf492cb5282eee195f89d5d0584)]
+ 
 ### Fix
 
-- G4Hunter heatmap method add aggregation parameter [default=True]
+- G4Hunter heatmap method add aggregation parameter [default=True] [[58a038](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commit/58a03840d37a8bf492cb5282eee195f89d5d0584)]
 
 ### Refactoring
 
-- Changes in all doc strings (Goolgle style)
-- Sequence methods encapsulated into SequenceMethods object
-- G4Hunter methods encapsulated into G4HunterMethods object
+- Changes in all doc strings (Goolgle style) [[58a038](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commit/58a03840d37a8bf492cb5282eee195f89d5d0584)]
+- Sequence methods encapsulated into SequenceMethods object [[58a038](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commit/58a03840d37a8bf492cb5282eee195f89d5d0584)]
+- G4Hunter methods encapsulated into G4HunterMethods object [[58a038](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commit/58a03840d37a8bf492cb5282eee195f89d5d0584)]
 
 # Version 1.5.6 (2019-11-13)
 

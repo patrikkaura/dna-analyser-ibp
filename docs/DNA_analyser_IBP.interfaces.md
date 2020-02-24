@@ -25,8 +25,6 @@ Interface for api endpoint caller has to have at least this methods
 Bases: `object`
 
 
-#### ANOTATION_URL( = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&retmode=text&rettype=ft&id=')
-
 #### anotation_downloader(path: str, filename: str, ncbi_id: str)
 Anotation downloader used to download anotation by NCBI ID
 
@@ -41,6 +39,26 @@ Anotation downloader used to download anotation by NCBI ID
 
 
     * **ncbi_id** (*str*) – ncbi id used for identication of anotation on remote server
+
+
+
+#### anotation_itersection(analyse: str, anotation: str)
+Create intersection dataframe for given G4Hunter analyse and parsed anotation file
+:param analyse: path to g4hunter analyse result file
+:type analyse: str
+:param anotation: path to parsed anotation file
+:type anotation: str
+
+
+* **Returns**
+
+    intersection result
+
+
+
+* **Return type**
+
+    (pd.DataFrame)
 
 
 
@@ -68,10 +86,16 @@ Parse anotation file into [DataFrame]
 
 #### multifasta_to_fasta(\*, path: str, out_path: str)
 Split one MultiFASTA file into multiple FASTA files
-:param path: absolute system path into folder with MultiFASTA
-:type path: str
-:param out_path: absolute system path into output folder with FASTAs
-:type out_path: str
+
+
+* **Parameters**
+
+    
+    * **path** (*str*) – absolute system path into folder with MultiFASTA
+
+
+    * **out_path** (*str*) – absolute system path into output folder with FASTAs
+
 
 ## DNA_analyser_IBP.interfaces.g4hunter_interface module
 
@@ -126,6 +150,35 @@ Export G4Hunter analyses result into csv files
 
 
     * **aggregate** (*bool*) – True = aggregation, False = no aggregation
+
+
+
+#### get_heatmap(segments: Optional[int] = 31, coverage: Optional[bool] = False, \*, analyse: pandas.core.series.Series)
+Return dataframe with heatmap data
+
+
+* **Parameters**
+
+    
+    * **segments** (*Optional**[**int**]*) – g4hunter analyse series [Default=31]
+
+
+    * **coverage** (*Optional**[**bool**]*) – True = coverage heatmap False = count heatmap [default=False]
+
+
+    * **analyse** (*pd.Series*) – analyse series data to get heatmap
+
+
+
+* **Returns**
+
+    raw data used to create heatmap
+
+
+
+* **Return type**
+
+    pd.DataFrame
 
 
 
@@ -556,6 +609,35 @@ Export G4Hunter analyses result into csv files
 
 
 
+#### get_heatmap(segments: Optional[int] = 31, coverage: Optional[bool] = False, \*, analyse: pandas.core.series.Series)
+Return dataframe with heatmap data
+
+
+* **Parameters**
+
+    
+    * **segments** (*Optional**[**int**]*) – g4hunter analyse series [Default=31]
+
+
+    * **coverage** (*Optional**[**bool**]*) – True = coverage heatmap False = count heatmap [default=False]
+
+
+    * **analyse** (*pd.Series*) – analyse series data to get heatmap
+
+
+
+* **Returns**
+
+    raw data used to create heatmap
+
+
+
+* **Return type**
+
+    pd.DataFrame
+
+
+
 #### load_all(tags: Optional[List[str]] = None)
 Return all or filtered g4hunter analyses in dataframe
 
@@ -916,8 +998,6 @@ Create sequence from string
 Bases: `object`
 
 
-#### ANOTATION_URL( = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&retmode=text&rettype=ft&id=')
-
 #### anotation_downloader(path: str, filename: str, ncbi_id: str)
 Anotation downloader used to download anotation by NCBI ID
 
@@ -932,6 +1012,26 @@ Anotation downloader used to download anotation by NCBI ID
 
 
     * **ncbi_id** (*str*) – ncbi id used for identication of anotation on remote server
+
+
+
+#### anotation_itersection(analyse: str, anotation: str)
+Create intersection dataframe for given G4Hunter analyse and parsed anotation file
+:param analyse: path to g4hunter analyse result file
+:type analyse: str
+:param anotation: path to parsed anotation file
+:type anotation: str
+
+
+* **Returns**
+
+    intersection result
+
+
+
+* **Return type**
+
+    (pd.DataFrame)
 
 
 
@@ -959,7 +1059,12 @@ Parse anotation file into [DataFrame]
 
 #### multifasta_to_fasta(\*, path: str, out_path: str)
 Split one MultiFASTA file into multiple FASTA files
-:param path: absolute system path into folder with MultiFASTA
-:type path: str
-:param out_path: absolute system path into output folder with FASTAs
-:type out_path: str
+
+
+* **Parameters**
+
+    
+    * **path** (*str*) – absolute system path into folder with MultiFASTA
+
+
+    * **out_path** (*str*) – absolute system path into output folder with FASTAs
