@@ -69,6 +69,25 @@ class G4Hunter(AnalyseInterface):
             Logger.error("You have to insert pd.Series!")
 
     @exception_handler
+    def get_heatmap(self, segments: Optional[int] = 31, coverage: Optional[bool] = False, *, analyse: pd.Series) -> pd.DataFrame:
+        """
+        Return dataframe with heatmap data
+
+        Args:
+            segments (Optional[int]): g4hunter analyse series [Default=31]
+            coverage (Optional[bool]): True = coverage heatmap False = count heatmap [default=False]
+            analyse (pd.Series): analyse series data to get heatmap
+
+        Returns:
+            pd.DataFrame: raw data used to create heatmap
+        """
+        if isinstance(analyse, pd.Series):
+            return G4HunterMethods.load_heatmap(user=self.__user, id=analyse["id"], segments=segments)
+        else:
+            Logger.error("You have to insert pd.Series!")
+
+
+    @exception_handler
     def show_heatmap(self, segments: Optional[int] = 31, coverage: Optional[bool] = False, *, analyse: pd.Series) -> None:
         """
         Return seaborn graph with heatmap
@@ -83,11 +102,9 @@ class G4Hunter(AnalyseInterface):
         """
         if isinstance(analyse, pd.Series):
             data = G4HunterMethods.load_heatmap(user=self.__user, id=analyse["id"], segments=segments)
-            ax = data[["coverage" if coverage else "count"]].plot(kind="bar", figsize=(14, 8), legend=True, fontsize=12)
-            ax.set_xlabel("segments", fontsize=12)
-            ax.set_ylabel("coverage [%/100]" if coverage else "count [-]", fontsize=12)
-            plt.grid(color="k", linestyle="-", linewidth=0.1)
-            plt.show()
+            graph = self._create_heatmap_grap(data=data, coverage=coverage)
+            graph.grid(color="k", linestyle="-", linewidth=0.1)
+            graph.show()
         else:
             Logger.error("You have to insert pd.Series!")
 
@@ -104,22 +121,34 @@ class G4Hunter(AnalyseInterface):
         if isinstance(analyse, pd.DataFrame):
             for _, row in analyse.iterrows():
                 data = G4HunterMethods.load_heatmap(user=self.__user, id=row["id"], segments=segments)
-                ax = data[["coverage" if coverage else "count"]].plot(kind="bar", figsize=(14, 8), legend=True, fontsize=12)
-                ax.set_xlabel("segments", fontsize=12)
-                ax.set_ylabel("coverage [%/100]" if coverage else "count [-]", fontsize=12)
-                plt.grid(color="k", linestyle="-", linewidth=0.1)
-                plt.savefig(f'{path}/{row["title"]}.svg', format="svg")
-                plt.close()
+                graph = self._create_heatmap_grap(data=data, coverage=coverage)
+                graph.savefig(f'{path}/{row["title"]}.svg', format="svg")
+                graph.close()
                 Logger.info(f'Heatmap file {row["title"]}.svg saved!')
+
         else:
             data = G4HunterMethods.load_heatmap(user=self.__user, id=analyse["id"], segments=segments)
-            ax = data[["coverage" if coverage else "count"]].plot(kind="bar", figsize=(14, 8), legend=True, fontsize=12)
-            ax.set_xlabel("segments", fontsize=12)
-            ax.set_ylabel("coverage [%/100]" if coverage else "count [-]", fontsize=12)
-            plt.grid(color="k", linestyle="-", linewidth=0.1)
-            plt.savefig(f'{path}/{analyse["title"]}.svg', format="svg")
-            plt.close()
+            graph = self._create_heatmap_grap(data=data, coverage=coverage)
+            graph.savefig(f'{path}/{analyse["title"]}.svg', format="svg")
+            graph.close()
             Logger.info(f'Heatmap file {analyse["title"]}.svg saved!')
+
+    @exception_handler
+    def _create_heatmap_grap(self, *, data: pd.DataFrame, coverage: bool) -> plt:
+        """
+        Create heatmap graph for show|save
+        Args:
+            data (pd.DataFrame): dataframe used by pyplot
+            coverage (bool): switch between coverate|count graph
+
+        Returns:
+            (plt): Matplotlib.pyplot graph object
+        """
+        ax = data[["PQS_coverage" if coverage else "PQS_count"]].plot(kind="bar", figsize=(14, 8), legend=True, fontsize=12)
+        ax.set_xlabel("Segments", fontsize=12)
+        ax.set_ylabel("PQS coverage [%/100]" if coverage else "PQS count [-]", fontsize=12)
+        plt.grid(color="k", linestyle="-", linewidth=0.1)
+        return plt
 
     @exception_handler
     def analyse_creator(self, tags: Optional[List[str]] = None, *, sequence: Union[pd.DataFrame, pd.Series], threshold: float, window_size: int) -> None:

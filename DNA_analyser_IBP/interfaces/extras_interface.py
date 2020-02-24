@@ -1,14 +1,27 @@
 # extras_interface.py
 # !/usr/bin/env python3
 
+import csv
 import os
 import requests
 import pandas as pd
+from typing import List
+from .intersection import G4Result, Anotation
 from ..utils import exception_handler, normalize_name, Logger, _multifasta_parser
 
 
 class Extras:
-    ANOTATION_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&retmode=text&rettype=ft&id='
+    _ANOTATION_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&retmode=text&rettype=ft&id='
+
+    _INTERSECTION_DATAFRAME_COLUMNS = [
+        'FEATURE',
+        '0-1.2 BEFORE', '0-1.2 IN', '0-1.2 AFTER',
+        '1.2-1.4 BEFORE', '1.2-1.4 IN', '1.2-1.4 AFTER',
+        '1.4-1.6 BEFORE', '1.4-1.6 IN', '1.4-1.6 AFTER',
+        '1.6-1.8 BEFORE', '1.6-1.8 IN', '1.6-1.8 AFTER',
+        '1.8-2.0 BEFORE', '1.8-2.0 IN', '1.8-2.0 AFTER',
+        '2.0-inf BEFORE', '2.0-inf IN', '2.0-inf AFTER'
+    ]
 
     @exception_handler
     def anotation_downloader(self, path: str, filename: str, ncbi_id: str) -> None:
@@ -25,7 +38,7 @@ class Extras:
         if os.path.isdir(path):  # only in valid folder
             ncbi_id = ncbi_id.strip()
             Logger.info(f'Anotation {ncbi_id} is being downloaded!')
-            response = requests.get(f'{Extras.ANOTATION_URL}{ncbi_id}')
+            response = requests.get(f'{Extras._ANOTATION_URL}{ncbi_id}')
 
             if response.status_code == 200 and response.text.startswith('>'):
                 file_path = f'{path}/{filename}.txt'
@@ -83,6 +96,7 @@ class Extras:
     def multifasta_to_fasta(self, *, path: str, out_path: str) -> None:
         """
         Split one MultiFASTA file into multiple FASTA files
+
         Args:
             path (str): absolute system path into folder with MultiFASTA
             out_path (str): absolute system path into output folder with FASTAs
@@ -96,3 +110,70 @@ class Extras:
                     Logger.info(f"File {path}/{sequence_name}.txt was created!")
         else:
             Logger.error("Output path doesn't exist!")
+
+    @exception_handler
+    def anotation_itersection(self, analyse: str, anotation: str) -> pd.DataFrame:
+        """
+        Create intersection dataframe for given G4Hunter analyse and parsed anotation file
+        Args:
+            analyse (str): path to g4hunter analyse result file
+            anotation (str): path to parsed anotation file
+
+        Returns:
+            (pd.DataFrame): intersection result
+        """
+        anotation_list = Extras._create_anotation_list(anotation=anotation)
+        analyse_list = Extras._create_g4hunter_list(analyse=analyse)
+        results = list()
+        for anotation in anotation_list:
+            result = [0, 0, 0] * 6
+            for analyse in analyse_list:
+                group_id = analyse.get_group_id()
+                # remove PQS which will never use again
+                if (anotation.before - analyse.position) >= 100000:
+                    analyse_list.remove(analyse)
+                # if too far from analyse
+                if analyse.position > anotation.after:
+                    break
+                # intersect
+                else:
+                    result[0 * group_id] += anotation.is_before(analyse)
+                    result[1 * group_id] += anotation.is_in(analyse)
+                    result[2 * group_id] += anotation.is_after(analyse)
+            results.append([anotation.feature] + result)
+        return pd.DataFrame(data=results, columns=Extras._INTERSECTION_DATAFRAME_COLUMNS)
+
+    @staticmethod
+    @exception_handler
+    def _create_anotation_list(anotation: str) -> List[Anotation]:
+        """
+        Return list of Anotation objects
+
+        Returns:
+            (List[Anotation]): anotations
+        """
+        anotation_list = list()
+        with open(anotation, 'r') as file:
+            reader = csv.reader(file, delimiter=',')
+            next(reader)
+            for row in reader:
+                anotation_list.append(Anotation(start=int(row[1]), end=int(row[2]), feature=row[4]))
+        anotation_list = sorted(anotation_list, key=lambda a: a.start)
+        return anotation_list
+
+    @staticmethod
+    @exception_handler
+    def _create_g4hunter_list(analyse: str) -> List[G4Result]:
+        """
+        Return list of G4Result objects
+
+        Returns:
+            (List[G4Result]): G4Hunter results
+        """
+        analyse_list = list()
+        with open(analyse, 'r') as file:
+            reader = csv.reader(file, delimiter='\t')
+            next(reader)
+            for row in reader:
+                analyse_list.append(G4Result(position=int(row[1]), length=int(row[2]), score=float(row[4])))
+            return analyse_list
