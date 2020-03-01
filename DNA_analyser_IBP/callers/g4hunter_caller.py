@@ -193,4 +193,6 @@ class G4HunterMethods:
 
         response = requests.get(f"{user.server}/analyse/g4hunter/{id}/heatmap", headers=header, params=params)
         data = validate_key_response(response=response, status_code=200, payload_key="data")
-        return pd.DataFrame(data=data)
+        heatmap = pd.DataFrame(data=data)
+        heatmap.rename(columns={"count": "PQS_count", "coverage": "PQS_coverage"}, inplace=True)
+        return heatmap
