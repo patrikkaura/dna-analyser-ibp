@@ -23,7 +23,9 @@ class AnalyseModel:
         Returns:
             pd.DataFrame: dataframe with object data
         """
-        data_frame = pd.DataFrame().from_records(self.__dict__, columns=self.__dict__.keys(), index=[0])
+        data_frame: pd.DataFrame = pd.DataFrame().from_records(
+            self.__dict__, columns=self.__dict__.keys(), index=[0]
+        )
         return data_frame
 
 

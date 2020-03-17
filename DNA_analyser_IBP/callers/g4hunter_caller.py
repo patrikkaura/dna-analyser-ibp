@@ -9,7 +9,12 @@ from typing import Generator, List, Optional
 
 from .user_caller import User
 from .analyse_caller import AnalyseFactory, AnalyseModel
-from ..utils import generate_dataframe, validate_key_response, validate_text_response, Logger
+from ..utils import (
+    generate_dataframe,
+    validate_key_response,
+    validate_text_response,
+    Logger,
+)
 
 
 class G4HunterAnalyse(AnalyseModel):
@@ -32,7 +37,14 @@ class G4HunterAnalyse(AnalyseModel):
 class G4HunterAnalyseFactory(AnalyseFactory):
     """G4Hunter factory used for generating analyse for given sequence"""
 
-    def create_analyse(self, user: User, id: str, tags: Optional[List[str]], threshold: float, window_size: int) -> G4HunterAnalyse:
+    def create_analyse(
+        self,
+        user: User,
+        id: str,
+        tags: Optional[List[str]],
+        threshold: float,
+        window_size: int,
+    ) -> G4HunterAnalyse:
         """
         G4hunter analyse factory
 
@@ -48,17 +60,26 @@ class G4HunterAnalyseFactory(AnalyseFactory):
         """
         # check range of parameters
         if 0.1 <= threshold <= 4 and 10 <= window_size <= 100:
-            header = {"Content-type": "application/json",
-                      "Accept": "application/json",
-                      "Authorization": user.jwt}
-            data = json.dumps({
-                "sequence": id,
-                "tags": tags or list(),
-                "threshold": threshold,
-                "windowSize": window_size})
+            header: dict = {
+                "Content-type": "application/json",
+                "Accept": "application/json",
+                "Authorization": user.jwt,
+            }
+            data: dict = json.dumps(
+                {
+                    "sequence": id,
+                    "tags": tags or list(),
+                    "threshold": threshold,
+                    "windowSize": window_size,
+                }
+            )
 
-            response = requests.post(f"{user.server}/analyse/g4hunter", headers=header, data=data)
-            data = validate_key_response(response=response, status_code=201, payload_key="payload")
+            response: object = requests.post(
+                f"{user.server}/analyse/g4hunter", headers=header, data=data
+            )
+            data: dict = validate_key_response(
+                response=response, status_code=201, payload_key="payload"
+            )
             return G4HunterAnalyse(**data)
         else:
             Logger.error("Value window size or threshold out of range!")
@@ -78,11 +99,15 @@ class G4HunterMethods:
         Returns:
             bool: True if delete is successfull False if not
         """
-        header = {"Content-type": "application/json",
-                  "Accept": "*/*",
-                  "Authorization": user.jwt}
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "*/*",
+            "Authorization": user.jwt,
+        }
 
-        response = requests.delete(f"{user.server}/analyse/g4hunter/{id}", headers=header)
+        response: object = requests.delete(
+            f"{user.server}/analyse/g4hunter/{id}", headers=header
+        )
         if response.status_code == 204:
             return True
         return False
@@ -99,16 +124,22 @@ class G4HunterMethods:
         Returns:
             G4HunterAnalyse: G4Hunter object
         """
-        header = {"Content-type": "application/json",
-                  "Accept": "application/json",
-                  "Authorization": user.jwt}
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": user.jwt,
+        }
 
-        response = requests.get(f"{user.server}/analyse/g4hunter/{id}", headers=header)
-        data = validate_key_response(response=response, status_code=200, payload_key="payload")
+        response: object = requests.get(f"{user.server}/analyse/g4hunter/{id}", headers=header)
+        data: dict = validate_key_response(
+            response=response, status_code=200, payload_key="payload"
+        )
         return G4HunterAnalyse(**data)
 
     @staticmethod
-    def load_all(user: User, tags: List[Optional[str]]) -> Generator[G4HunterAnalyse, None, None]:
+    def load_all(
+        user: User, tags: List[Optional[str]]
+    ) -> Generator[G4HunterAnalyse, None, None]:
         """
         Load all g4hunter analyses
 
@@ -119,16 +150,24 @@ class G4HunterMethods:
         Returns:
             Generator[G4HunterAnalyse, None, None], Exception: G4Hunter object generator
         """
-        header = {"Content-type": "application/json",
-                  "Accept": "application/json",
-                  "Authorization": user.jwt}
-        params = {"order": "ASC",
-                  "requestForAll": "true",
-                  "pageSize": "ALL",
-                  "tags": tags or list()}
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": user.jwt,
+        }
+        params: dict = {
+            "order": "ASC",
+            "requestForAll": "true",
+            "pageSize": "ALL",
+            "tags": tags or list(),
+        }
 
-        response = requests.get(f"{user.server}/analyse/g4hunter", headers=header, params=params)
-        data = validate_key_response(response=response, status_code=200, payload_key="items")
+        response: object = requests.get(
+            f"{user.server}/analyse/g4hunter", headers=header, params=params
+        )
+        data: dict = validate_key_response(
+            response=response, status_code=200, payload_key="items"
+        )
         for record in data:
             yield G4HunterAnalyse(**record)
 
@@ -144,13 +183,21 @@ class G4HunterMethods:
         Returns:
             pd.DataFrame: DataFrame with G4Hunter results
         """
-        header = {"Content-type": "application/json",
-                  "Accept": "application/json",
-                  "Authorization": user.jwt}
-        params = {"order": "ASC", "requestForAll": "true", "pageSize": "ALL"}
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": user.jwt,
+        }
+        params: dict = {"order": "ASC", "requestForAll": "true", "pageSize": "ALL"}
 
-        response = requests.get(f"{user.server}/analyse/g4hunter/{id}/quadruplex", headers=header, params=params)
-        data = validate_key_response(response=response, status_code=200, payload_key="items")
+        response: object = requests.get(
+            f"{user.server}/analyse/g4hunter/{id}/quadruplex",
+            headers=header,
+            params=params,
+        )
+        data: dict = validate_key_response(
+            response=response, status_code=200, payload_key="items"
+        )
         return generate_dataframe(response=data)
 
     @staticmethod
@@ -166,12 +213,15 @@ class G4HunterMethods:
         Returns:
             str: csv file in string
         """
-        header = {"Accept": "text/plain", "Authorization": user.jwt}
-        params = {"aggregate": "true" if aggregate else "false"}
+        header: dict = {"Accept": "text/plain", "Authorization": user.jwt}
+        params: dict = {"aggregate": "true" if aggregate else "false"}
 
-        response = requests.get(f"{user.server}/analyse/g4hunter/{id}/quadruplex.csv", headers=header, params=params)
-        csv_str = validate_text_response(response=response, status_code=200)
-        return csv_str
+        response: object = requests.get(
+            f"{user.server}/analyse/g4hunter/{id}/quadruplex.csv",
+            headers=header,
+            params=params,
+        )
+        return validate_text_response(response=response, status_code=200)
 
     @staticmethod
     def load_heatmap(user: User, id: str, segments: int) -> pd.DataFrame:
@@ -186,13 +236,23 @@ class G4HunterMethods:
         Returns:
             pd.DataFrame: dataFrame with heatmap data
         """
-        header = {"Content-type": "application/json",
-                  "Accept": "application/json",
-                  "Authorization": user.jwt}
-        params = {"segments": segments}
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": user.jwt,
+        }
+        params: dict = {"segments": segments}
 
-        response = requests.get(f"{user.server}/analyse/g4hunter/{id}/heatmap", headers=header, params=params)
-        data = validate_key_response(response=response, status_code=200, payload_key="data")
-        heatmap = pd.DataFrame(data=data)
-        heatmap.rename(columns={"count": "PQS_count", "coverage": "PQS_coverage"}, inplace=True)
+        response = requests.get(
+            f"{user.server}/analyse/g4hunter/{id}/heatmap",
+            headers=header,
+            params=params,
+        )
+        data: dict = validate_key_response(
+            response=response, status_code=200, payload_key="data"
+        )
+        heatmap: pd.DataFrame = pd.DataFrame(data=data)
+        heatmap.rename(
+            columns={"count": "PQS_count", "coverage": "PQS_coverage"}, inplace=True
+        )
         return heatmap
