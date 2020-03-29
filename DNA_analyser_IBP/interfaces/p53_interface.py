@@ -4,7 +4,7 @@
 import pandas as pd
 
 from .tool_interface import ToolInterface
-from ..callers import User, P53AnalyseFactory
+from ..callers import User, P53AnalyseFactory, P53Analyse
 from ..utils import exception_handler
 
 
@@ -25,5 +25,7 @@ class P53(ToolInterface):
         Returns:
             pd.DataFrame: Dataframe with P53predictor result
         """
-        p53kill = P53AnalyseFactory(user=self.__user, sequence=sequence.strip()).analyse
+        p53kill: P53Analyse = P53AnalyseFactory(
+            user=self.__user, sequence=sequence.strip()
+        ).analyse
         return p53kill.get_dataframe().T

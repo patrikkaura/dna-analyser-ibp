@@ -51,8 +51,6 @@ python >= 3.6
 - Sequence methods encapsulated into SequenceMethods object
 - G4Hunter methods encapsulated into G4HunterMethods object
 
-The rest of project changelog can be found at [CHANGELOG.md](https://gitlab.com/PatrikKaura/DNA_analyser_IBP/blob/master/CHANGELOG.MD).
-
 ## Installing
 
 To install test version from [Pypi](https://pypi.org/project/dna-analyser-ibp/).

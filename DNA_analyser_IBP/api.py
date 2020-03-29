@@ -21,17 +21,17 @@ class Api(metaclass=Singleton):
         Args:
             server (str): URL to ibp bioinformatics server [Default=http://bioinformatics.ibp.cz:8888/api]
         """
-        # retrieving data from user, default = host accont
-        email = input("Enter your email\t") or "host"
-        password = getpass("Enter your password\t", stream=None) or "host"
-        Logger.info(f'User {email} is trying to login ...')
+        # retrieve data from user, default = host accont
+        email: str = input("Enter your email\t") or "host"
+        password: str = getpass("Enter your password\t", stream=None) or "host"
+        Logger.info(f"User {email} is trying to login ...")
 
-        self.user = User(email=email, password=password, server=server)
-        self.sequence = Sequence(user=self.user)
-        self.g4hunter = G4Hunter(user=self.user)
-        self.g4killer = G4Killer(user=self.user)
-        self.p53_predictor = P53(user=self.user)
-        self.tools = Extras()
+        self.user: User = User(email=email, password=password, server=server)
+        self.sequence: Sequence = Sequence(user=self.user)
+        self.g4hunter: G4Hunter = G4Hunter(user=self.user)
+        self.g4killer: G4Killer = G4Killer(user=self.user)
+        self.p53_predictor: P53 = P53(user=self.user)
+        self.tools: Extras = Extras()
 
     def __repr__(self):
         return f"<Api: {self.user.server} user: {self.user.email}>"

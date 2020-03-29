@@ -5,12 +5,14 @@ import time
 from tqdm import tqdm
 from typing import Callable
 
-from .utils import Logger
+from .utils import Logger, exception_handler
 from .callers import User, BatchCaller
 
-BATCH_STATUS = ('WAITING', 'RUNNING', 'FAILED', 'FINISH')
+
+BATCH_STATUS = ("WAITING", "RUNNING", "FAILED", "FINISH")
 
 
+@exception_handler
 def status_bar(user: User, func: Callable, name: str, cls_switch: bool) -> None:
     """
     TQDM status bar
@@ -23,11 +25,11 @@ def status_bar(user: User, func: Callable, name: str, cls_switch: bool) -> None:
     """
     # tqdm status bar
     with tqdm(
-            desc=f"Uploading sequence {name}"
-            if cls_switch
-            else f"Analysing sequence {name}",
-            unit=" % uploaded" if cls_switch else " % processed",
-            ascii=True,
+        desc=f"Uploading sequence {name}"
+        if cls_switch
+        else f"Analysing sequence {name}",
+        unit=" % uploaded" if cls_switch else " % processed",
+        ascii=True,
     ) as pbar:
         pbar.update(50)  # update to 50 %
         obj = func().sequence if cls_switch else func().analyse  # exec given function

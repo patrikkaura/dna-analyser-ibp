@@ -37,21 +37,25 @@ class G4KillerAnalyse:
         Returns:
             pd.DataFrame: dataframe with object data
         """
-        data_frame = pd.DataFrame().from_records(self.__dict__, columns=self.__dict__.keys(), index=[0])
+        data_frame: pd.DataFrame = pd.DataFrame().from_records(
+            self.__dict__, columns=self.__dict__.keys(), index=[0]
+        )
         return data_frame
 
 
 class G4KillerAnalyseFactory(AnalyseFactory):
     """G4Killer factory used to generate analyse for given sequence string"""
 
-    def create_analyse(self, user: User, sequence: str, threshold: float, complementary: bool) -> G4KillerAnalyse:
+    def create_analyse(
+        self, user: User, sequence: str, threshold: float, complementary: bool
+    ) -> G4KillerAnalyse:
         """
         G4killer analyse factory
 
         Args:
             user (User): user for auth
             sequence (str): origin sequence for G4Killer procedure
-            threshold (float): target g4hunter score in interval (0;4)
+            threshold (float): target g4hunter score in interval <0;4>
             complementary (bool): True if use for C sequence False for G sequence
 
         Returns:
@@ -59,13 +63,23 @@ class G4KillerAnalyseFactory(AnalyseFactory):
         """
         # check range of parameters
         if 0 <= threshold <= 4:
-            header = {"Content-type": "application/json",
-                      "Accept": "application/json",
-                      "Authorization": user.jwt}
-            data = json.dumps({"sequence": sequence, "threshold": threshold, "onComplementary": "true" if complementary else "false"})
+            header: dict = {
+                "Content-type": "application/json",
+                "Accept": "application/json",
+                "Authorization": user.jwt,
+            }
+            data: dict = json.dumps(
+                {
+                    "sequence": sequence,
+                    "threshold": threshold,
+                    "onComplementary": "true" if complementary else "false",
+                }
+            )
 
-            response = requests.post(f"{user.server}/analyse/g4killer", headers=header, data=data)
-            data = validate_key_response(response=response, status_code=201)
+            response: object = requests.post(
+                f"{user.server}/analyse/g4killer", headers=header, data=data
+            )
+            data: dict = validate_key_response(response=response, status_code=201)
             return G4KillerAnalyse(**data)
         else:
             Logger.error("Value threshold out of interval (0;4)!")

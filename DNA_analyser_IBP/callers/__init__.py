@@ -1,8 +1,4 @@
-from .g4hunter_caller import (
-    G4HunterAnalyseFactory,
-    G4HunterAnalyse,
-    G4HunterMethods
-)
+from .g4hunter_caller import G4HunterAnalyseFactory, G4HunterAnalyse, G4HunterMethods
 from .g4killer_caller import G4KillerAnalyseFactory, G4KillerAnalyse
 from .p53_caller import P53AnalyseFactory, P53Analyse
 from .sequence_caller import (
@@ -10,7 +6,7 @@ from .sequence_caller import (
     NCBISequenceFactory,
     TextSequenceFactory,
     SequenceMethods,
-    SequenceModel
+    SequenceModel,
 )
 from .batch_caller import BatchCaller
 from .user_caller import User
@@ -29,5 +25,5 @@ __all__ = [
     "TextSequenceFactory",
     "SequenceModel",
     "SequenceMethods",
-    "BatchCaller"
+    "BatchCaller",
 ]

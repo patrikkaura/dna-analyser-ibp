@@ -35,7 +35,9 @@ class P53Analyse:
         Returns:
             pd.Dataframe: dataframe with object data
         """
-        data_frame = pd.DataFrame().from_records(self.__dict__, columns=self.__dict__.keys(), index=[0])
+        data_frame: pd.DataFrame = pd.DataFrame().from_records(
+            self.__dict__, columns=self.__dict__.keys(), index=[0]
+        )
         return data_frame
 
 
@@ -55,13 +57,19 @@ class P53AnalyseFactory(AnalyseFactory):
         """
         # check if sequence lenght is exactly 20 chars
         if len(sequence) == 20:
-            header = {"Content-type": "application/json",
-                      "Accept": "application/json",
-                      "Authorization": user.jwt}
-            data = json.dumps({"sequence": sequence})
+            header: dict = {
+                "Content-type": "application/json",
+                "Accept": "application/json",
+                "Authorization": user.jwt,
+            }
+            data: dict = json.dumps({"sequence": sequence})
 
-            response = requests.post(f"{user.server}/analyse/p53predictor/tool", headers=header, data=data)
-            data = validate_key_response(response=response, status_code=200, payload_key="payload")
+            response: object = requests.post(
+                f"{user.server}/analyse/p53predictor/tool", headers=header, data=data
+            )
+            data: dict = validate_key_response(
+                response=response, status_code=200, payload_key="payload"
+            )
             return P53Analyse(**data)
         else:
             Logger.error("Sequence length must be exactly 20 characters!")

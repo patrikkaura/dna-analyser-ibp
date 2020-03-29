@@ -42,7 +42,9 @@ class SequenceModel:
             nucleic_dict (dict): structure with Guanine and Cytosine counts
         """
         if nucleic_dict is not None:
-            self.gc_count = int(nucleic_dict.get('C', 0)) + int(nucleic_dict.get('G', 0))
+            self.gc_count = int(nucleic_dict.get("C", 0)) + int(
+                nucleic_dict.get("G", 0)
+            )
             self.nucleic_count = str(nucleic_dict)
 
     def get_dataframe(self) -> pd.DataFrame:
@@ -52,7 +54,9 @@ class SequenceModel:
         Returns:
             pd.DataFrame: dataframe with object data
         """
-        data = pd.DataFrame().from_records(self.__dict__, columns=self.__dict__.keys(), index=[0])
+        data: pd.DataFrame = pd.DataFrame().from_records(
+            self.__dict__, columns=self.__dict__.keys(), index=[0]
+        )
         return data
 
 
@@ -71,7 +75,15 @@ class SequenceFactory(metaclass=abc.ABCMeta):
 class TextSequenceFactory(SequenceFactory):
     """Sequence factory used for generating sequence from raw text or text file"""
 
-    def create_sequence(self, user: User, circular: bool, data: str, name: str, tags: List[Optional[str]], nucleic_type: str) -> SequenceModel:
+    def create_sequence(
+        self,
+        user: User,
+        circular: bool,
+        data: str,
+        name: str,
+        tags: List[Optional[str]],
+        nucleic_type: str,
+    ) -> SequenceModel:
         """
         Text sequence factory
 
@@ -86,26 +98,44 @@ class TextSequenceFactory(SequenceFactory):
         Returns:
             SequenceModel: Sequence object
         """
-        header = {"Content-type": "application/json",
-                  "Accept": "application/json",
-                  "Authorization": user.jwt}
-        data = json.dumps({
-            "circular": circular,
-            "data": data,
-            "format": "PLAIN",
-            "name": name,
-            "tags": tags,
-            "type": nucleic_type})
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": user.jwt,
+        }
+        data: dict = json.dumps(
+            {
+                "circular": circular,
+                "data": data,
+                "format": "PLAIN",
+                "name": name,
+                "tags": tags,
+                "type": nucleic_type,
+            }
+        )
 
-        response = requests.post(f"{user.server}/sequence/import/text", headers=header, data=data)
-        data = validate_key_response(response=response, status_code=201, payload_key="payload")
+        response: object = requests.post(
+            f"{user.server}/sequence/import/text", headers=header, data=data
+        )
+        data: dict = validate_key_response(
+            response=response, status_code=201, payload_key="payload"
+        )
         return SequenceModel(**data)
 
 
 class FileSequenceFactory(SequenceFactory):
     """Sequence factory used for generating sequence from file"""
 
-    def create_sequence(self, user: User, circular: bool, path: str, name: str, tags: List[Optional[str]], nucleic_type: str, format: str) -> SequenceModel:
+    def create_sequence(
+        self,
+        user: User,
+        circular: bool,
+        path: str,
+        name: str,
+        tags: List[Optional[str]],
+        nucleic_type: str,
+        format: str,
+    ) -> SequenceModel:
         """
         File sequence factory
 
@@ -121,26 +151,44 @@ class FileSequenceFactory(SequenceFactory):
         Returns:
             SequenceModel: Sequence object
         """
-        data = json.dumps({
-            "circular": circular,
-            "format": format,
-            "name": name,
-            "tags": tags,
-            "type": nucleic_type})
-        multi_encoder = MultipartEncoder(fields={"json": data, "file": ("filename", open(path, "rb"))})
-        header = {"Content-type": multi_encoder.content_type,
-                  "Accept": "application/json",
-                  "Authorization": user.jwt}
+        data: dict = json.dumps(
+            {
+                "circular": circular,
+                "format": format,
+                "name": name,
+                "tags": tags,
+                "type": nucleic_type,
+            }
+        )
+        multi_encoder: MultipartEncoder = MultipartEncoder(
+            fields={"json": data, "file": ("filename", open(path, "rb"))}
+        )
+        header: dict = {
+            "Content-type": multi_encoder.content_type,
+            "Accept": "application/json",
+            "Authorization": user.jwt,
+        }
 
-        response = requests.post(f"{user.server}/sequence/import/file", headers=header, data=multi_encoder)
-        data = validate_key_response(response=response, status_code=201, payload_key="payload")
+        response: object = requests.post(
+            f"{user.server}/sequence/import/file", headers=header, data=multi_encoder
+        )
+        data: dict = validate_key_response(
+            response=response, status_code=201, payload_key="payload"
+        )
         return SequenceModel(**data)
 
 
 class NCBISequenceFactory(SequenceFactory):
     """Sequence factory used for generating sequence from NCBI database"""
 
-    def create_sequence(self, user: User, circular: bool, name: str, tags: List[Optional[str]], ncbi_id: str) -> SequenceModel:
+    def create_sequence(
+        self,
+        user: User,
+        circular: bool,
+        name: str,
+        tags: List[Optional[str]],
+        ncbi_id: str,
+    ) -> SequenceModel:
         """
         NCBI sequence factory
 
@@ -154,18 +202,30 @@ class NCBISequenceFactory(SequenceFactory):
         Returns:
             SequenceModel: Sequence object
         """
-        ncbi = [{"circular": circular,
-                 "name": name,
-                 "ncbiId": ncbi_id,
-                 "tags": tags,
-                 "type": "DNA"}]
-        data = json.dumps({"circular": circular, "ncbis": ncbi, "tags": tags, "type": "DNA"})
-        header = {"Content-type": "application/json",
-                  "Accept": "application/json",
-                  "Authorization": user.jwt}
+        ncbi: list = [
+            {
+                "circular": circular,
+                "name": name,
+                "ncbiId": ncbi_id,
+                "tags": tags,
+                "type": "DNA",
+            }
+        ]
+        data: dict = json.dumps(
+            {"circular": circular, "ncbis": ncbi, "tags": tags, "type": "DNA"}
+        )
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": user.jwt,
+        }
 
-        response = requests.post(f"{user.server}/sequence/import/ncbi", headers=header, data=data)
-        data = validate_key_response(response=response, status_code=201, payload_key="items")
+        response: object = requests.post(
+            f"{user.server}/sequence/import/ncbi", headers=header, data=data
+        )
+        data: dict = validate_key_response(
+            response=response, status_code=201, payload_key="items"
+        )
         return SequenceModel(**data[0])
 
 
@@ -173,7 +233,9 @@ class SequenceMethods:
     """SequenceMethods holds all sequence server methods"""
 
     @staticmethod
-    def load_data(user: User, id: str, length: int, possiotion: int, sequence_length: int) -> str:
+    def load_data(
+        user: User, id: str, length: int, possiotion: int, sequence_length: int
+    ) -> str:
         """
         Return string with part of sequence
 
@@ -187,13 +249,21 @@ class SequenceMethods:
         Returns:
             str: String with part of sequence data
         """
-        if possiotion >= 0 and 0 < length <= 1000 and possiotion + length <= sequence_length:
-            header = {"Content-type": "application/json",
-                      "Accept": "text/plain",
-                      "Authorization": user.jwt}
-            params = {"len": length, "pos": possiotion}
+        if (
+            possiotion >= 0
+            and 0 < length <= 1000
+            and possiotion + length <= sequence_length
+        ):
+            header: dict = {
+                "Content-type": "application/json",
+                "Accept": "text/plain",
+                "Authorization": user.jwt,
+            }
+            params: dict = {"len": length, "pos": possiotion}
 
-            response = requests.get(f"{user.server}/sequence/{id}/data", headers=header, params=params)
+            response: object = requests.get(
+                f"{user.server}/sequence/{id}/data", headers=header, params=params
+            )
             return validate_text_response(response=response, status_code=200)
         else:
             Logger.error("Values out of range!")
@@ -210,17 +280,21 @@ class SequenceMethods:
         Returns:
             bool: True if delete is successfull False if not
         """
-        header = {"Content-type": "application/json",
-                  "Accept": "*/*",
-                  "Authorization": user.jwt}
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "*/*",
+            "Authorization": user.jwt,
+        }
 
-        response = requests.delete(f"{user.server}/sequence/{id}", headers=header)
+        response: object = requests.delete(f"{user.server}/sequence/{id}", headers=header)
         if response.status_code == 204:
             return True
         return False
 
     @staticmethod
-    def load_all(user: User, tags: List[Optional[str]]) -> Generator[SequenceModel, None, None]:
+    def load_all(
+        user: User, tags: List[Optional[str]]
+    ) -> Generator[SequenceModel, None, None]:
         """
         Load all sequences
 
@@ -231,16 +305,24 @@ class SequenceMethods:
         Returns:
             Generator[SequenceModel, None, None]: Sequence object generator
         """
-        header = {"Content-type": "application/json",
-                  "Accept": "application/json",
-                  "Authorization": user.jwt}
-        params = {"order": "ASC",
-                  "requestForAll": "true",
-                  "pageSize": "ALL",
-                  "tags": tags}
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": user.jwt,
+        }
+        params: dict = {
+            "order": "ASC",
+            "requestForAll": "true",
+            "pageSize": "ALL",
+            "tags": tags,
+        }
 
-        response = requests.get(f"{user.server}/sequence", headers=header, params=params)
-        data = validate_key_response(response=response, status_code=200, payload_key="items")
+        response: object = requests.get(
+            f"{user.server}/sequence", headers=header, params=params
+        )
+        data: dict = validate_key_response(
+            response=response, status_code=200, payload_key="items"
+        )
         for record in data:
             yield SequenceModel(**record)
 
@@ -256,12 +338,16 @@ class SequenceMethods:
         Returns:
             SequenceModel: Sequence object
         """
-        header = {"Content-type": "application/json",
-                  "Accept": "application/json",
-                  "Authorization": user.jwt}
+        header: dict = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": user.jwt,
+        }
 
-        response = requests.get(f"{user.server}/sequence/{id}", headers=header)
-        data = validate_key_response(response=response, status_code=200, payload_key="payload")
+        response: object = requests.get(f"{user.server}/sequence/{id}", headers=header)
+        data: dict = validate_key_response(
+            response=response, status_code=200, payload_key="payload"
+        )
         return SequenceModel(**data)
 
     @staticmethod
@@ -276,10 +362,11 @@ class SequenceMethods:
         Returns:
             bool: True if re-count is successfull False if not
         """
-        header = {"Accept": "*/*",
-                  "Authorization": user.jwt}
+        header: dict = {"Accept": "*/*", "Authorization": user.jwt}
 
-        response = requests.patch(f"{user.server}/sequence/{id}/nucleic-counts", headers=header)
+        response: object = requests.patch(
+            f"{user.server}/sequence/{id}/nucleic-counts", headers=header
+        )
         if response.status_code == 200:
             return True
         return False
