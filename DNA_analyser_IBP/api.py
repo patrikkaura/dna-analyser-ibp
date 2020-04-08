@@ -5,10 +5,10 @@ Module with API object for manipulation with BPI REST API.
 """
 from getpass import getpass
 
-from .singleton import Singleton
-from .callers import User
-from .interfaces import G4Hunter, Sequence, G4Killer, P53, Extras
-from .utils import Logger
+from DNA_analyser_IBP.callers import User
+from DNA_analyser_IBP.utils import Logger
+from DNA_analyser_IBP.singleton import Singleton
+from DNA_analyser_IBP.interfaces import G4Hunter, Sequence, G4Killer, P53, Extras
 
 
 class Api(metaclass=Singleton):

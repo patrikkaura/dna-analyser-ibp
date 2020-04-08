@@ -1,4 +1,5 @@
 import pytest
+from tenacity import RetryError
 
 import time
 import pandas as pd
@@ -122,7 +123,6 @@ class TestSequence:
         """It should test loading filtered list of all sequences."""
 
         sq_lst = [se for se in SequenceMethods.load_all(user=user, tags=[""])]
-        assert len(sq_lst) == 11
         assert isinstance(sq_lst[0], SequenceModel)
 
     def test_load_sequence_by_id(self, user):
@@ -130,7 +130,8 @@ class TestSequence:
 
         sq_lst = [se for se in SequenceMethods.load_all(user, tags=[""])]
         test_sequence = sq_lst[0]
-        compare_sequence = SequenceMethods.load_by_id(user, id=test_sequence.id)
+        compare_sequence = SequenceMethods.load_by_id(
+            user, id=test_sequence.id)
         assert isinstance(test_sequence, SequenceModel)
         assert test_sequence.id == compare_sequence.id
 
@@ -144,7 +145,8 @@ class TestSequence:
         """It should return data of given sequence."""
 
         sq_lst = [se for se in SequenceMethods.load_all(user=user, tags=[""])]
-        data = SequenceMethods.load_data(user, id=sq_lst[0].id, length=100, possiotion=0, sequence_length=2000)
+        data = SequenceMethods.load_data(
+            user, id=sq_lst[0].id, length=100, possiotion=0, sequence_length=2000)
         assert isinstance(data, str)
         assert len(data) == 100
         # time.sleep(1)
@@ -153,19 +155,7 @@ class TestSequence:
         """It should test loading list of all sequences."""
 
         sq_lst = [se for se in SequenceMethods.load_all(user, tags=[])]
-        assert len(sq_lst) == 11
         assert isinstance(sq_lst[0], SequenceModel)
-
-    def test_wrong_data_to_text_sequence_factory(self, user):
-        """It should test raising type error for wrong data given into factory."""
-
-        with pytest.raises(TypeError):
-            _ = TextSequenceFactory(user=user,
-                                    circularlll=True,
-                                    data="ATTCGTTTAGGG",
-                                    namelll="Test",
-                                    tags=["testovaci", "test"],
-                                    _type="DNA")
 
     def test_sequence_factory_for_wrong_server(self, user, sequence):
         """It should test raising connection error for wrong server"""
@@ -178,4 +168,4 @@ class TestSequence:
                                     data="ATTCGTTTAGGG",
                                     name="Test",
                                     tags=["testovaci", "test"],
-                                    _type="DNA")
+                                    nucleic_type="DNA")

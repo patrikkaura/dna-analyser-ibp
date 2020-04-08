@@ -3,23 +3,29 @@
 
 import csv
 import os
+import tenacity
 import requests
 import pandas as pd
 from typing import List, Union
-from ..intersection.annotation import (
+
+from DNA_analyser_IBP.intersection import (
+    G4Result,
     Annotation,
+    create_g4hunter_list,
     get_annotation_labels,
     create_annotation_list,
 )
-from ..intersection.g4hunter import G4Result, create_g4hunter_list
-
-from ..utils import (
+from DNA_analyser_IBP.utils import (
     Logger,
     get_file_name,
     normalize_name,
     exception_handler,
     _multifasta_parser,
 )
+
+
+class DownloadException(Exception):
+    pass
 
 
 class Extras:
@@ -48,6 +54,7 @@ class Extras:
     ]
 
     @exception_handler
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(5))
     def annotation_downloader(self, path: str, filename: str, ncbi_id: str) -> None:
         """
         Annotation downloader used to download annotation by NCBI ID
@@ -68,9 +75,10 @@ class Extras:
                 file_path: str = f"{path}/{filename}.txt"
                 with open(file_path, "w") as file:
                     file.write(response.text)
-                    Logger.info(f"Annotation file [{filename}.txt] is created!")
+                    Logger.info(
+                        f"Annotation file [{filename}.txt] is created!")
             else:
-                Logger.error(f"Annotation file {filename} cannot be downloaded!")
+                raise DownloadException
         else:
             Logger.error(f"Invalid annotation folder path!")
 
@@ -93,10 +101,12 @@ class Extras:
                 if len(feature_row) == 3:
                     # save feature for other areas
                     feature_backup: str = feature_row[2]
-                    feature_list.append(self._annotaion_parse_row(row=feature_row))
+                    feature_list.append(
+                        self._annotaion_parse_row(row=feature_row))
                 elif len(feature_row) == 2:
                     feature_row.append(feature_backup)  # append feature
-                    feature_list.append(self._annotaion_parse_row(row=feature_row))
+                    feature_list.append(
+                        self._annotaion_parse_row(row=feature_row))
         # get new outpath with new filename
         path: str = get_file_name(
             original_path=annotation_path, out_path=parsed_path, file_format="csv"
@@ -117,8 +127,10 @@ class Extras:
         Returns:
             list: list [feature start, feature stop, feature lenght, feature name]
         """
-        start: int = int(row[0].replace(">", "").replace("<", "").replace("\n", ""))
-        stop: int = int(row[1].replace(">", "").replace("<", "").replace("\n", ""))
+        start: int = int(row[0].replace(
+            ">", "").replace("<", "").replace("\n", ""))
+        stop: int = int(row[1].replace(
+            ">", "").replace("<", "").replace("\n", ""))
         feature: str = row[2].replace("\n", "")
 
         if start < stop:
@@ -149,9 +161,11 @@ class Extras:
             annotation_list: List[Annotation] = create_annotation_list(
                 annotation=annotation_file, area_size=area_size
             )
-            analyse_list: List[G4Result] = create_g4hunter_list(analyse=analyse_file)
+            analyse_list: List[G4Result] = create_g4hunter_list(
+                analyse=analyse_file)
 
-            labels: List[str] = get_annotation_labels(annotation_list=annotation_list)
+            labels: List[str] = get_annotation_labels(
+                annotation_list=annotation_list)
             result: list = [[label] + [0, 0, 0] * 6 for label in labels]
 
             for annotation in annotation_list:
@@ -207,6 +221,29 @@ class Extras:
                 with open(f"{out_path}/{sequence_name}.txt", "w") as fasta:
                     fasta.write(f">{sequence_name}\n")
                     fasta.write(sequence_nucleic)
-                    Logger.info(f"File {path}/{sequence_name}.txt was created!")
+                    Logger.info(
+                        f"File {path}/{sequence_name}.txt was created!")
         else:
             Logger.error("Output path doesn't exist!")
+
+    @exception_handler
+    def annotation_analyse_pair_creator(self, *, analyse_list: List[str], annotation_list: List[str]) -> List[List[str]]:
+        """
+        Make list of file pairs for annotation analysis
+
+        Args:
+            analyse_list (List[str]): list of analyse files made by glog
+            annotation_list (List[str]): list of annotation files made by glob
+
+        Returns:
+            List[str]: file pairs based on their similar names
+        """
+        file_pairs: list = list()
+
+        for annotation in annotation_list:
+            file_name = os.path.basename(annotation).split('.')[0]
+            for analyse in analyse_list:
+                compare_name = os.path.basename(analyse)
+                if file_name in compare_name:
+                    file_pairs.append([annotation, analyse])
+        return file_pairs

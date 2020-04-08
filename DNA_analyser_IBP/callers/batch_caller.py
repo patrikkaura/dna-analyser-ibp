@@ -1,10 +1,11 @@
 # batch_caller.py
 # !/usr/bin/env python3
 
+import tenacity
 import requests
-from .analyse_caller import AnalyseModel
-from .sequence_caller import SequenceModel
-from .user_caller import User
+from DNA_analyser_IBP.callers.user_caller import User
+from DNA_analyser_IBP.callers.analyse_caller import AnalyseModel
+from DNA_analyser_IBP.callers.sequence_caller import SequenceModel
 
 
 class BatchCaller:
@@ -12,11 +13,11 @@ class BatchCaller:
 
     def _process_response(response: object, success: bool) -> str:
         """Process response from batch caller
-        
+
         Args:
             response (Object): Requests library response object
             success (bool): success condition given by bool or lambda
-        
+
         Returns:
             str: batch status FINISH | FAILED
         """
@@ -28,6 +29,7 @@ class BatchCaller:
         return "FAILED"
 
     @staticmethod
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def get_sequence_batch_status(sequence: SequenceModel, user: User) -> str:
         """
         Return sequence batch status (CREATED, WAITING, RUNNING, FINISH, FAILED)
@@ -39,7 +41,8 @@ class BatchCaller:
         Returns:
             str: FINISH|FAILED
         """
-        header: dict = {"Accept": "application/json", "Authorization": user.jwt}
+        header: dict = {"Accept": "application/json",
+                        "Authorization": user.jwt}
 
         response: object = requests.get(
             f"{user.server}/batch/cz.mendelu.dnaAnalyser.sequence.Sequence/{sequence.id}",
@@ -51,6 +54,7 @@ class BatchCaller:
         )
 
     @staticmethod
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def get_analyse_batch_status(analyse: AnalyseModel, user: User) -> str:
         """
         Return sequence batch status (CREATED, WAITING, RUNNING, FINISH, FAILED)
@@ -63,7 +67,8 @@ class BatchCaller:
             str: FINISH|FAILED
         """
 
-        header: dict = {"Accept": "application/json", "Authorization": user.jwt}
+        header: dict = {"Accept": "application/json",
+                        "Authorization": user.jwt}
 
         response: object = requests.get(
             f"{user.server}/batch/cz.mendelu.dnaAnalyser.analyse.g4hunter.G4Hunter/{analyse.id}",

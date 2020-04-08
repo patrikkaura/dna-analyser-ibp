@@ -6,7 +6,7 @@ import jwt
 import json
 import requests
 
-from ..utils import validate_email, validate_text_response, exception_handler, Logger
+from DNA_analyser_IBP.utils import validate_email, validate_text_response, exception_handler, Logger
 
 
 class User:
@@ -52,13 +52,16 @@ class User:
         if self.email != "host":
             response: object = requests.put(
                 f"{self.server}/jwt",
-                data=json.dumps({"login": self.email, "password": self._password}),
+                data=json.dumps(
+                    {"login": self.email, "password": self._password}),
                 headers=header,
             )
         else:
-            response: object = requests.post(f"{self.server}/jwt", headers=header)
+            response: object = requests.post(
+                f"{self.server}/jwt", headers=header)
 
-        jwt_token: str = validate_text_response(response=response, status_code=201)
+        jwt_token: str = validate_text_response(
+            response=response, status_code=201)
         # decode jwt token to obtain id and expire date
         data: dict = jwt.decode(jwt_token, verify=False)
         return jwt_token, data["id"], data["exp"]

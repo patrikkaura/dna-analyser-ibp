@@ -5,8 +5,8 @@ import time
 from tqdm import tqdm
 from typing import Callable
 
-from .utils import Logger, exception_handler
-from .callers import User, BatchCaller
+from DNA_analyser_IBP.callers import User, BatchCaller
+from DNA_analyser_IBP.utils import Logger, exception_handler
 
 
 BATCH_STATUS = ("WAITING", "RUNNING", "FAILED", "FINISH")

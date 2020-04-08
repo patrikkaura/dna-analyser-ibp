@@ -2,7 +2,7 @@
     <img src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/raw/master/docs/logo.png" alt='logo' width='300px'>
     <br/>
     <br/>
-    <img src="https://img.shields.io/badge/version-2.0.0-brightgreen.svg" alt='version'/>
+    <img src="https://img.shields.io/badge/version-2.1.0-brightgreen.svg" alt='version'/>
     <img src="https://img.shields.io/badge/python-3.6-brightgreen.svg" alt='python_version'/>
     <img src="https://img.shields.io/badge/python-3.7-brightgreen.svg" alt='python_version'/>
     <img src='https://img.shields.io/badge/licence-GNU%20v3.0-blue.svg' alt='licence'/>
@@ -22,6 +22,7 @@ python >= 3.6
 
 ## Dependencies
 
+* tenacity >= 6.1.0
 * requests >= 2.20
 * requests-toolbelt >= 0.9.1
 * pyjwt >= 1.7.1
@@ -31,25 +32,13 @@ python >= 3.6
 
 ## Changelog
 
-# Version 2.0.0 (2020-02-24)
+# Version 2.1.0 (2020-04-09)
 
 ### Feature
 
-- MultiFasta uploader
-- Sphinx documentation
-- Anotation downloader
-- Anotation parser
-- G4Hunter heatmap downloader
-
-### Fix
-
-- G4Hunter heatmap method add aggregation parameter [default=True]
-
-### Refactoring
-
-- Changes in all doc strings (Goolgle style)
-- Sequence methods encapsulated into SequenceMethods object
-- G4Hunter methods encapsulated into G4HunterMethods object
+- Retrying for key features
+- Annotation overlay analysis
+- NEW example project with  g4hunter + annotation overlay analysis with commentary
 
 ## Installing
 

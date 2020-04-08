@@ -4,16 +4,17 @@
 
 import json
 import requests
+import tenacity
 import pandas as pd
 from typing import Generator, List, Optional
 
-from .user_caller import User
-from .analyse_caller import AnalyseFactory, AnalyseModel
-from ..utils import (
+from DNA_analyser_IBP.callers.user_caller import User
+from DNA_analyser_IBP.callers.analyse_caller import AnalyseFactory, AnalyseModel
+from DNA_analyser_IBP.utils import (
+    Logger,
     generate_dataframe,
     validate_key_response,
     validate_text_response,
-    Logger,
 )
 
 
@@ -37,6 +38,7 @@ class G4HunterAnalyse(AnalyseModel):
 class G4HunterAnalyseFactory(AnalyseFactory):
     """G4Hunter factory used for generating analyse for given sequence"""
 
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def create_analyse(
         self,
         user: User,
@@ -89,6 +91,7 @@ class G4HunterMethods:
     """G4HunterMethods holds all g4hunter server methods"""
 
     @staticmethod
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def delete(user: User, id: str) -> bool:
         """
         Delete analyse by id
@@ -130,7 +133,8 @@ class G4HunterMethods:
             "Authorization": user.jwt,
         }
 
-        response: object = requests.get(f"{user.server}/analyse/g4hunter/{id}", headers=header)
+        response: object = requests.get(
+            f"{user.server}/analyse/g4hunter/{id}", headers=header)
         data: dict = validate_key_response(
             response=response, status_code=200, payload_key="payload"
         )
@@ -188,7 +192,8 @@ class G4HunterMethods:
             "Accept": "application/json",
             "Authorization": user.jwt,
         }
-        params: dict = {"order": "ASC", "requestForAll": "true", "pageSize": "ALL"}
+        params: dict = {"order": "ASC",
+                        "requestForAll": "true", "pageSize": "ALL"}
 
         response: object = requests.get(
             f"{user.server}/analyse/g4hunter/{id}/quadruplex",
@@ -201,6 +206,7 @@ class G4HunterMethods:
         return generate_dataframe(response=data)
 
     @staticmethod
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def export_csv(user: User, id: str, aggregate: bool = True) -> str:
         """
         Export G4Hunter results as csv output
