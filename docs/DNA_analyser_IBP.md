@@ -160,8 +160,30 @@ Generate dataframe from given dict/list
 
 
 
+### DNA_analyser_IBP.utils.get_file_name(\*, original_path: str, out_path: str, file_format: str)
+Create new full path to given file
+:param original_path: original file path
+:type original_path: str
+:param out_path: output file path fro new file
+:type out_path: str
+:param file_format: file format [e.g. csv]
+:type file_format: str
+
+
+* **Returns**
+
+    newly created file out path
+
+
+
+* **Return type**
+
+    str
+
+
+
 ### DNA_analyser_IBP.utils.normalize_name(name: str)
-Normaliza name e.g. filename|analyze name
+Normalize name e.g. filename|analyze name
 
 
 * **Parameters**

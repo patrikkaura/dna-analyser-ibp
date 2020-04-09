@@ -5,16 +5,16 @@ import time
 import pandas as pd
 from typing import List, Union, Optional, Generator
 
-from ..statusbar import status_bar
-from ..callers import (
+from DNA_analyser_IBP.statusbar import status_bar
+from DNA_analyser_IBP.callers import (
     User,
     SequenceModel,
+    SequenceMethods,
     NCBISequenceFactory,
     TextSequenceFactory,
     FileSequenceFactory,
-    SequenceMethods,
 )
-from ..utils import exception_handler, Logger, normalize_name, _multifasta_parser
+from DNA_analyser_IBP.utils import exception_handler, Logger, normalize_name, _multifasta_parser
 
 
 class Sequence:

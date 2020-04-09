@@ -357,7 +357,7 @@ G4killer analyse factory
     * **sequence** (*str*) – origin sequence for G4Killer procedure
 
 
-    * **threshold** (*float*) – target g4hunter score in interval (0;4)
+    * **threshold** (*float*) – target g4hunter score in interval <0;4>
 
 
     * **complementary** (*bool*) – True if use for C sequence False for G sequence
@@ -1000,7 +1000,7 @@ G4killer analyse factory
     * **sequence** (*str*) – origin sequence for G4Killer procedure
 
 
-    * **threshold** (*float*) – target g4hunter score in interval (0;4)
+    * **threshold** (*float*) – target g4hunter score in interval <0;4>
 
 
     * **complementary** (*bool*) – True if use for C sequence False for G sequence

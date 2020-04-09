@@ -6,9 +6,9 @@ import json
 import pandas as pd
 import requests
 
-from .user_caller import User
-from .analyse_caller import AnalyseFactory
-from ..utils import validate_key_response, Logger
+from DNA_analyser_IBP.callers.user_caller import User
+from DNA_analyser_IBP.utils import validate_key_response, Logger
+from DNA_analyser_IBP.callers.analyse_caller import AnalyseFactory
 
 
 class P53Analyse:

@@ -7,10 +7,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from typing import List, Union, Optional, Generator
 
-from .analyse_interface import AnalyseInterface
-from ..statusbar import status_bar
-from ..callers import User, G4HunterAnalyseFactory, G4HunterMethods, G4HunterAnalyse
-from ..utils import exception_handler, Logger, normalize_name
+from DNA_analyser_IBP.statusbar import status_bar
+from DNA_analyser_IBP.interfaces.analyse_interface import AnalyseInterface
+from DNA_analyser_IBP.utils import exception_handler, Logger, normalize_name
+from DNA_analyser_IBP.callers import User, G4HunterAnalyseFactory, G4HunterMethods, G4HunterAnalyse
 
 
 class G4Hunter(AnalyseInterface):

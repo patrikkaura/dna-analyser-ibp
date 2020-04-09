@@ -3,9 +3,9 @@
 
 import pandas as pd
 
-from .tool_interface import ToolInterface
-from ..callers import G4KillerAnalyseFactory, User, G4KillerAnalyse
-from ..utils import exception_handler
+from DNA_analyser_IBP.utils import exception_handler
+from DNA_analyser_IBP.interfaces.tool_interface import ToolInterface
+from DNA_analyser_IBP.callers import G4KillerAnalyseFactory, User, G4KillerAnalyse
 
 
 class G4Killer(ToolInterface):

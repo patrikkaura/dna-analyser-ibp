@@ -3,7 +3,7 @@
 
 import csv
 from typing import List
-from ..utils import exception_handler
+from DNA_analyser_IBP.utils import exception_handler
 
 class G4Result:
     """G4Hunter result object"""

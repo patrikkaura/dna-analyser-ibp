@@ -21,33 +21,75 @@ Interface for api endpoint caller has to have at least this methods
 ## DNA_analyser_IBP.interfaces.extras_interface module
 
 
+### exception DNA_analyser_IBP.interfaces.extras_interface.DownloadException()
+Bases: `Exception`
+
+
 ### class DNA_analyser_IBP.interfaces.extras_interface.Extras()
 Bases: `object`
 
 
-#### anotation_downloader(path: str, filename: str, ncbi_id: str)
-Anotation downloader used to download anotation by NCBI ID
+#### annotation_analyse_pair_creator(\*, analyse_list: List[str], annotation_list: List[str])
+Make list of file pairs for annotation analysis
 
 
 * **Parameters**
 
     
-    * **path** (*str*) – path where to store new anotation file
+    * **analyse_list** (*List**[**str**]*) – list of analyse files made by glog
 
 
-    * **filename** (*str*) – filename of new anotation file
-
-
-    * **ncbi_id** (*str*) – ncbi id used for identication of anotation on remote server
+    * **annotation_list** (*List**[**str**]*) – list of annotation files made by glob
 
 
 
-#### anotation_itersection(analyse: str, anotation: str)
-Create intersection dataframe for given G4Hunter analyse and parsed anotation file
-:param analyse: path to g4hunter analyse result file
-:type analyse: str
-:param anotation: path to parsed anotation file
-:type anotation: str
+* **Returns**
+
+    file pairs based on their similar names
+
+
+
+* **Return type**
+
+    List[str]
+
+
+
+#### annotation_downloader(path: str, filename: str, ncbi_id: str)
+Annotation downloader used to download annotation by NCBI ID
+
+
+* **Parameters**
+
+    
+    * **path** (*str*) – path where to store new annotation file
+
+
+    * **filename** (*str*) – filename of new annotation file
+
+
+    * **ncbi_id** (*str*) – ncbi id used for identication of annotation on remote server
+
+
+
+#### annotation_overlay(\*, analyse_file: str, annotation_file: str, area_size: int = 100, overlay_path: str = '')
+Create overlay dataframe for given G4Hunter analyse and parsed annotation file
+
+
+* **Parameters**
+
+    
+    * **analyse_file** (*str*) – path to g4hunter analyse result file
+
+
+    * **annotation_file** (*str*) – path to parsed annotation file
+
+
+    * **area_size** (*int*) – size of overlay region outside annotation [Default=100]
+
+
+    * **overlay_path** (*str*) – overlay csv file path (if want to save to csv) [Default=””]
+
 
 
 * **Returns**
@@ -62,25 +104,17 @@ Create intersection dataframe for given G4Hunter analyse and parsed anotation fi
 
 
 
-#### anotation_parser(path: str)
-Parse anotation file into [DataFrame]
+#### annotation_parser(annotation_path: str, parsed_path: str)
+Parse annotation file into [DataFrame]
 
 
 * **Parameters**
 
-    **path** (*str*) – anotation file system path
+    
+    * **annotation_path** (*str*) – annotation file system path
 
 
-
-* **Returns**
-
-    anotation Dataframe
-
-
-
-* **Return type**
-
-    pd.DataFrame
+    * **parsed_path** (*str*) – parsed annotation file in CSV
 
 
 
@@ -998,29 +1032,67 @@ Create sequence from string
 Bases: `object`
 
 
-#### anotation_downloader(path: str, filename: str, ncbi_id: str)
-Anotation downloader used to download anotation by NCBI ID
+#### annotation_analyse_pair_creator(\*, analyse_list: List[str], annotation_list: List[str])
+Make list of file pairs for annotation analysis
 
 
 * **Parameters**
 
     
-    * **path** (*str*) – path where to store new anotation file
+    * **analyse_list** (*List**[**str**]*) – list of analyse files made by glog
 
 
-    * **filename** (*str*) – filename of new anotation file
-
-
-    * **ncbi_id** (*str*) – ncbi id used for identication of anotation on remote server
+    * **annotation_list** (*List**[**str**]*) – list of annotation files made by glob
 
 
 
-#### anotation_itersection(analyse: str, anotation: str)
-Create intersection dataframe for given G4Hunter analyse and parsed anotation file
-:param analyse: path to g4hunter analyse result file
-:type analyse: str
-:param anotation: path to parsed anotation file
-:type anotation: str
+* **Returns**
+
+    file pairs based on their similar names
+
+
+
+* **Return type**
+
+    List[str]
+
+
+
+#### annotation_downloader(path: str, filename: str, ncbi_id: str)
+Annotation downloader used to download annotation by NCBI ID
+
+
+* **Parameters**
+
+    
+    * **path** (*str*) – path where to store new annotation file
+
+
+    * **filename** (*str*) – filename of new annotation file
+
+
+    * **ncbi_id** (*str*) – ncbi id used for identication of annotation on remote server
+
+
+
+#### annotation_overlay(\*, analyse_file: str, annotation_file: str, area_size: int = 100, overlay_path: str = '')
+Create overlay dataframe for given G4Hunter analyse and parsed annotation file
+
+
+* **Parameters**
+
+    
+    * **analyse_file** (*str*) – path to g4hunter analyse result file
+
+
+    * **annotation_file** (*str*) – path to parsed annotation file
+
+
+    * **area_size** (*int*) – size of overlay region outside annotation [Default=100]
+
+
+    * **overlay_path** (*str*) – overlay csv file path (if want to save to csv) [Default=””]
+
 
 
 * **Returns**
@@ -1035,25 +1107,17 @@ Create intersection dataframe for given G4Hunter analyse and parsed anotation fi
 
 
 
-#### anotation_parser(path: str)
-Parse anotation file into [DataFrame]
+#### annotation_parser(annotation_path: str, parsed_path: str)
+Parse annotation file into [DataFrame]
 
 
 * **Parameters**
 
-    **path** (*str*) – anotation file system path
+    
+    * **annotation_path** (*str*) – annotation file system path
 
 
-
-* **Returns**
-
-    anotation Dataframe
-
-
-
-* **Return type**
-
-    pd.DataFrame
+    * **parsed_path** (*str*) – parsed annotation file in CSV
 
 
 
