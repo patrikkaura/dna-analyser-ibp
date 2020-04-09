@@ -3,8 +3,8 @@
 
 import csv
 from typing import List
-from .g4hunter import G4Result
-from ..utils import exception_handler
+from DNA_analyser_IBP.intersection import G4Result
+from DNA_analyser_IBP.utils import exception_handler
 
 
 class Annotation:

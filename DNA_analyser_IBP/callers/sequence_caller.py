@@ -3,13 +3,14 @@
 
 import abc
 import json
+import tenacity
 import requests
 import pandas as pd
 from requests_toolbelt import MultipartEncoder
 from typing import Generator, List, Optional
 
-from .user_caller import User
-from ..utils import validate_key_response, validate_text_response, Logger
+from DNA_analyser_IBP.callers.user_caller import User
+from DNA_analyser_IBP.utils import validate_key_response, validate_text_response, Logger
 
 
 class SequenceModel:
@@ -75,6 +76,7 @@ class SequenceFactory(metaclass=abc.ABCMeta):
 class TextSequenceFactory(SequenceFactory):
     """Sequence factory used for generating sequence from raw text or text file"""
 
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def create_sequence(
         self,
         user: User,
@@ -126,6 +128,7 @@ class TextSequenceFactory(SequenceFactory):
 class FileSequenceFactory(SequenceFactory):
     """Sequence factory used for generating sequence from file"""
 
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def create_sequence(
         self,
         user: User,
@@ -181,6 +184,7 @@ class FileSequenceFactory(SequenceFactory):
 class NCBISequenceFactory(SequenceFactory):
     """Sequence factory used for generating sequence from NCBI database"""
 
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def create_sequence(
         self,
         user: User,
@@ -269,6 +273,7 @@ class SequenceMethods:
             Logger.error("Values out of range!")
 
     @staticmethod
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def delete(user: User, id: str) -> bool:
         """
         Delete sequence by id
@@ -286,7 +291,8 @@ class SequenceMethods:
             "Authorization": user.jwt,
         }
 
-        response: object = requests.delete(f"{user.server}/sequence/{id}", headers=header)
+        response: object = requests.delete(
+            f"{user.server}/sequence/{id}", headers=header)
         if response.status_code == 204:
             return True
         return False
@@ -344,13 +350,15 @@ class SequenceMethods:
             "Authorization": user.jwt,
         }
 
-        response: object = requests.get(f"{user.server}/sequence/{id}", headers=header)
+        response: object = requests.get(
+            f"{user.server}/sequence/{id}", headers=header)
         data: dict = validate_key_response(
             response=response, status_code=200, payload_key="payload"
         )
         return SequenceModel(**data)
 
     @staticmethod
+    @tenacity.retry(wait=tenacity.wait_fixed(1), stop=tenacity.stop_after_attempt(3))
     def nucleic_count(user: User, id: str) -> bool:
         """
         Run nucleic count of sequence by given id

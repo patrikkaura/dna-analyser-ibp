@@ -6,9 +6,9 @@ import json
 import requests
 import pandas as pd
 
-from .analyse_caller import AnalyseFactory
-from .user_caller import User
-from ..utils import validate_key_response, Logger
+from DNA_analyser_IBP.callers.user_caller import User
+from DNA_analyser_IBP.utils import validate_key_response, Logger
+from DNA_analyser_IBP.callers.analyse_caller import AnalyseFactory
 
 
 class G4KillerAnalyse:
@@ -79,7 +79,8 @@ class G4KillerAnalyseFactory(AnalyseFactory):
             response: object = requests.post(
                 f"{user.server}/analyse/g4killer", headers=header, data=data
             )
-            data: dict = validate_key_response(response=response, status_code=201)
+            data: dict = validate_key_response(
+                response=response, status_code=201)
             return G4KillerAnalyse(**data)
         else:
             Logger.error("Value threshold out of interval (0;4)!")

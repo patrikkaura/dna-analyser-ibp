@@ -18,6 +18,7 @@ tqdm = "*"
 pyjwt = "*"
 matplotlib = "*"
 requests-toolbelt = "*"
+tenacity = "*"
 
 [requires]
 python_version = "3.6"
