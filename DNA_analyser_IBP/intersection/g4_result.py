@@ -5,6 +5,7 @@ import csv
 from typing import List
 from DNA_analyser_IBP.utils import exception_handler
 
+
 class G4Result:
     """G4Hunter result object"""
 
@@ -12,10 +13,11 @@ class G4Result:
         self.score = score
         self.length = length
         self.position = position
+        self.middle = self.position + (self.length // 2)
 
     def get_group_id(self) -> int:
         """
-        Get group id used in anotation intersection
+        Get group id used in annotation intersection
 
         Returns:
             (int): group id
