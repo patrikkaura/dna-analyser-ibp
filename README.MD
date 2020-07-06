@@ -2,7 +2,7 @@
     <img src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/raw/master/docs/logo.png" alt='logo' width='300px'>
     <br/>
     <br/>
-    <img src="https://img.shields.io/badge/version-2.1.0-brightgreen.svg" alt='version'/>
+    <img src="https://img.shields.io/badge/version-2.1.1-brightgreen.svg" alt='version'/>
     <img src="https://img.shields.io/badge/python-3.6-brightgreen.svg" alt='python_version'/>
     <img src="https://img.shields.io/badge/python-3.7-brightgreen.svg" alt='python_version'/>
     <img src='https://img.shields.io/badge/licence-GNU%20v3.0-blue.svg' alt='licence'/>
@@ -32,13 +32,11 @@ python >= 3.6
 
 ## Changelog
 
-# Version 2.1.0 (2020-04-09)
+# Version 2.1.1 (2020-06-07)
 
 ### Feature
 
-- Retrying for key features
-- Annotation overlay analysis
-- NEW example project with  g4hunter + annotation overlay analysis with commentary
+- Intersection change starting to middle position of PQS
 
 ## Installing
 
