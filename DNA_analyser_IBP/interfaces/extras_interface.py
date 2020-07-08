@@ -180,13 +180,13 @@ class Extras:
                     # overlay
                     else:
                         label_index: int = labels.index(annotation.feature)
-                        result[label_index][0 * group_id + 1] += annotation.is_before(
+                        result[label_index][group_id] += annotation.is_before(
                             analyse
                         )
-                        result[label_index][1 * group_id + 1] += annotation.is_in(
+                        result[label_index][group_id + 1] += annotation.is_in(
                             analyse
                         )
-                        result[label_index][2 * group_id + 1] += annotation.is_after(
+                        result[label_index][group_id + 2] += annotation.is_after(
                             analyse
                         )
             # get outpath for overlay file

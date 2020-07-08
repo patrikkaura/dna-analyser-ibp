@@ -25,15 +25,15 @@ class G4Result:
         if self.score <= 1.2:
             return 1
         elif 1.2 < self.score <= 1.4:
-            return 2
-        elif 1.4 < self.score <= 1.6:
-            return 3
-        elif 1.6 < self.score <= 1.8:
             return 4
+        elif 1.4 < self.score <= 1.6:
+            return 7
+        elif 1.6 < self.score <= 1.8:
+            return 10
         elif 1.8 < self.score <= 2.0:
-            return 5
+            return 13
         elif 2.0 < self.score:
-            return 6
+            return 16
 
 
 @exception_handler
