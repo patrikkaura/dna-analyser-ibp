@@ -27,7 +27,7 @@ class Annotation:
         Returns:
             (bool): True = inside, False = not
         """
-        return self.start <= analyse.position <= self.end
+        return self.start <= analyse.middle <= self.end
 
     def is_before(self, analyse: G4Result) -> bool:
         """
@@ -39,7 +39,7 @@ class Annotation:
         Returns:
             (bool): True = before, False = not
         """
-        return self.before <= analyse.position < self.start
+        return self.before <= analyse.middle < self.start
 
     def is_after(self, analyse: G4Result) -> bool:
         """
@@ -51,7 +51,7 @@ class Annotation:
         Returns:
             (bool): True = after, False = not
         """
-        return self.end < analyse.position <= self.after
+        return self.end < analyse.middle <= self.after
 
 
 @exception_handler
