@@ -2,7 +2,7 @@
     <img src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/raw/master/docs/logo.png" alt='logo' width='300px'>
     <br/>
     <br/>
-    <img src="https://img.shields.io/badge/version-2.1.2-brightgreen.svg" alt='version'/>
+    <img src="https://img.shields.io/badge/version-2.1.3-brightgreen.svg" alt='version'/>
     <img src="https://img.shields.io/badge/python-3.6-brightgreen.svg" alt='python_version'/>
     <img src="https://img.shields.io/badge/python-3.7-brightgreen.svg" alt='python_version'/>
     <img src='https://img.shields.io/badge/licence-GNU%20v3.0-blue.svg' alt='licence'/>
@@ -29,14 +29,6 @@ python >= 3.6
 * pandas >= 0.23
 * matplotlib >= 3.0.3
 * tqdm >= 4.28
-
-## Changelog
-
-# Version 2.1.1 (2020-06-07)
-
-### Feature
-
-- Intersection change starting to middle position of PQS
 
 ## Installing
 

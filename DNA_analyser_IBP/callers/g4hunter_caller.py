@@ -61,7 +61,7 @@ class G4HunterAnalyseFactory(AnalyseFactory):
             G4HunterAnalyse: G4Hunter object
         """
         # check range of parameters
-        if 0.1 <= threshold <= 4 and 10 <= window_size <= 100:
+        if 0 <= threshold <= 4 and 10 <= window_size <= 100:
             header: dict = {
                 "Content-type": "application/json",
                 "Accept": "application/json",
