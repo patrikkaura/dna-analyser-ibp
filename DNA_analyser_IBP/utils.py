@@ -5,10 +5,11 @@ import re
 import os
 import string
 import pandas as pd
+from typing import Union
 from functools import wraps
-from requests import Response
 from datetime import datetime
-from typing import Union, Optional
+from urllib.parse import urljoin
+from tenacity import RetryError
 
 
 class Logger:
@@ -58,8 +59,22 @@ def exception_handler(fn):
     def wrapper(*args, **kwargs):
         try:
             return fn(*args, **kwargs)
+        except RetryError:
+            Logger.error(message="Server not responding, please retry again!")
         except Exception as e:
-            print(f"{datetime.now()} [ERROR]: {str(e)}")
+            Logger.error(message=str(e))
+
+    return wrapper
+
+
+def login_required(fn):
+    """Check if user contains JWT token"""
+
+    def wrapper(*args, **kwargs):
+        user = args[0].user
+        if user.jwt is not None:
+            return fn(*args, **kwargs)
+        Logger.error(message="User has to be logged in!")
 
     return wrapper
 
@@ -94,55 +109,6 @@ def validate_email(email: str) -> bool:
         bool: True is string is valid email else False
     """
     return bool(re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email))
-
-
-def validate_key_response(
-    response: Response, status_code: int, payload_key: Optional[str] = None
-) -> dict:
-    """
-    Validate and convert JSON response to dictionary
-
-    Args:
-        response (Response): HTTP response
-        status_code (int): HTTP status code
-        payload_key (Optional[str]): payload key for validation
-
-    Returns:
-        dict: dictionary from response payload json
-    """
-    if response.status_code == status_code:
-        data: dict = response.json()
-        if payload_key and data:
-            if data[payload_key]:  # check if json and key exist
-                return data[payload_key]
-            else:
-                raise ValueError(response.status_code, "Server returned no data")
-        elif data:
-            return data
-        else:
-            raise ValueError(response.status_code, "Server returned no data")
-    else:
-        raise ConnectionError(response.status_code, "Server error or no data")
-
-
-def validate_text_response(response: Response, status_code: int) -> str:
-    """
-    Validate and convert Text response to dictionary
-
-    Args:
-        response (Response): HTTP response
-        status_code (int): HTTP status code
-
-    Returns:
-        str: string with response data
-    """
-    if response.status_code == status_code:
-        if response.text:
-            return response.text
-        else:
-            raise ValueError(response.status_code, "Server returned no data")
-    else:
-        raise ConnectionError(response.status_code, "Server error")
 
 
 @exception_handler
@@ -191,3 +157,16 @@ def get_file_name(*, original_path: str, out_path: str, file_format: str) -> str
         out_path[:-1] if out_path.endswith("/") or out_path.endswith("\\") else out_path
     )
     return f"{out_path}/{new_file_name}"
+
+
+def join_url(host, *paths: str) -> str:
+    """
+    Join domain with multiple paths
+    Args:
+        host (str): IBP bioinformatics url
+        *paths (str): path to endpoint
+
+    Returns:
+        str: joined url
+    """
+    return urljoin(host, os.path.join("api", *paths))

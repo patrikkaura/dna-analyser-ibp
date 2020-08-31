@@ -7,7 +7,11 @@ with open(path.join(this_dir, "README.MD"), encoding="utf-8") as f:
 
 setup(
     name="dna_analyser_ibp",
+<<<<<<< HEAD
+    version="2.2.0",
+=======
     version="2.1.3",
+>>>>>>> origin/master
     description="DNA analyser API wrapper tool for Jupiter notebooks.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -17,7 +21,15 @@ setup(
     license="GPLv3",
     url="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/",
     packages=find_packages(),
-    install_requires=["requests", "pandas", "tqdm", "pyjwt", "matplotlib", "requests-toolbelt", "tenacity"],
+    install_requires=[
+        "requests",
+        "pandas",
+        "tqdm",
+        "pyjwt",
+        "matplotlib",
+        "requests-toolbelt",
+        "tenacity",
+    ],
     classifiers=[
         "Intended Audience :: Education",
         "Intended Audience :: Science/Research",

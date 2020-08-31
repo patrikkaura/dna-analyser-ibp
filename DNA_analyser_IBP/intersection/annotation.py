@@ -1,5 +1,4 @@
 # annotation.py
-# !/usr/bin/env python3
 
 import csv
 from typing import List
@@ -84,10 +83,10 @@ def create_annotation_list(annotation: str, area_size: int) -> List[Annotation]:
 @exception_handler
 def get_annotation_labels(*, annotation_list: List[Annotation]) -> List[str]:
     """Return list with all annotation labels
-    
+
     Args:
         annotation_list (List[Annotation]): parsed files of annotations
-    
+
     Returns:
         List[str]: list of all annotation labels e.g. ['CDS', 'rRNA', ...]
     """

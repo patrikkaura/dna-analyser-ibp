@@ -2,7 +2,11 @@
     <img src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/raw/master/docs/logo.png" alt='logo' width='300px'>
     <br/>
     <br/>
+<<<<<<< HEAD
+    <img src="https://img.shields.io/badge/version-2.2.0-brightgreen.svg" alt='version'/>
+=======
     <img src="https://img.shields.io/badge/version-2.1.3-brightgreen.svg" alt='version'/>
+>>>>>>> origin/master
     <img src="https://img.shields.io/badge/python-3.6-brightgreen.svg" alt='python_version'/>
     <img src="https://img.shields.io/badge/python-3.7-brightgreen.svg" alt='python_version'/>
     <img src='https://img.shields.io/badge/licence-GNU%20v3.0-blue.svg' alt='licence'/>
@@ -30,6 +34,14 @@ python >= 3.6
 * matplotlib >= 3.0.3
 * tqdm >= 4.28
 
+<<<<<<< HEAD
+## Changelog
+
+#### Version 2.2.0 (2020-04-09)
+
+
+=======
+>>>>>>> origin/master
 ## Installing
 
 To install test version from [Pypi](https://pypi.org/project/dna-analyser-ibp/).

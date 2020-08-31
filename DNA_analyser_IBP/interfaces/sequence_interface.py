@@ -3,89 +3,102 @@
 
 import time
 import pandas as pd
-from typing import List, Union, Optional, Generator
+from typing import List, Union, Optional
 
+from DNA_analyser_IBP.type import Types
 from DNA_analyser_IBP.statusbar import status_bar
-from DNA_analyser_IBP.callers import (
-    User,
-    SequenceModel,
-    SequenceMethods,
-    NCBISequenceFactory,
-    TextSequenceFactory,
-    FileSequenceFactory,
+from DNA_analyser_IBP.models import Sequence as Data
+from DNA_analyser_IBP.ports import Ports
+
+from DNA_analyser_IBP.utils import (
+    Logger,
+    normalize_name,
+    exception_handler,
+    _multifasta_parser,
 )
-from DNA_analyser_IBP.utils import exception_handler, Logger, normalize_name, _multifasta_parser
 
 
 class Sequence:
-    def __init__(self, user: User):
-        self.__user = user
+    def __init__(self, ports: Ports):
+        self.__ports = ports
 
     @exception_handler
     def load_all(self, tags: Optional[List[str]] = None) -> pd.DataFrame:
         """
-        Return all or filtered sequences in dataframe
+        Return all or filtered sequences in DataFrame
 
         Args:
             tags (Optional[List[str]]): tags for sequence filtering [default=None]
 
         Returns:
-            pd.DataFrame: Dataframe with sequences
+            pd.DataFrame: DataFrame with sequences
         """
-        seq: Generator[SequenceModel, None, None] = [
-            se
-            for se in SequenceMethods.load_all(
-                user=self.__user, tags=tags if tags is not None else list()
+        listed_sequences: list = [
+            sequence
+            for sequence in self.__ports.sequence.load_all(
+                tags=tags if tags is not None else list()
             )
         ]
+
         data: pd.DataFrame = pd.concat(
-            [s.get_dataframe() for s in seq], ignore_index=True
+            [sequence.get_data_frame() for sequence in listed_sequences],
+            ignore_index=True,
         )
+
         return data
 
     @exception_handler
     def load_by_id(self, *, id: str) -> pd.DataFrame:
         """
-        Return sequence in dataframe
+        Return sequence in DataFrame
 
         Args:
             id (str): sequence id
 
         Returns:
-            pd.DataFrame: Dataframe with sequence
+            pd.DataFrame: DataFrame with sequence
         """
-        seq: SequenceModel = SequenceMethods.load_by_id(user=self.__user, id=id)
-        return seq.get_dataframe()
+
+        sequence: "Data" = self.__ports.sequence.load_by_id(id=id)
+
+        return sequence.get_data_frame()
 
     @exception_handler
     def load_data(
         self,
         length: Optional[int] = 100,
-        possition: Optional[int] = 0,
+        position: Optional[int] = 0,
         *,
-        sequence: pd.Series,
+        sequence: Union[pd.Series, pd.DataFrame],
     ) -> str:
         """
         Return slice of sequence data in string
 
         Args:
             length (Optional[int]): sequence data length in interval <0;1000> [default=100]
-            possition (Optional[int]): data start position [default=0]
-            sequence (pd.Series): sequence in pd.Series
+            position (Optional[int]): data start position [default=0]
+            sequence (Union[pd.Series, pd.DataFrame]): sequence in pd.Series
 
         Returns:
             str: sequence data
         """
-        if isinstance(sequence, pd.Series):
-            return SequenceMethods.load_data(
-                user=self.__user,
-                id=sequence["id"],
+
+        def _load_data(*, id: str, sequence_length: int):
+            return self.__ports.sequence.load_data(
+                id=id,
                 length=length,
-                possiotion=possition,
-                sequence_length=sequence["length"],
+                position=position,
+                sequence_length=sequence_length,
             )
+
+        if isinstance(sequence, pd.DataFrame):
+            return _load_data(
+                id=sequence.iloc[0]["id"], sequence_length=sequence.iloc[0]["length"]
+            )
+        elif isinstance(sequence, pd.Series):
+            return _load_data(id=sequence["id"], sequence_length=sequence["length"])
         else:
-            Logger.error("Parameter sequence have to be pd.Series!")
+            Logger.error("Parameter sequence have to be pd.DataFrame or pd.Series!")
 
     @exception_handler
     def text_creator(
@@ -108,10 +121,10 @@ class Sequence:
             name (str): sequence name
         """
         name: str = normalize_name(name=name)
+
         status_bar(
-            user=self.__user,
-            func=lambda: TextSequenceFactory(
-                user=self.__user,
+            ports=self.__ports,
+            func=lambda: self.__ports.sequence.create_text_sequence(
                 circular=circular,
                 data=string,
                 name=name,
@@ -119,7 +132,7 @@ class Sequence:
                 nucleic_type=nucleic_type,
             ),
             name=name,
-            cls_switch=True,
+            type=Types.SEQUENCE,
         )
 
     @exception_handler
@@ -141,18 +154,17 @@ class Sequence:
             ncbi_id (str): sequence id from https://www.ncbi.nlm.nih.gov/
         """
         name: str = normalize_name(name=name)
-        # start NCBI sequence factory
+
         status_bar(
-            user=self.__user,
-            func=lambda: NCBISequenceFactory(
-                user=self.__user,
+            ports=self.__ports,
+            func=lambda: self.__ports.sequence.create_ncbi_sequence(
                 circular=circular,
                 name=name,
                 tags=tags if tags is not None else list(),
                 ncbi_id=ncbi_id,
             ),
             name=name,
-            cls_switch=True,
+            type=Types.SEQUENCE,
         )
 
     @exception_handler
@@ -178,11 +190,10 @@ class Sequence:
             path (str): absolute path to [TEXT|FASTA] file
         """
         name: str = normalize_name(name=name)
-        # start File sequence factory
+
         status_bar(
-            user=self.__user,
-            func=lambda: FileSequenceFactory(
-                user=self.__user,
+            ports=self.__ports,
+            func=lambda: self.__ports.sequence.create_file_sequence(
                 circular=circular,
                 path=path,
                 name=name,
@@ -191,7 +202,7 @@ class Sequence:
                 format=format,
             ),
             name=name,
-            cls_switch=True,
+            type=Types.SEQUENCE,
         )
 
     @exception_handler
@@ -214,10 +225,10 @@ class Sequence:
         """
         for sequence_name, sequence_nucleic in _multifasta_parser(path=path):
             sequence_name: str = normalize_name(name=sequence_name)
+
             status_bar(
-                user=self.__user,
-                func=lambda: TextSequenceFactory(
-                    user=self.__user,
+                ports=self.__ports,
+                func=lambda: self.__ports.sequence.create_file_sequence(
                     circular=circular,
                     data=sequence_nucleic,
                     name=sequence_name,
@@ -225,20 +236,20 @@ class Sequence:
                     nucleic_type=nucleic_type,
                 ),
                 name=sequence_name,
-                cls_switch=True,
+                type=Types.SEQUENCE,
             )
 
     @exception_handler
     def delete(self, *, sequence: Union[pd.DataFrame, pd.Series]) -> None:
         """
-        Delete sequence by given dataframe|series
+        Delete sequence by given pandas DataFrame or Series
 
         Args:
             sequence (Union[pd.DataFrame, pd.Series]): sequence or multiple sequences
         """
 
         def _delete(id: str) -> None:
-            if SequenceMethods.delete(user=self.__user, id=id):
+            if self.__ports.sequence.delete(id=id):
                 Logger.info(f"Sequence {id} was deleted!")
                 time.sleep(1)
             else:
@@ -249,19 +260,18 @@ class Sequence:
                 _delete(row["id"])
         else:
             _delete(sequence["id"])
-            _id = sequence["id"]
 
     @exception_handler
     def nucleic_count(self, *, sequence: Union[pd.DataFrame, pd.Series]) -> None:
         """
-        Re-count nucleotides for given sequence dataframe|series
+        Re-count nucleotides for given sequence pandas DataFrame or Series
 
         Args:
             sequence (Union[pd.DataFrame, pd.Series]): sequence or multiple sequences
         """
 
         def _nucleic_count(id: str) -> None:
-            if SequenceMethods.nucleic_count(user=self.__user, id=id):
+            if self.__ports.sequence.nucleic_count(id=id):
                 Logger.info(f"Sequence {id} nucleotides was re-counted!")
             else:
                 Logger.error(f"Sequence {id} nucleotides cannot be re-counted!")
