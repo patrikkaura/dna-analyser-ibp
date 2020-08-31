@@ -5,94 +5,102 @@ import os
 import time
 import pandas as pd
 import matplotlib.pyplot as plt
-from typing import List, Union, Optional, Generator
+from typing import List, Union, Optional
 
+from DNA_analyser_IBP.type import Types
 from DNA_analyser_IBP.statusbar import status_bar
 from DNA_analyser_IBP.interfaces.analyse_interface import AnalyseInterface
-from DNA_analyser_IBP.utils import exception_handler, Logger, normalize_name
-from DNA_analyser_IBP.callers import User, G4HunterAnalyseFactory, G4HunterMethods, G4HunterAnalyse
+from DNA_analyser_IBP.ports import Ports
+
+from DNA_analyser_IBP.utils import (
+    Logger,
+    normalize_name,
+    exception_handler,
+)
+
+from DNA_analyser_IBP.models import G4Hunter as Analyse
 
 
 class G4Hunter(AnalyseInterface):
     """Api interface for g4hunter analyse caller"""
 
-    def __init__(self, user: User):
-        self.__user = user
+    def __init__(self, ports: Ports):
+        self.__ports = ports
 
     @exception_handler
     def load_all(self, tags: Optional[List[str]] = None) -> pd.DataFrame:
         """
-        Return all or filtered g4hunter analyses in dataframe
+        Return all or filtered g4hunter analyses in DataFrame
 
         Args:
             tags (Optional[List[str]]): tags for analyse filtering [default=None]
 
         Returns:
-            pd.DataFrame: Dataframe with g4hunter analyses
+            pd.DataFrame: DataFrame with g4hunter analyses
         """
-        g4: Generator[G4HunterAnalyse, None, None] = [
-            g4
-            for g4 in G4HunterMethods.load_all(
-                user=self.__user, tags=tags if tags is not None else list()
+        listed_g4hunter: list = [
+            g4hunter
+            for g4hunter in self.__ports.g4hunter.load_all(
+                tags=tags if tags is not None else list()
             )
         ]
         data: pd.DataFrame = pd.concat(
-            [g.get_dataframe() for g in g4], ignore_index=True
+            [g4hunter.get_data_frame() for g4hunter in listed_g4hunter],
+            ignore_index=True,
         )
+
         return data
 
     @exception_handler
     def load_by_id(self, *, id: str) -> pd.DataFrame:
         """
-        Return g4hunter analyse in dataframe
+        Return g4hunter analyse in DataFrame
 
         Args:
             id (str): g4hunter analyse id
 
         Returns:
-            pd.DataFrame: Dataframe with g4hunter analyse
+            pd.DataFrame: DataFrame with g4hunter analyse
         """
-        g4: G4HunterAnalyse = G4HunterMethods.load_by_id(user=self.__user, id=id)
-        return g4.get_dataframe()
+        g4hunter: Analyse = self.__ports.g4hunter.load_by_id(id=id)
+
+        return g4hunter.get_data_frame()
 
     @exception_handler
-    def load_results(self, *, analyse: pd.Series) -> pd.DataFrame:
+    def load_results(self, *, analyse: Union[pd.Series, pd.DataFrame]) -> pd.DataFrame:
         """
-        Return g4hunter analyses results in dataframe
+        Return g4hunter analyses results in DataFrame
 
         Args:
-            analyse (pd.Series): g4hunter analyse series
+            analyse (Union[pd.Series, pd.DataFrame]): g4hunter analyse
 
         Returns:
-            pd.DataFrame: Dataframe with g4hunter results
+            pd.DataFrame: DataFrame with g4hunter results
         """
         if isinstance(analyse, pd.Series):
-            return G4HunterMethods.load_result(user=self.__user, id=analyse["id"])
+            return self.__ports.g4hunter.load_result(id=analyse["id"])
+        elif isinstance(analyse, pd.DataFrame):
+            return self.__ports.g4hunter.load_result(id=analyse.iloc[0]["id"])
         else:
-            Logger.error("You have to insert pd.Series!")
+            Logger.error("You have to insert pd.Series or pd.DataFrame!")
 
     @exception_handler
-    def get_heatmap(
-        self,
-        segments: Optional[int] = 31,
-        coverage: Optional[bool] = False,
-        *,
-        analyse: pd.Series,
+    def get_heatmap_data(
+        self, segments: Optional[int] = 31, *, analyse: Union[pd.Series, pd.DataFrame],
     ) -> pd.DataFrame:
         """
-        Return dataframe with heatmap data
+        Return DataFrame with heatmap data
 
         Args:
             segments (Optional[int]): g4hunter analyse series [Default=31]
-            coverage (Optional[bool]): True = coverage heatmap False = count heatmap [default=False]
-            analyse (pd.Series): analyse series data to get heatmap
+            analyse (Union[pd.Series, pd.DataFrame]): analyse series data to get heatmap
 
         Returns:
             pd.DataFrame: raw data used to create heatmap
         """
         if isinstance(analyse, pd.Series):
-            return G4HunterMethods.load_heatmap(
-                user=self.__user, id=analyse["id"], segments=segments
+            return self.__ports.g4hunter.load_heatmap(
+                id=analyse["id"], segments=segments
             )
         else:
             Logger.error("You have to insert pd.Series!")
@@ -103,26 +111,32 @@ class G4Hunter(AnalyseInterface):
         segments: Optional[int] = 31,
         coverage: Optional[bool] = False,
         *,
-        analyse: pd.Series,
+        analyse: Union[pd.Series, pd.DataFrame],
     ) -> None:
         """
-        Return seaborn graph with heatmap
+        Return Seaborn graph with heatmap
 
         Args:
             segments (Optional[int]): g4hunter analyse series [Default=31]
             coverage (Optional[bool]): True = coverage heatmap False = count heatmap [default=False]
-            analyse (pd.Series): analyse series data to get heatmap
+            analyse (Union[pd.Series, pd.DataFrame]): analyse series data to get heatmap
 
         Returns:
-            pyplot: seaborn graph with g4hunter heatmap
+            pyplot: Seaborn graph with g4hunter heatmap
         """
-        if isinstance(analyse, pd.Series):
-            data: pd.DataFrame = G4HunterMethods.load_heatmap(
-                user=self.__user, id=analyse["id"], segments=segments
+
+        def _show_heatmap(*, _id: str) -> None:
+            data: pd.DataFrame = self.__ports.g4hunter.load_heatmap(
+                id=_id, segments=segments
             )
-            graph: pls = self._create_heatmap_grap(data=data, coverage=coverage)
+            graph: plt = self._create_heatmap_graph(data=data, coverage=coverage)
             graph.grid(color="k", linestyle="-", linewidth=0.1)
             graph.show()
+
+        if isinstance(analyse, pd.DataFrame):
+            return _show_heatmap(_id=analyse.iloc[0]["id"])
+        elif isinstance(analyse, pd.Series):
+            return _show_heatmap(_id=analyse["id"])
         else:
             Logger.error("You have to insert pd.Series!")
 
@@ -136,19 +150,17 @@ class G4Hunter(AnalyseInterface):
         path: str,
     ):
         """
-        Save seaborn graph with heatmap
+        Save Seaborn graph with heatmap
         Args:
             segments (Optional[int]): g4hunter analyse series [Default=31]
             coverage (Optional[bool]): True = coverage heatmap False = count heatmap [default=False]
             analyse (Union[pd.Series, pd.DataFrame]): analyse series or analyses dataframe to get heatmap
-            path (str): outputh path where to save heatmap SVGs
+            path (str): output path where to save heatmap SVGs
         """
 
         def _save_heatmap(id: str, name: str) -> None:
-            data = G4HunterMethods.load_heatmap(
-                user=self.__user, id=id, segments=segments
-            )
-            graph: plt = self._create_heatmap_grap(data=data, coverage=coverage)
+            data = self.__ports.g4hunter.load_heatmap(id=id, segments=segments)
+            graph: plt = self._create_heatmap_graph(data=data, coverage=coverage)
             graph.savefig(f"{path}/{name}.svg", format="svg")
             graph.close()
             Logger.info(f"Heatmap file {name}.svg saved!")
@@ -160,11 +172,11 @@ class G4Hunter(AnalyseInterface):
             _save_heatmap(id=analyse["id"], name=analyse["title"])
 
     @exception_handler
-    def _create_heatmap_grap(self, *, data: pd.DataFrame, coverage: bool) -> plt:
+    def _create_heatmap_graph(self, *, data: pd.DataFrame, coverage: bool) -> plt:
         """
         Create heatmap graph for quick view | save
         Args:
-            data (pd.DataFrame): dataframe used by pyplot
+            data (pd.DataFrame): DataFrane used by pyplot
             coverage (bool): switch between coverate|count graph
 
         Returns:
@@ -199,39 +211,33 @@ class G4Hunter(AnalyseInterface):
             window_size (int): g4hunter window size recommended 25
         """
 
-        def _analyse_creator(id: str, name: str, sequence_tags: list) -> None:
+        def _analyse_creator(id: str, name: str, tags: List[Optional[str]]) -> None:
             name: str = normalize_name(name)
             status_bar(
-                user=self.__user,
-                func=lambda: G4HunterAnalyseFactory(
-                    user=self.__user,
-                    id=id,
-                    tags=self._process_tags(tags, sequence_tags),
-                    threshold=threshold,
-                    window_size=window_size,
+                ports=self.__ports,
+                func=lambda: self.__ports.g4hunter.create_analyse(
+                    id=id, tags=tags, threshold=threshold, window_size=window_size,
                 ),
                 name=name,
-                cls_switch=False,
+                type=Types.G4HUNTER,
             )
 
         if isinstance(sequence, pd.DataFrame):
             for _, row in sequence.iterrows():
-                _analyse_creator(
-                    id=row["id"], name=row["name"], sequence_tags=row["tags"]
-                )
+                _tags = self._process_tags(tags, row["tags"])
+                _analyse_creator(id=row["id"], name=row["name"], tags=_tags)
         else:
-            _analyse_creator(
-                id=sequence["id"], name=sequence["name"], sequence_tags=sequence["tags"]
-            )
+            _tags = self._process_tags(tags, sequence["tags"])
+            _analyse_creator(id=sequence["id"], name=sequence["name"], tags=_tags)
 
     @staticmethod
     def _process_tags(tags: List[str], sequence_tags: str) -> List[Optional[str]]:
         """
-        Return original tags|strip tags from sequence dataframe or return empty list()
+        Return original tags|strip tags from sequence DataFrame or return empty list()
 
         Args:
             tags List(str): tags given as function parameter
-            sequence_tags (str): sequence dataframe tags
+            sequence_tags (str): sequence DataFrame tags
 
         Returns:
             List[Optional[str]]:
@@ -254,7 +260,7 @@ class G4Hunter(AnalyseInterface):
         Export G4Hunter analyses result into csv files
 
         Args:
-            analyse (Union[pd.DataFrame, pd.Series]): g4hunter analyse Dataframe|Series
+            analyse (Union[pd.DataFrame, pd.Series]): g4hunter analyse DataFrame|Series
             path (str): absolute system path to output folder
             aggregate (bool): True = aggregation, False = no aggregation
         """
@@ -264,9 +270,7 @@ class G4Hunter(AnalyseInterface):
             file_path: str = os.path.join(path, f"{name}_result.csv")
 
             with open(file_path, "w") as new_file:
-                data: bool = G4HunterMethods.export_csv(
-                    user=self.__user, id=id, aggregate=aggregate
-                )
+                data: str = self.__ports.g4hunter.export_csv(id=id, aggregate=aggregate)
                 new_file.write(data)
             Logger.info(f"file created -> {file_path}")
 
@@ -282,11 +286,11 @@ class G4Hunter(AnalyseInterface):
         Delete G4Hunter analyse
 
         Args:
-            analyse (Union[pd.DataFrame, pd.Series]): g4hunter analyse [Dataframe|Series]
+            analyse (Union[pd.DataFrame, pd.Series]): g4hunter analyse [DataFrame|Series]
         """
 
         def _delete(id: str) -> None:
-            if G4HunterMethods.delete(user=self.__user, id=id):
+            if self.__ports.g4hunter.delete(id=id):
                 Logger.info(f"G4hunter analyse {id} was deleted!")
                 time.sleep(1)
             else:
