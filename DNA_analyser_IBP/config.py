@@ -1,6 +1,6 @@
 # config.py
 
-from tenacity import wait_exponential, stop_after_attempt
+from tenacity import stop_after_attempt, wait_exponential
 
 
 class ServerConfig:

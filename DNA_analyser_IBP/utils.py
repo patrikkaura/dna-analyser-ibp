@@ -1,14 +1,15 @@
 # utils.py
 # !/usr/bin/env python3
 
-import re
 import os
+import re
 import string
-import pandas as pd
-from typing import Union
-from functools import wraps
 from datetime import datetime
+from functools import wraps
+from typing import Union
 from urllib.parse import urljoin
+
+import pandas as pd
 from tenacity import RetryError
 
 

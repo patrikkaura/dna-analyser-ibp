@@ -3,11 +3,11 @@
 from typing import TYPE_CHECKING
 
 from DNA_analyser_IBP.ports.batch_port import BatchPort
-from DNA_analyser_IBP.ports.p53_port import P53Port
 from DNA_analyser_IBP.ports.g4hunter_port import G4HunterPort
 from DNA_analyser_IBP.ports.g4killer_port import G4KillerPort
-from DNA_analyser_IBP.ports.sequence_port import SequencePort
+from DNA_analyser_IBP.ports.p53_port import P53Port
 from DNA_analyser_IBP.ports.rloopr_port import RlooprPort
+from DNA_analyser_IBP.ports.sequence_port import SequencePort
 
 if TYPE_CHECKING:
     from DNA_analyser_IBP.models import User

@@ -1,9 +1,10 @@
 # api_interface.py
 # !/usr/bin/env python3
 
-import pandas as pd
-from typing import List, Union, Optional
 from abc import ABCMeta, abstractmethod
+from typing import List, Optional, Union
+
+import pandas as pd
 
 
 class AnalyseInterface(metaclass=ABCMeta):

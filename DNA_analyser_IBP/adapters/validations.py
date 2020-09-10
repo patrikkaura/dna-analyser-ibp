@@ -2,7 +2,8 @@
 # !/usr/bin/env python3
 
 
-from typing import Optional, Union, Dict
+from typing import Dict, Optional, Union
+
 from requests import Response
 
 

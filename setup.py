@@ -1,5 +1,6 @@
-from setuptools import setup, find_packages
 from os import path
+
+from setuptools import find_packages, setup
 
 this_dir = path.abspath(path.dirname(__file__))
 with open(path.join(this_dir, "README.MD"), encoding="utf-8") as f:
@@ -7,11 +8,7 @@ with open(path.join(this_dir, "README.MD"), encoding="utf-8") as f:
 
 setup(
     name="dna_analyser_ibp",
-<<<<<<< HEAD
-    version="2.2.0",
-=======
-    version="2.1.3",
->>>>>>> origin/master
+    version="3.0.0",
     description="DNA analyser API wrapper tool for Jupiter notebooks.",
     long_description=long_description,
     long_description_content_type="text/markdown",

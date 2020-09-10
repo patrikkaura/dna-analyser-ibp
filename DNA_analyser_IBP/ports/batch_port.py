@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from DNA_analyser_IBP.ports.port import Port
 
 if TYPE_CHECKING:
-    from DNA_analyser_IBP.models import User, Batch
+    from DNA_analyser_IBP.models import Batch, User
 
 
 class BatchPort(Port):

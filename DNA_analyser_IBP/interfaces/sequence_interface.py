@@ -2,19 +2,19 @@
 # !/usr/bin/env python3
 
 import time
-import pandas as pd
-from typing import List, Union, Optional
+from typing import List, Optional, Union
 
-from DNA_analyser_IBP.type import Types
-from DNA_analyser_IBP.statusbar import status_bar
+import pandas as pd
+
 from DNA_analyser_IBP.models import Sequence as Data
 from DNA_analyser_IBP.ports import Ports
-
+from DNA_analyser_IBP.statusbar import status_bar
+from DNA_analyser_IBP.type import Types
 from DNA_analyser_IBP.utils import (
     Logger,
-    normalize_name,
-    exception_handler,
     _multifasta_parser,
+    exception_handler,
+    normalize_name,
 )
 
 

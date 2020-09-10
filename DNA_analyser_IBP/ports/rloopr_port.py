@@ -1,12 +1,13 @@
 # rloopr_port.py
 
-from typing import TYPE_CHECKING, Optional, List, Generator
+from typing import TYPE_CHECKING, Generator, List, Optional
 
 from DNA_analyser_IBP.ports.port import Port
 
 if TYPE_CHECKING:
-    from DNA_analyser_IBP.models import User, RLoopr
     from pandas import DataFrame
+
+    from DNA_analyser_IBP.models import RLoopr, User
 
 
 class RlooprPort(Port):

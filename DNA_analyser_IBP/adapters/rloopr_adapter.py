@@ -2,27 +2,21 @@
 
 
 import json
-import tenacity
-import requests
-import pandas as pd
-from requests import Response
 from typing import Generator, List, Optional
 
-from DNA_analyser_IBP.utils import join_url
+import pandas as pd
+import requests
+import tenacity
+from requests import Response
 
-from DNA_analyser_IBP.config import Config
-from DNA_analyser_IBP.utils import Logger, generate_dataframe
-from DNA_analyser_IBP.models import RLoopr
-from DNA_analyser_IBP.adapters.base_adapter import (
-    BaseAdapter,
-    BaseAnalyseAdapter,
-)
+from DNA_analyser_IBP.adapters.base_adapter import BaseAdapter, BaseAnalyseAdapter
 from DNA_analyser_IBP.adapters.validations import (
-    validate_text_response,
     validate_key_response,
+    validate_text_response,
 )
-
 from DNA_analyser_IBP.config import Config
+from DNA_analyser_IBP.models import RLoopr
+from DNA_analyser_IBP.utils import generate_dataframe, join_url, login_required
 
 
 class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
@@ -31,6 +25,7 @@ class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
     """
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
     def create_analyse(
         self, id: str, tags: Optional[List[str]], riz_model: Optional[List[int]]
     ) -> RLoopr:
@@ -64,6 +59,7 @@ class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
 
         return RLoopr(**data)
 
+    @login_required
     def load_all(self, tags: List[Optional[str]]) -> Generator[RLoopr, None, None]:
         """
         Send GET to /analyse/rloopr
@@ -98,6 +94,7 @@ class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
         for record in data:
             yield RLoopr(**record)
 
+    @login_required
     def load_by_id(self, id: str) -> RLoopr:
         """
         Send GET to /analyse/rloopr/{id}/analyse
@@ -125,6 +122,7 @@ class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
         return RLoopr(**data)
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
     def delete(self, id: str) -> bool:
         """
         Send DELETE to /analyse/rloopr/{id}
@@ -150,6 +148,7 @@ class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
         return False
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
     def export_csv(self, id: str) -> str:
         """
         Send GET to /analyse/rloopr/{id}/rloopr.csv
@@ -169,6 +168,7 @@ class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
 
         return validate_text_response(response=response, status_code=200)
 
+    @login_required
     def load_result(self, id: str) -> pd.DataFrame:
         """
         Send GET to /analyse/rloopr/{id}/rloops

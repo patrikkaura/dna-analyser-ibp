@@ -1,16 +1,15 @@
 # user_connector.py
 
 
-import jwt
 import json
-from requests import put, post, Response
 
-from DNA_analyser_IBP.utils import Logger
-from DNA_analyser_IBP.config import Config
-from DNA_analyser_IBP.utils import join_url
-from DNA_analyser_IBP.models import User
-from DNA_analyser_IBP.utils import exception_handler
+import jwt
+from requests import Response, post, put
+
 from DNA_analyser_IBP.adapters.validations import validate_text_response
+from DNA_analyser_IBP.config import Config
+from DNA_analyser_IBP.models import User
+from DNA_analyser_IBP.utils import Logger, exception_handler, join_url
 
 
 class UserAdapter:
@@ -46,6 +45,7 @@ class UserAdapter:
 
         jwt_token: str = validate_text_response(response=response, status_code=201)
         data: dict = jwt.decode(jwt_token, verify=False)
+        user.is_logged_in = True
         user.set_login(jwt=jwt_token, id=data.get("id"))
         Logger.info(f"User {user.email} is successfully loged in ...")
         return user

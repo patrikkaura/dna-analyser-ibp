@@ -1,13 +1,12 @@
 # g4killer_interface.py
 
-import pandas as pd
-
 from typing import TYPE_CHECKING
 
-from DNA_analyser_IBP.utils import exception_handler
-from DNA_analyser_IBP.ports import Ports
-from DNA_analyser_IBP.interfaces.tool_interface import ToolInterface
+import pandas as pd
 
+from DNA_analyser_IBP.interfaces.tool_interface import ToolInterface
+from DNA_analyser_IBP.ports import Ports
+from DNA_analyser_IBP.utils import exception_handler
 
 if TYPE_CHECKING:
     from DNA_analyser_IBP.models import G4Killer as AnalyseModel

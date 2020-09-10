@@ -1,12 +1,13 @@
 # g4hunter_port.py
 
-from typing import TYPE_CHECKING, Generator, Optional, List
+from typing import TYPE_CHECKING, Generator, List, Optional
 
 from DNA_analyser_IBP.ports.port import Port
 
 if TYPE_CHECKING:
-    from DNA_analyser_IBP.models import User, G4Hunter
     from pandas import DataFrame
+
+    from DNA_analyser_IBP.models import G4Hunter, User
 
 
 class G4HunterPort(Port):

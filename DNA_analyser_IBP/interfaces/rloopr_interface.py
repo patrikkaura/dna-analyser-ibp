@@ -2,21 +2,16 @@
 
 import os
 import time
+from typing import List, Optional, Union
+
 import pandas as pd
-from typing import List, Union, Optional
 
-from DNA_analyser_IBP.type import Types
-from DNA_analyser_IBP.statusbar import status_bar
 from DNA_analyser_IBP.interfaces.analyse_interface import AnalyseInterface
-from DNA_analyser_IBP.ports import Ports
-
-from DNA_analyser_IBP.utils import (
-    Logger,
-    normalize_name,
-    exception_handler,
-)
-
 from DNA_analyser_IBP.models import RLoopr as Analyse
+from DNA_analyser_IBP.ports import Ports
+from DNA_analyser_IBP.statusbar import status_bar
+from DNA_analyser_IBP.type import Types
+from DNA_analyser_IBP.utils import Logger, exception_handler, normalize_name
 
 
 class Rloopr(AnalyseInterface):
@@ -27,12 +22,12 @@ class Rloopr(AnalyseInterface):
 
     @exception_handler
     def analyse_creator(
-            self,
-            tags: Optional[List[str]] = None,
-            riz_3g_cluster: Optional[bool] = False,
-            riz_2g_cluster: Optional[bool] = False,
-            *,
-            sequence: Union[pd.DataFrame, pd.Series],
+        self,
+        tags: Optional[List[str]] = None,
+        riz_3g_cluster: Optional[bool] = False,
+        riz_2g_cluster: Optional[bool] = False,
+        *,
+        sequence: Union[pd.DataFrame, pd.Series],
     ) -> None:
         """
         Create Rloopr analyse
@@ -68,7 +63,7 @@ class Rloopr(AnalyseInterface):
 
     @staticmethod
     def _process_riz_models(
-            *, riz_3g_cluster: bool, riz_2g_cluster: bool
+        *, riz_3g_cluster: bool, riz_2g_cluster: bool
     ) -> List[Optional[int]]:
         """
         Transform riz_model boolean flags into list [0,1]
@@ -165,10 +160,7 @@ class Rloopr(AnalyseInterface):
 
     @exception_handler
     def export_csv(
-            self,
-            *,
-            analyse: Union[pd.DataFrame, pd.Series],
-            path: str,
+        self, *, analyse: Union[pd.DataFrame, pd.Series], path: str,
     ) -> None:
         """
         Export RLoopr analyses result into csv files

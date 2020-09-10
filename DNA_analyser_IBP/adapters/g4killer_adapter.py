@@ -2,17 +2,14 @@
 
 
 import json
+
 from requests import Response, post
 
-from DNA_analyser_IBP.utils import Logger
-from DNA_analyser_IBP.config import Config
-from DNA_analyser_IBP.utils import join_url
-from DNA_analyser_IBP.models import G4Killer
+from DNA_analyser_IBP.adapters.base_adapter import BaseAdapter, BaseAnalyseAdapter
 from DNA_analyser_IBP.adapters.validations import validate_key_response
-from DNA_analyser_IBP.adapters.base_adapter import (
-    BaseAdapter,
-    BaseAnalyseAdapter,
-)
+from DNA_analyser_IBP.config import Config
+from DNA_analyser_IBP.models import G4Killer
+from DNA_analyser_IBP.utils import Logger, join_url, login_required
 
 
 class G4KillerAdapter(BaseAdapter, BaseAnalyseAdapter):
@@ -20,6 +17,7 @@ class G4KillerAdapter(BaseAdapter, BaseAnalyseAdapter):
     G4Killer connector used to generate analyse for given sequence string
     """
 
+    @login_required
     def create_analyse(
         self, sequence: str, threshold: float, complementary: bool
     ) -> G4Killer:
