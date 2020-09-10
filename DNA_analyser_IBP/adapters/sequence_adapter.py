@@ -1,22 +1,20 @@
 # sequence_connector.py
 
 import json
-import tenacity
-from requests_toolbelt import MultipartEncoder
-from requests import Response, get, post, patch, delete
-
 from typing import Generator, List, Optional
 
-from DNA_analyser_IBP.config import Config
-from DNA_analyser_IBP.utils import join_url
-from DNA_analyser_IBP.models import Sequence
+import tenacity
+from requests import Response, delete, get, patch, post
+from requests_toolbelt import MultipartEncoder
+
 from DNA_analyser_IBP.adapters.base_adapter import BaseAdapter
 from DNA_analyser_IBP.adapters.validations import (
     validate_key_response,
     validate_text_response,
 )
-
-from DNA_analyser_IBP.utils import Logger
+from DNA_analyser_IBP.config import Config
+from DNA_analyser_IBP.models import Sequence
+from DNA_analyser_IBP.utils import Logger, join_url, login_required
 
 
 class SequenceAdapter(BaseAdapter):
@@ -25,6 +23,7 @@ class SequenceAdapter(BaseAdapter):
     """
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
     def create_text_sequence(
         self,
         circular: bool,
@@ -74,6 +73,7 @@ class SequenceAdapter(BaseAdapter):
         return Sequence(**data)
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
     def create_file_sequence(
         self,
         circular: bool,
@@ -127,6 +127,7 @@ class SequenceAdapter(BaseAdapter):
         return Sequence(**data)
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
     def create_ncbi_sequence(
         self, circular: bool, name: str, tags: List[Optional[str]], ncbi_id: str,
     ) -> Sequence:
@@ -171,6 +172,7 @@ class SequenceAdapter(BaseAdapter):
 
         return Sequence(**data[0])
 
+    @login_required
     def load_data(
         self, id: str, length: int, position: int, sequence_length: int
     ) -> str:
@@ -208,6 +210,7 @@ class SequenceAdapter(BaseAdapter):
         else:
             Logger.error("Values out of range!")
 
+    @login_required
     def load_all(self, tags: List[Optional[str]]) -> Generator[Sequence, None, None]:
         """
         Send GET /sequence
@@ -242,6 +245,7 @@ class SequenceAdapter(BaseAdapter):
         for record in data:
             yield Sequence(**record)
 
+    @login_required
     def load_by_id(self, id: str) -> Sequence:
         """
         Send GET /sequence/id
@@ -269,6 +273,7 @@ class SequenceAdapter(BaseAdapter):
         return Sequence(**data)
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
     def nucleic_count(self, id: str) -> bool:
         """
         Send PATCH to /sequence/{id}/nucleic-counts
@@ -293,6 +298,7 @@ class SequenceAdapter(BaseAdapter):
         return False
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
     def delete(self, id: str) -> bool:
         """
         Send DELETE to /sequence/id

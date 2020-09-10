@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from DNA_analyser_IBP.ports.port import Port
 
 if TYPE_CHECKING:
-    from DNA_analyser_IBP.models import User, G4Killer
+    from DNA_analyser_IBP.models import G4Killer, User
 
 
 class G4KillerPort(Port):

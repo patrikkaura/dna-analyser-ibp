@@ -2,13 +2,13 @@
 
 from typing import TYPE_CHECKING
 
-from DNA_analyser_IBP.adapters.p53_adapter import P53Adapter
-from DNA_analyser_IBP.adapters.user_adapter import UserAdapter
 from DNA_analyser_IBP.adapters.batch_adapter import BatchAdapter
-from DNA_analyser_IBP.adapters.sequence_adapter import SequenceAdapter
-from DNA_analyser_IBP.adapters.g4killer_adapter import G4KillerAdapter
 from DNA_analyser_IBP.adapters.g4hunter_adapter import G4HunterAdapter
+from DNA_analyser_IBP.adapters.g4killer_adapter import G4KillerAdapter
+from DNA_analyser_IBP.adapters.p53_adapter import P53Adapter
 from DNA_analyser_IBP.adapters.rloopr_adapter import RLooprAdapter
+from DNA_analyser_IBP.adapters.sequence_adapter import SequenceAdapter
+from DNA_analyser_IBP.adapters.user_adapter import UserAdapter
 
 if TYPE_CHECKING:
     from DNA_analyser_IBP.models import User

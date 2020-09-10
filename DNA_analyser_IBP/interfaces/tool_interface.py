@@ -1,9 +1,9 @@
 # tool_interface.py
 # !/usr/bin/env python3
 
-import pandas as pd
-
 from abc import ABCMeta, abstractmethod
+
+import pandas as pd
 
 
 class ToolInterface(metaclass=ABCMeta):

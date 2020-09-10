@@ -2,13 +2,14 @@
 # !/usr/bin/env python3
 
 import time
-from tqdm import tqdm
 from typing import Callable
 
+from tqdm import tqdm
+
+from DNA_analyser_IBP.models import Batch
+from DNA_analyser_IBP.ports import Ports
 from DNA_analyser_IBP.type import Types
 from DNA_analyser_IBP.utils import Logger
-from DNA_analyser_IBP.ports import Ports
-from DNA_analyser_IBP.models import Batch
 
 
 def status_bar(ports: Ports, func: Callable, name: str, type: str) -> None:

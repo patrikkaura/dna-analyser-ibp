@@ -3,22 +3,17 @@
 
 import os
 import time
-import pandas as pd
+from typing import List, Optional, Union
+
 import matplotlib.pyplot as plt
-from typing import List, Union, Optional
+import pandas as pd
 
-from DNA_analyser_IBP.type import Types
-from DNA_analyser_IBP.statusbar import status_bar
 from DNA_analyser_IBP.interfaces.analyse_interface import AnalyseInterface
-from DNA_analyser_IBP.ports import Ports
-
-from DNA_analyser_IBP.utils import (
-    Logger,
-    normalize_name,
-    exception_handler,
-)
-
 from DNA_analyser_IBP.models import G4Hunter as Analyse
+from DNA_analyser_IBP.ports import Ports
+from DNA_analyser_IBP.statusbar import status_bar
+from DNA_analyser_IBP.type import Types
+from DNA_analyser_IBP.utils import Logger, exception_handler, normalize_name
 
 
 class G4Hunter(AnalyseInterface):

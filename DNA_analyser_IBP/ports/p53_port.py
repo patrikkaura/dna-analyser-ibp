@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from DNA_analyser_IBP.ports.port import Port
 
 if TYPE_CHECKING:
-    from DNA_analyser_IBP.models import User, P53
+    from DNA_analyser_IBP.models import P53, User
 
 
 class P53Port(Port):

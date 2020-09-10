@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Generator, List, Optional
 from DNA_analyser_IBP.ports.port import Port
 
 if TYPE_CHECKING:
-    from DNA_analyser_IBP.models import User, Sequence
+    from DNA_analyser_IBP.models import Sequence, User
 
 
 class SequencePort(Port):

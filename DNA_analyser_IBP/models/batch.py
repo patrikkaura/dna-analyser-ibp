@@ -1,7 +1,7 @@
 # batch.py
 
-from DNA_analyser_IBP.models.base import Base
 from DNA_analyser_IBP.batch_statuses import BatchStatus
+from DNA_analyser_IBP.models.base import Base
 
 
 class Batch(Base):

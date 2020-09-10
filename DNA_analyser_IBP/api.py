@@ -6,21 +6,20 @@ Module with API object for manipulation with BPI REST API.
 
 from getpass import getpass
 
-from DNA_analyser_IBP.utils import Logger
-from DNA_analyser_IBP.config import Config
-from DNA_analyser_IBP.models import User
-from DNA_analyser_IBP.singleton import Singleton
 from DNA_analyser_IBP.adapters import UserAdapter
+from DNA_analyser_IBP.config import Config
 from DNA_analyser_IBP.interfaces import Interfaces
+from DNA_analyser_IBP.models import User
 from DNA_analyser_IBP.ports import Ports
+from DNA_analyser_IBP.utils import Logger
 
 
-class Api(metaclass=Singleton):
+class Api:
     """
     Api class contains all methods for working with BPI REST API.
     """
 
-    def __init__(self, *, server: str = Config.SERVER_CONFIG.LOCALHOST):
+    def __init__(self, *, server: str = Config.SERVER_CONFIG.PRODUCTION):
         """
         Create API object and login
 
@@ -36,13 +35,14 @@ class Api(metaclass=Singleton):
         self.__user = UserAdapter.sign_in(User(email, password, server))
         self.__ports = Ports(user=self.__user)
         self.__interfaces = Interfaces(ports=self.__ports)
-
-        self.sequence = self.__interfaces.sequence
-        self.g4hunter = self.__interfaces.g4hunter
-        self.g4killer = self.__interfaces.g4killer
-        self.p53_predictor = self.__interfaces.p53_predictor
-        self.rloopr = self.__interfaces.rloopr
         self.tools = self.__interfaces.extras
+
+        if self.__user.is_logged_in:
+            self.sequence = self.__interfaces.sequence
+            self.g4hunter = self.__interfaces.g4hunter
+            self.g4killer = self.__interfaces.g4killer
+            self.p53_predictor = self.__interfaces.p53_predictor
+            # self.rloopr = self.__interfaces.rloopr
 
 
 def __repr__(self):

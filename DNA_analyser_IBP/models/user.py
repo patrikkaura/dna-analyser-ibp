@@ -1,5 +1,4 @@
 # user.py
-# !/usr/bin/env python3
 
 
 class User:
@@ -8,11 +7,12 @@ class User:
     """
 
     def __init__(self, email: str, password: str, server: str) -> None:
-        self.id = None
-        self.jwt = None
-        self.email = email
-        self.server = server
-        self.password = password
+        self.id: str = None
+        self.jwt: str = None
+        self.email: str = email
+        self.server: str = server
+        self.password: str = password
+        self.is_logged_in: bool = False
 
     def __str__(self):
         return f"UserModel {self.id}"

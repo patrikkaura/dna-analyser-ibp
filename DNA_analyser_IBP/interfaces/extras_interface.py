@@ -3,24 +3,25 @@
 
 import csv
 import os
-import tenacity
-import requests
-import pandas as pd
 from typing import List, Union
 
+import pandas as pd
+import requests
+import tenacity
+
 from DNA_analyser_IBP.intersection import (
-    G4Result,
     Annotation,
+    G4Result,
+    create_annotation_list,
     create_g4hunter_list,
     get_annotation_labels,
-    create_annotation_list,
 )
 from DNA_analyser_IBP.utils import (
     Logger,
+    _multifasta_parser,
+    exception_handler,
     get_file_name,
     normalize_name,
-    exception_handler,
-    _multifasta_parser,
 )
 
 
@@ -173,17 +174,8 @@ class Extras:
                     # overlay
                     else:
                         label_index: int = labels.index(annotation.feature)
-<<<<<<< HEAD
                         result[label_index][group_id] += annotation.is_before(analyse)
                         result[label_index][group_id + 1] += annotation.is_in(analyse)
-=======
-                        result[label_index][group_id] += annotation.is_before(
-                            analyse
-                        )
-                        result[label_index][group_id + 1] += annotation.is_in(
-                            analyse
-                        )
->>>>>>> origin/master
                         result[label_index][group_id + 2] += annotation.is_after(
                             analyse
                         )

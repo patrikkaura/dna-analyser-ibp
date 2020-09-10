@@ -1,14 +1,14 @@
 # batch_connector.py
 
 import tenacity
-from requests import get, Response
+from requests import Response, get
 
-from DNA_analyser_IBP.config import Config
-from DNA_analyser_IBP.utils import join_url
 from DNA_analyser_IBP.adapters.base_adapter import BaseAdapter
 from DNA_analyser_IBP.adapters.validations import validate_key_response
+from DNA_analyser_IBP.config import Config
 from DNA_analyser_IBP.models import Batch
 from DNA_analyser_IBP.type import Types
+from DNA_analyser_IBP.utils import join_url, login_required
 
 
 class BatchAdapter(BaseAdapter):
@@ -37,6 +37,7 @@ class BatchAdapter(BaseAdapter):
         return str()
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
     def get_batch_status(self, id: str, type: str) -> Batch:
         """
         Send GET to SEQUENCE_BATCH_ENDPOINT
