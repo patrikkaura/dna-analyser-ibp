@@ -47,6 +47,6 @@ build-docs:
     - pipenv run pdoc --html DNA_analyser_IBP --html-dir docs
   artifacts:
     expire_in: 3 mos
-    name: pdoc-build-${CI_BUILD_REF_NAME}
+    name: pdoc-build
     paths:
       - docs/DNA_analyser_IBP
