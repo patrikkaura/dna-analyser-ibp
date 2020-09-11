@@ -1,23 +1,52 @@
-## This file is a template, and might need editing before it works on your project.
-## Official framework image. Look for the different tagged releases at:
-## https://hub.docker.com/r/library/python
-#image: python:3.6.0
-#
-## This folder is cached between builds
-## http://docs.gitlab.com/ce/ci/yaml/README.html#cache
-#cache:
-#  paths:
-#  - ~/.cache/pip/
-#
-#stages:
-#  - test
-#
-#test:
-#  stage: test
-#  before_script:
-#    - python -V                                   # Print out python version for debugging
-#    - pip install pipenv
-#
-#  script:
-#    - pipenv install --dev
-#    # pipenv run pytest
+cache:
+  paths:
+  - .cache/pip
+  - venv/
+
+stages:
+  - tests
+  - docs
+
+# ===========================================================================
+# Stage: test
+# ===========================================================================
+
+test-models:
+  stage: tests
+  image: python:3.6.0
+  before_script:
+    - pip install pipenv
+  script:
+    - pipenv install --dev
+    - pipenv run pytest tests/test_models
+
+test-adapters:
+  stage: tests
+  image: python:3.6.0
+  before_script:
+    - pip install pipenv
+  script:
+    - pipenv install --dev
+    - pipenv run pytest tests/test_adapters
+
+
+# ===========================================================================
+# Stage: build-docs
+# ===========================================================================
+
+build-docs:
+  stage: docs
+  image: python:3.6.0
+  only:
+    - master
+  allow_failure: true
+  before_script:
+    - pip install pipenv
+  script:
+    - pipenv install --dev
+    - pipenv run pdoc --html DNA_analyser_IBP --html-dir docs
+  artifacts:
+    expire_in: 3 mos
+    name: pdoc-build-${CI_BUILD_REF_NAME}
+    paths:
+      - docs/DNA_analyser_IBP
