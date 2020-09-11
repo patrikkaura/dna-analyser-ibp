@@ -5,11 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
-vcrpy = "*"
-jupyter = "*"
-black = "*"
-sphinx = "*"
-sphinx-markdown-builder = "*"
+pdoc3 = "*"
 
 [packages]
 requests = "*"

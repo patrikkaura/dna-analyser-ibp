@@ -3,7 +3,7 @@
 import csv
 from typing import List
 
-from DNA_analyser_IBP.intersection import G4Result
+from DNA_analyser_IBP.intersection.g4_result import G4Result
 from DNA_analyser_IBP.utils import exception_handler
 
 
