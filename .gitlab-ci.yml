@@ -55,15 +55,15 @@ build-docs:
       - docs/DNA_analyser_IBP
 
 pages:
-  stage: docs
+  stage: build-and-release
   dependencies:
     - build-docs
   only:
     - master
     - *tag_regex
   script:
-    - mkrid -p public
-    - cp -r docs/DNA_analyser_IBP/* public
+    - mkdir -p public
+    - cp -r docs/DNA_analyser_IBP/* public         # release documentation
   artifacts:
     paths:
       - public
