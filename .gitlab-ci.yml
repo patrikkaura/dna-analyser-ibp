@@ -1,11 +1,14 @@
 cache:
   paths:
-  - .cache/pip
-  - venv/
+    - .cache/pip
+    - venv/
 
 stages:
   - tests
   - docs
+  - build-and-release
+
+.tag_regex: &tag_regex /^v[0-9]+\.[0-9]+(\.[0-9]+)?([+-][a-zA-Z0-9_+\.-]+)?/
 
 # ===========================================================================
 # Stage: test
@@ -50,3 +53,21 @@ build-docs:
     name: pdoc-build
     paths:
       - docs/DNA_analyser_IBP
+
+pages:
+  stage: docs
+  dependencies:
+    - build-docs
+  only:
+    - master
+    - *tag_regex
+  script:
+    - mkrid -p public
+    - cp -r docs/DNA_analyser_IBP/* public
+  artifacts:
+    paths:
+      - public
+
+# ===========================================================================
+# Stage: build-and-release
+# ===========================================================================
