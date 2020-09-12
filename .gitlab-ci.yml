@@ -5,7 +5,7 @@ cache:
 
 stages:
   - tests
-  - docs
+  - build-docs-and-changelog
   - build-and-release
 
 .tag_regex: &tag_regex /^v[0-9]+\.[0-9]+(\.[0-9]+)?([+-][a-zA-Z0-9_+\.-]+)?/
@@ -34,11 +34,11 @@ test-adapters:
 
 
 # ===========================================================================
-# Stage: build-docs
+# Stage: build docs & changelog
 # ===========================================================================
 
 build-docs:
-  stage: docs
+  stage: build-docs-and-changelog
   image: python:3.6.0
   only:
     - master
@@ -53,6 +53,22 @@ build-docs:
     name: pdoc-build
     paths:
       - docs/DNA_analyser_IBP
+
+build-changelog:
+  stage: build-docs-and-changelog
+  image: node:13
+  only:
+    - master
+  allow_failure: true
+  before_script:
+    - npm install @semantic-release/gitlab
+  script:
+    - npx semantic-release
+
+
+# ===========================================================================
+# release pages (autodoc, autochangelog)
+# ===========================================================================
 
 pages:
   stage: build-and-release
