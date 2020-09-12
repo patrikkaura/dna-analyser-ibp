@@ -17,7 +17,6 @@ def adapters():
 
 
 class TestSequenceAdapter:
-
     def test_load_all_sequences(self, adapters: Adapters) -> None:
         """It should return iterator with Sequence models"""
         sequence_generator = adapters.sequence.load_all(tags=list())
@@ -43,7 +42,9 @@ class TestSequenceAdapter:
         sequence_list: List[Sequence] = [sequence for sequence in sequence_generator]
 
         sequence = sequence_list[-1]
-        sequence_data = adapters.sequence.load_data(id=sequence.id, length=20, position=10, sequence_length=sequence.length)
+        sequence_data = adapters.sequence.load_data(
+            id=sequence.id, length=20, position=10, sequence_length=sequence.length
+        )
         assert isinstance(sequence_data, str)
         assert len(sequence_data) == 20
 
@@ -53,7 +54,9 @@ class TestSequenceAdapter:
         sequence_list: List[Sequence] = [sequence for sequence in sequence_generator]
 
         sequence = sequence_list[0]
-        sequence_data = adapters.sequence.load_data(id=sequence.id, length=90000, position=-1, sequence_length=sequence.length)
+        sequence_data = adapters.sequence.load_data(
+            id=sequence.id, length=90000, position=-1, sequence_length=sequence.length
+        )
         assert sequence_data is None
 
     def test_delete_sequence(self, adapters: Adapters) -> None:
@@ -70,21 +73,25 @@ class TestSequenceAdapter:
         """It should create sequence from text and return object"""
 
         sequence: Sequence = adapters.sequence.create_text_sequence(
-            circular=True, data='ATATATATAT', name='test_text_sequence', tags=['test'], nucleic_type='DNA'
+            circular=True,
+            data="ATATATATAT",
+            name="test_text_sequence",
+            tags=["test"],
+            nucleic_type="DNA",
         )
         assert isinstance(sequence, Sequence)
 
-    @pytest.mark.skip(reason='in pipeline cannot provide file path')
+    @pytest.mark.skip(reason="in pipeline cannot provide file path")
     def test_fasta_sequence_creation(self, adapters: Adapters) -> None:
         """It should create sequence from file and return object"""
 
         sequence: Sequence = adapters.sequence.create_file_sequence(
             circular=True,
-            path='./sequence_samples/fasta_sample.txt',
-            name='test_file_sequence',
-            tags=['test'],
-            nucleic_type='DNA',
-            format='FASTA',
+            path="./sequence_samples/fasta_sample.txt",
+            name="test_file_sequence",
+            tags=["test"],
+            nucleic_type="DNA",
+            format="FASTA",
         )
         assert isinstance(sequence, Sequence)
 
@@ -92,6 +99,9 @@ class TestSequenceAdapter:
         """It should create sequence from NCBI and return object"""
 
         sequence: Sequence = adapters.sequence.create_ncbi_sequence(
-            circular=False, name="test_ncbi_sequence", tags=['test'], ncbi_id='NC_014676.2'
+            circular=False,
+            name="test_ncbi_sequence",
+            tags=["test"],
+            ncbi_id="NC_014676.2",
         )
         assert isinstance(sequence, Sequence)
