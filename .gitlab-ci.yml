@@ -1,3 +1,7 @@
+# ===========================================================================
+# DNA_analyser_IBP - Gitlab CI/CD
+# ===========================================================================
+
 cache:
   paths:
     - .cache/pip
@@ -32,10 +36,21 @@ test-adapters:
     - pipenv install --dev
     - pipenv run pytest tests/test_adapters
 
-
 # ===========================================================================
 # Stage: build docs & changelog
 # ===========================================================================
+
+build-changelog:
+  stage: build-docs-and-changelog
+  image: node:13
+  only:
+    - master
+    - *tag_regex
+  allow_failure: true
+  before_script:
+    - npm install @semantic-release/gitlab
+  script:
+    - npx semantic-release
 
 build-docs:
   stage: build-docs-and-changelog
@@ -54,20 +69,8 @@ build-docs:
     paths:
       - docs/DNA_analyser_IBP
 
-build-changelog:
-  stage: build-docs-and-changelog
-  image: node:13
-  only:
-    - master
-  allow_failure: true
-  before_script:
-    - npm install @semantic-release/gitlab
-  script:
-    - npx semantic-release
-
-
 # ===========================================================================
-# release pages (autodoc, autochangelog)
+# release pages (docs)
 # ===========================================================================
 
 pages:
