@@ -19,16 +19,26 @@ class Api:
     Api class contains all methods for working with BPI REST API.
     """
 
-    def __init__(self, *, server: str = Config.SERVER_CONFIG.PRODUCTION):
+    def __init__(
+        self,
+        *,
+        email: str = None,
+        password: str = None,
+        server: str = Config.SERVER_CONFIG.PRODUCTION,
+    ):
         """
         Create API object and login
 
         Args:
+            email (str): email account registered in bioinformatics IBP
+            password (str): account password
             server (str): URL to ibp bioinformatics server [Default=http://bioinformatics.ibp.cz:8888/api]
         """
-        # retrieve data from user, default = host account
-        email: str = input("Enter your email\t") or "host"
-        password: str = getpass("Enter your password\t", stream=None) or "host"
+        # retrieve data from user, default = host account if not provided in constructor
+        if email is None or password is None:
+            email: str = input("Enter your email\t") or "host"
+            password: str = getpass("Enter your password\t", stream=None) or "host"
+
         Logger.info(f"User {email} is trying to login ...")
 
         # user
