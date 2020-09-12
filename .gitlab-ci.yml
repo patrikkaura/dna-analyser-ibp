@@ -36,6 +36,15 @@ test-adapters:
     - pipenv install --dev
     - pipenv run pytest tests/test_adapters
 
+test-utils:
+  stage: tests
+  image: python:3.6.0
+  before_script:
+    - pip install pipenv
+  script:
+    - pipenv install --dev
+    - pipenv run pytest tests/test_utils
+
 # ===========================================================================
 # Stage: build docs & changelog
 # ===========================================================================
