@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/raw/master/docs/logo/logo.png" alt='logo' width='300px'>
+    <img src="https://gitlab.com/PatrikKaura/dna_analyser_ibp_logos/-/raw/master/logo.png" alt='logo' width='300px'>
     <br/>
     <br/>
     <img src="https://img.shields.io/badge/version-3.0.0-brightgreen.svg" alt='version'/>
@@ -20,16 +20,6 @@ to the local instance of the server.
 
 python >= 3.6
 
-## Dependencies
-
-* tenacity >= 6.1.0
-* requests >= 2.20
-* requests-toolbelt >= 0.9.1
-* pyjwt >= 1.7.1
-* pandas >= 0.23
-* matplotlib >= 3.0.3
-* tqdm >= 4.28
-
 ## Installing
 
 To install test version from [Pypi](https://pypi.org/project/dna-analyser-ibp/).
@@ -48,12 +38,14 @@ DNA analyser uses `pandas.Dataframe` or `pandas.Series`. Firstly the user  has t
 ```python
 from DNA_analyser_IBP.api import Api
 
-API = Api(server='http://bioinformatics.ibp.cz:8888/api')
+API = Api()
 ```
 ```python
 Enter your email        example@example.cz
 Enter your password     ········
-User user@mendelu.cz logged in: 2019-03-27 19:46:56.661376
+
+2020-09-16 18:51:17.943398 [INFO]: User host is trying to login ...
+2020-09-16 18:51:17.990580 [INFO]: User host is successfully loged in ...
 ```
 If DNA analyser API server not running on http://bioinformatics.ibp.cz then use this example to create `Api` object.
 ```python
@@ -86,6 +78,18 @@ API.g4killer.run(sequence='AATTATTTGGAAAGGGGGGGTTTTCCGA', threshold=0.5)
 # implements calculations of p53 binding predictor for 20 base pairs sequences 
 API.p53.run(sequence='GGACATGCCCGGGCATGTCC') 
 ```
+
+# Development
+
+## Dependencies
+
+* tenacity >= 6.1.0
+* requests >= 2.20
+* requests-toolbelt >= 0.9.1
+* pyjwt >= 1.7.1
+* pandas >= 0.23
+* matplotlib >= 3.0.3
+* tqdm >= 4.28
 
 ## Tests
 

@@ -197,8 +197,8 @@ class Rloopr(AnalyseInterface):
             pd.DataFrame: DataFrame with rloopr results
         """
         if isinstance(analyse, pd.Series):
-            return self.__ports.g4hunter.load_result(id=analyse["id"])
+            return self.__ports.rloopr.load_result(id=analyse["id"])
         elif isinstance(analyse, pd.DataFrame):
-            return self.__ports.g4hunter.load_result(id=analyse.iloc[0]["id"])
+            return self.__ports.rloopr.load_result(id=analyse.iloc[0]["id"])
         else:
             Logger.error("You have to insert pd.Series or pd.DataFrame!")
