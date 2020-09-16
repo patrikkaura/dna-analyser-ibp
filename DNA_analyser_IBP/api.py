@@ -17,6 +17,7 @@ from DNA_analyser_IBP.utils import Logger
 class Api:
     """
     Api class contains all methods for working with BPI REST API.
+    WARNING: server has to be set to PRODUCTION URI
     """
 
     def __init__(

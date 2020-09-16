@@ -79,7 +79,7 @@ build-docs:
       - docs/DNA_analyser_IBP
 
 # ===========================================================================
-# release pages (docs)
+# Stage: release pages (docs)
 # ===========================================================================
 
 pages:
@@ -99,3 +99,17 @@ pages:
 # ===========================================================================
 # Stage: build-and-release
 # ===========================================================================
+
+build-and-release:
+  stage: build-and-release
+  image: python:3.6.0
+  only:
+    - *tag_regex
+  allow_failure: false
+  before_script:
+    - pip install pipenv twine
+  script:
+    - pipenv install --dev
+    - pipenv run pytest tests/test_utils
+    - pipenv run python setup.py sdist
+    - twine upload dist/*

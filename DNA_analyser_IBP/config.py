@@ -10,7 +10,7 @@ class ServerConfig:
 
     LOCALHOST: str = "http://localhost:8080"
     PRODUCTION: str = "http://bioinformatics.ibp.cz:8888"
-    DEVELOPMENT: str = "http://bioinformatika.pef.mendelu.cz:8888"
+    DEVELOPMENT: str = "https://bioinformatika.pef.mendelu.cz:8888"
 
 
 class EndpointConfig:

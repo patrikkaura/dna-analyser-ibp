@@ -24,7 +24,6 @@ def sequence(adapters):
 
 
 class TestG4HunterAdapter:
-    
     def test_g4hunter_analysis(self, adapters: Adapters, sequence: Sequence) -> None:
         """It should run g4hunter analysis and return G4Hunter object"""
         g4hunter: G4Hunter = adapters.g4hunter.create_analyse(
