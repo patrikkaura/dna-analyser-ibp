@@ -10,7 +10,8 @@ cache:
 stages:
   - tests
   - build-docs-and-changelog
-  - build-and-release
+  - release-pages
+  - build-and-release-package
 
 .tag_regex: &tag_regex /^v[0-9]+\.[0-9]+(\.[0-9]+)?([+-][a-zA-Z0-9_+\.-]+)?/
 
@@ -69,6 +70,7 @@ build-docs:
   allow_failure: true
   before_script:
     - pip install pipenv
+    - mkdir docs
   script:
     - pipenv install --dev
     - pipenv run pdoc --html DNA_analyser_IBP --html-dir docs
@@ -83,7 +85,7 @@ build-docs:
 # ===========================================================================
 
 pages:
-  stage: build-and-release
+  stage: release-pages
   dependencies:
     - build-docs
   only:
@@ -101,7 +103,7 @@ pages:
 # ===========================================================================
 
 build-and-release:
-  stage: build-and-release
+  stage: build-and-release-package
   image: python:3.6.0
   only:
     - *tag_regex
@@ -112,4 +114,4 @@ build-and-release:
     - pipenv install --dev
     - pipenv run pytest tests/test_utils
     - pipenv run python setup.py sdist
-    - twine upload dist/*
+    - twine -u $TWINE_USERNAME -p $TWINE_PASSWORD upload dist/*
