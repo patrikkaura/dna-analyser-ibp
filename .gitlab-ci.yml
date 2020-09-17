@@ -107,10 +107,13 @@ build-and-release:
   image: python:3.6.0
   only:
     - *tag_regex
+  variables:
+    TWINE_USERNAME: $TWINE_USERNAME
+    TWINE_PASSWORD: $TWINE_PASSWORD
   allow_failure: false
   before_script:
-    - pip install pipenv twine
+    - pip install twine
   script:
-    - pipenv install --dev
-    - pipenv run python setup.py sdist
-    - twine upload --username $TWINE_USERNAME --password $TWINE_PASSWORD dist/*
+    - python setup.py sdist
+    - twine upload dist/*
+
