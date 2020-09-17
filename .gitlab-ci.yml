@@ -66,7 +66,7 @@ build-docs:
   stage: build-docs-and-changelog
   image: python:3.6.0
   only:
-    - master
+    - *tag_regex
   allow_failure: true
   before_script:
     - pip install pipenv
@@ -112,6 +112,5 @@ build-and-release:
     - pip install pipenv twine
   script:
     - pipenv install --dev
-    - pipenv run pytest tests/test_utils
     - pipenv run python setup.py sdist
-    - twine -u $TWINE_USERNAME -p $TWINE_PASSWORD upload dist/*
+    - twine upload --username $TWINE_USERNAME --password $TWINE_PASSWORD dist/*
