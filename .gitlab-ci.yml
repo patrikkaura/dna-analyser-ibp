@@ -66,7 +66,7 @@ build-docs:
   stage: build-docs-and-changelog
   image: python:3.6.0
   only:
-    - - master
+    - master
     - *tag_regex
   allow_failure: true
   before_script:
@@ -116,5 +116,5 @@ build-and-release:
     - pip install twine
     - python setup.py sdist
   script:
-    - twine upload dist/* --non-interactive
+    - twine upload dist/*
 
