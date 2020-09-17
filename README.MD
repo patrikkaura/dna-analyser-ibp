@@ -32,6 +32,10 @@ pipenv install dna-analyser-ibp
 pip install dna-analyser-ibp
 ```
 
+## Documentation
+
+Methods are documented in the following [documentation](https://patrikkaura.gitlab.io/DNA_analyser_IBP/).
+
 ## Quick start
 
 DNA analyser uses `pandas.Dataframe` or `pandas.Series`. Firstly the user  has to create `Api` object and login to API.
