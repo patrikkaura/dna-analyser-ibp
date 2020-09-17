@@ -11,7 +11,7 @@ stages:
   - tests
   - build-docs-and-changelog
   - release-pages
-  - build-and-release-package
+  - deploy
 
 .tag_regex: &tag_regex /^v[0-9]+\.[0-9]+(\.[0-9]+)?([+-][a-zA-Z0-9_+\.-]+)?/
 
@@ -66,6 +66,7 @@ build-docs:
   stage: build-docs-and-changelog
   image: python:3.6.0
   only:
+    - - master
     - *tag_regex
   allow_failure: true
   before_script:
@@ -103,17 +104,17 @@ pages:
 # ===========================================================================
 
 build-and-release:
-  stage: build-and-release-package
+  stage: deploy
   image: python:3.6.0
   only:
     - *tag_regex
   variables:
-    TWINE_USERNAME: $TWINE_USERNAME
-    TWINE_PASSWORD: $TWINE_PASSWORD
+    TWINE_USERNAME: $PYPI_USERNAME
+    TWINE_PASSWORD: $PYPI_PASSWORD
   allow_failure: false
   before_script:
     - pip install twine
-  script:
     - python setup.py sdist
-    - twine upload dist/*
+  script:
+    - twine upload dist/* --non-interactive
 

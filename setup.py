@@ -1,14 +1,19 @@
-from os import path
+import os
 
 from setuptools import find_packages, setup
 
-this_dir = path.abspath(path.dirname(__file__))
-with open(path.join(this_dir, "README.MD"), encoding="utf-8") as f:
+this_dir = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(this_dir, "README.MD"), encoding="utf-8") as f:
     long_description = "".join(f.readlines())
+
+if os.environ.get('CI_COMMIT_TAG'):
+    version = os.environ['CI_COMMIT_TAG']
+else:
+    version = os.environ['CI_JOB_ID']
 
 setup(
     name="dna_analyser_ibp",
-    version="3.0.0",
+    version=version,
     description="DNA analyser API wrapper tool for Jupiter notebooks.",
     long_description=long_description,
     long_description_content_type="text/markdown",
