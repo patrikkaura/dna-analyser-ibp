@@ -103,17 +103,15 @@ pages:
 # Stage: build-and-release
 # ===========================================================================
 
-build-and-release:
+build-package:
   stage: deploy
-  image: python:3.6.0
+  image: python:latest
   only:
     - *tag_regex
-  variables:
-    TWINE_USERNAME: $PYPI_USERNAME
-    TWINE_PASSWORD: $PYPI_PASSWORD
   allow_failure: false
   before_script:
+    - cat $PYPIRC > /tmp/.pypirc
     - pip install twine
     - python setup.py sdist
   script:
-    - twine upload dist/*
+    - python -m twine upload dist/* --config-file /tmp/.pypirc
