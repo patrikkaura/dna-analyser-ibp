@@ -105,7 +105,7 @@ pages:
 
 build-and-release:
   stage: deploy
-  image: python:3.6.0
+  image: python:latest
   only:
     - *tag_regex
   allow_failure: false
