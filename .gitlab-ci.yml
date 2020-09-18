@@ -113,4 +113,8 @@ build-and-release:
     - pip install twine
     - python setup.py sdist
   script:
+<<<<<<< HEAD
     - TWINE_PASSWORD=${PYPI_PASSWORD} TWINE_USERNAME=${PYPI_PASSWORD} python -m twine upload dist/*
+=======
+    - TWINE_PASSWORD=${PYPI_PASSWORD} TWINE_USERNAME=${PYPI_PASSWORD} -m twine upload dist/*
+>>>>>>> 656bad210b7c926521c5444f36eec55c218acaa1
