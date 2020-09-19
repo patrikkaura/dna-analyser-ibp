@@ -113,4 +113,4 @@ build-package:
     - pip install poetry
     - poetry build
   script:
-    - poetry publish -u $PYPI_USERNAME -p $PYPI_PASSWORD
+    - poetry publish
