@@ -1,5 +1,4 @@
 # g4hunter_interface.py
-# !/usr/bin/env python3
 
 import os
 import time
@@ -81,7 +80,10 @@ class G4Hunter(AnalyseInterface):
 
     @exception_handler
     def get_heatmap_data(
-        self, segments: Optional[int] = 31, *, analyse: Union[pd.Series, pd.DataFrame],
+        self,
+        segments: Optional[int] = 31,
+        *,
+        analyse: Union[pd.Series, pd.DataFrame],
     ) -> pd.DataFrame:
         """
         Return DataFrame with heatmap data
@@ -211,7 +213,10 @@ class G4Hunter(AnalyseInterface):
             status_bar(
                 ports=self.__ports,
                 func=lambda: self.__ports.g4hunter.create_analyse(
-                    id=id, tags=tags, threshold=threshold, window_size=window_size,
+                    id=id,
+                    tags=tags,
+                    threshold=threshold,
+                    window_size=window_size,
                 ),
                 name=name,
                 type=Types.G4HUNTER,

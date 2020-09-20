@@ -1,5 +1,4 @@
 # base_connector.py
-# !/usr/bin/env python3
 
 import abc
 

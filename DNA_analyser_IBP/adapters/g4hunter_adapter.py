@@ -27,7 +27,11 @@ class G4HunterAdapter(BaseAdapter, BaseAnalyseAdapter):
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
     @login_required
     def create_analyse(
-        self, id: str, tags: Optional[List[str]], threshold: float, window_size: int,
+        self,
+        id: str,
+        tags: Optional[List[str]],
+        threshold: float,
+        window_size: int,
     ) -> G4Hunter:
         """
         Send POST to /analyse/g4hunter

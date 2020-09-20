@@ -74,7 +74,10 @@ def create_annotation_list(annotation: str, area_size: int) -> List[Annotation]:
         for row in reader:
             annotation_list.append(
                 Annotation(
-                    start=int(row[1]), end=int(row[2]), feature=row[4], area=area_size,
+                    start=int(row[1]),
+                    end=int(row[2]),
+                    feature=row[4],
+                    area=area_size,
                 )
             )
     annotation_list = sorted(annotation_list, key=lambda a: a.start)

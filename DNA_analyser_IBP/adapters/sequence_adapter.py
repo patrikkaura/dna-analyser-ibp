@@ -129,7 +129,11 @@ class SequenceAdapter(BaseAdapter):
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
     @login_required
     def create_ncbi_sequence(
-        self, circular: bool, name: str, tags: List[Optional[str]], ncbi_id: str,
+        self,
+        circular: bool,
+        name: str,
+        tags: List[Optional[str]],
+        ncbi_id: str,
     ) -> Sequence:
         """
         Send POST to /sequence/import/ncbi

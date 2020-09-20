@@ -19,7 +19,12 @@ class G4HunterPort(Port):
         super().__init__(user=user)
 
     def create_analyse(
-        self, *, id: str, tags: Optional[List[str]], threshold: float, window_size: int,
+        self,
+        *,
+        id: str,
+        tags: Optional[List[str]],
+        threshold: float,
+        window_size: int,
     ) -> "G4Hunter":
         return self.adapter.g4hunter.create_analyse(
             id=id, tags=tags, threshold=threshold, window_size=window_size

@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "DNA_analyser_IBP"
-version = "3.0.0"
+version = "3.1.0"
 description = "DNA analyser API wrapper tool for Jupiter notebooks."
 authors = ["Patrik Kaura <patrikkaura@gmail.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
+homepage = "http://bioinformatics.ibp.cz/"
 repository = "https://gitlab.com/PatrikKaura/DNA_analyser_IBP/"
 documentation = "https://patrikkaura.gitlab.io/DNA_analyser_IBP/"
 keywords = ["DNA", "g4hunter", "g4killer", "p53"]

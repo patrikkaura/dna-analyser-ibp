@@ -46,7 +46,11 @@ class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
             "Content-type": "application/json",
         }
         data: str = json.dumps(
-            {"sequence": id, "tags": tags or list(), "rizModel": riz_model or list(),}
+            {
+                "sequence": id,
+                "tags": tags or list(),
+                "rizModel": riz_model or list(),
+            }
         )
         response: Response = requests.post(
             join_url(self.user.server, Config.ENDPOINT_CONFIG.RLOOPR),

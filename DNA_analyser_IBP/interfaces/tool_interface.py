@@ -1,5 +1,4 @@
 # tool_interface.py
-# !/usr/bin/env python3
 
 from abc import ABCMeta, abstractmethod
 
@@ -11,4 +10,8 @@ class ToolInterface(metaclass=ABCMeta):
 
     @abstractmethod
     def run(self, *args) -> pd.DataFrame:
+        raise NotImplementedError("You should implement this!")
+
+    @abstractmethod
+    def run_multiple(self, *args) -> pd.DataFrame:
         raise NotImplementedError("You should implement this!")

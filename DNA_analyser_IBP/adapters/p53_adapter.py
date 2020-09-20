@@ -29,7 +29,7 @@ class P53Adapter(BaseAdapter, BaseAnalyseAdapter):
             P53Model: P53Model object
         """
         # check if sequence length is exactly 20 chars
-        if len(sequence) == 20:
+        if sequence and len(sequence) == 20:
             header: dict = {
                 "Authorization": self.user.jwt,
                 "Accept": "application/json",

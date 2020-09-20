@@ -19,7 +19,11 @@ class RlooprPort(Port):
         super().__init__(user=user)
 
     def create_analyse(
-        self, *, id: str, tags: Optional[List[str]], riz_model: Optional[List[int]],
+        self,
+        *,
+        id: str,
+        tags: Optional[List[str]],
+        riz_model: Optional[List[int]],
     ) -> "RLoopr":
         return self.adapter.rloopr.create_analyse(id=id, tags=tags, riz_model=riz_model)
 
