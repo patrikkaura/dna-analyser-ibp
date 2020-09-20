@@ -27,7 +27,6 @@ class BatchAdapter(BaseAdapter):
         Returns:
             str: batch url
         """
-
         if type == Types.SEQUENCE:
             return join_url(self.user.server, Config.BATCH_CONFIG.SEQUENCE, id)
         elif type == Types.G4HUNTER:
@@ -50,11 +49,14 @@ class BatchAdapter(BaseAdapter):
             str: FINISH|FAILED
         """
         header: dict = {"Accept": "application/json", "Authorization": self.user.jwt}
+
         batch_url: str = self._get_batch_url(id=id, type=type)
 
         response: Response = get(
-            batch_url, headers=header,
+            batch_url,
+            headers=header,
         )
+
         response_data: dict = validate_key_response(response=response, status_code=200)
 
         return Batch(**response_data)

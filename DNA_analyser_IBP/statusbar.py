@@ -1,5 +1,4 @@
 # statusbar.py
-# !/usr/bin/env python3
 
 import time
 from typing import Callable
@@ -29,7 +28,11 @@ def status_bar(ports: Ports, func: Callable, name: str, type: str) -> None:
     elif type == Types.SEQUENCE:
         description_text = f"Uploading sequence -> {name}"
 
-    with tqdm(desc=description_text, unit=" %", ascii=True,) as statusbar:
+    with tqdm(
+        desc=description_text,
+        unit=" %",
+        ascii=True,
+    ) as statusbar:
         statusbar.update(50)  # update to 50 %
 
         function_result = func()  # exec given function
@@ -58,4 +61,4 @@ def status_bar(ports: Ports, func: Callable, name: str, type: str) -> None:
                 elif batch.is_failed():
                     Logger.error(f"Analyse {function_result.name} failed!")
                     return None
-            time.sleep(1)
+            time.sleep(0.5)

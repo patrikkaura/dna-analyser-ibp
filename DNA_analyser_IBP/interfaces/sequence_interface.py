@@ -1,5 +1,4 @@
 # sequence_interface.py
-# !/usr/bin/env python3
 
 import time
 from typing import List, Optional, Union
@@ -228,7 +227,7 @@ class Sequence:
 
             status_bar(
                 ports=self.__ports,
-                func=lambda: self.__ports.sequence.create_file_sequence(
+                func=lambda: self.__ports.sequence.create_text_sequence(
                     circular=circular,
                     data=sequence_nucleic,
                     name=sequence_name,

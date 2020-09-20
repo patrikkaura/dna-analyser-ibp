@@ -2,10 +2,18 @@
     <img src="https://gitlab.com/PatrikKaura/dna_analyser_ibp_logos/-/raw/master/logo.png" alt='logo' width='300px'>
     <br/>
     <br/>
-    <img src="https://img.shields.io/badge/version-3.0.0-brightgreen.svg" alt='version'/>
+    <a href="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commits/master">
+        <img alt="pipeline status" src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/badges/master/pipeline.svg" />
+    </a>
+    <a href="https://pypi.org/project/dna-analyser-ibp/">
+        <img src="https://img.shields.io/badge/version-3.1.0-brightgreen.svg" alt='version'/>
+    </a>
     <img src="https://img.shields.io/badge/python-3.6-brightgreen.svg" alt='python_version'/>
     <img src="https://img.shields.io/badge/python-3.7-brightgreen.svg" alt='python_version'/>
-    <img src='https://img.shields.io/badge/licence-GNU%20v3.0-blue.svg' alt='licence'/>
+    <img src="https://img.shields.io/badge/python-3.8-brightgreen.svg" alt='python_version'/>
+    <a href="https://choosealicense.com/licenses/gpl-3.0/">
+        <img src='https://img.shields.io/badge/licence-GNU%20v3.0-blue.svg' alt='licence'/>
+    </a>
     <h1 align='center'> DNA analyser IBP </h1>
 </div>
 

@@ -118,7 +118,8 @@ class Rloopr(AnalyseInterface):
             )
         ]
         data: pd.DataFrame = pd.concat(
-            [rloopr.get_data_frame() for rloopr in listed_rlooprs], ignore_index=True,
+            [rloopr.get_data_frame() for rloopr in listed_rlooprs],
+            ignore_index=True,
         )
         return data
 
@@ -160,7 +161,10 @@ class Rloopr(AnalyseInterface):
 
     @exception_handler
     def export_csv(
-        self, *, analyse: Union[pd.DataFrame, pd.Series], path: str,
+        self,
+        *,
+        analyse: Union[pd.DataFrame, pd.Series],
+        path: str,
     ) -> None:
         """
         Export RLoopr analyses result into csv files

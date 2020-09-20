@@ -53,7 +53,12 @@ class SequencePort(Port):
         )
 
     def create_ncbi_sequence(
-        self, *, circular: bool, name: str, tags: List[Optional[str]], ncbi_id: str,
+        self,
+        *,
+        circular: bool,
+        name: str,
+        tags: List[Optional[str]],
+        ncbi_id: str,
     ) -> "Sequence":
         return self.adapter.sequence.create_ncbi_sequence(
             circular=circular, name=name, tags=tags, ncbi_id=ncbi_id

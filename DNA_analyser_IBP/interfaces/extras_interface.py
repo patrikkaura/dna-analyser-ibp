@@ -1,5 +1,4 @@
 # extras_interface.py
-# !/usr/bin/env python3
 
 import csv
 import os
