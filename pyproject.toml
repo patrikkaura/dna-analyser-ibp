@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "DNA_analyser_IBP"
-version = "3.1.1"
+version = "3.1.2"
 description = "DNA analyser API wrapper tool for Jupiter notebooks."
 authors = ["Patrik Kaura <patrikkaura@gmail.com>"]
 license = "GPL-3.0-or-later"
@@ -26,14 +26,15 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6.1"
-requests = "^2.24.0"
-pandas = "^1.1.2"
-tqdm = "^4.49.0"
+python = "^3.6.9"
+requests = "^2.20.0"
+pandas = "^0.23"
+tqdm = "^4.28"
 pyjwt = "^1.7.1"
-matplotlib = "^3.3.2"
+matplotlib = "^3.0.3"
 requests-toolbelt = "^0.9.1"
-tenacity = "^6.2.0"
+tenacity = "^6.1.0"
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0.2"
