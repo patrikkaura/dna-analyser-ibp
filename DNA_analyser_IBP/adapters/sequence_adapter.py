@@ -164,7 +164,6 @@ class SequenceAdapter(BaseAdapter):
             "Accept": "application/json",
             "Authorization": self.user.jwt,
         }
-
         response: Response = post(
             join_url(self.user.server, Config.ENDPOINT_CONFIG.SEQUENCE, "import/ncbi"),
             headers=header,

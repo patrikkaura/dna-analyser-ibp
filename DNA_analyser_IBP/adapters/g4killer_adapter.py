@@ -55,7 +55,6 @@ class G4KillerAdapter(BaseAdapter, BaseAnalyseAdapter):
             response_data: dict = validate_key_response(
                 response=response, status_code=201
             )
-
             return G4Killer(**response_data)
         else:
             Logger.error(
