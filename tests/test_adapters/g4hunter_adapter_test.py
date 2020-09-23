@@ -27,7 +27,10 @@ class TestG4HunterAdapter:
     def test_g4hunter_analysis(self, adapters: Adapters, sequence: Sequence) -> None:
         """It should run g4hunter analysis and return G4Hunter object"""
         g4hunter: G4Hunter = adapters.g4hunter.create_analyse(
-            id=sequence.id, tags=["test"], threshold=1.2, window_size=25,
+            id=sequence.id,
+            tags=["test"],
+            threshold=1.2,
+            window_size=25,
         )
         assert isinstance(g4hunter, G4Hunter)
 

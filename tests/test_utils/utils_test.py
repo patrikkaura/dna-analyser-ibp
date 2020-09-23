@@ -18,7 +18,8 @@ def test_filename_generator() -> None:
 
 
 @pytest.mark.parametrize(
-    "original,normalized", [("ds/dsadsa", "dsdsadsa"), ("ds@", "ds"), ("ds#", "ds")],
+    "original,normalized",
+    [("ds/dsadsa", "dsdsadsa"), ("ds@", "ds"), ("ds#", "ds")],
 )
 def test_normalize_name(original: str, normalized: str) -> None:
     """It should normalize name"""
@@ -28,7 +29,8 @@ def test_normalize_name(original: str, normalized: str) -> None:
 
 
 @pytest.mark.parametrize(
-    "email,result", [("test@test.cz", True), ("ds@", False), ("test@test", False)],
+    "email,result",
+    [("test@test.cz", True), ("ds@", False), ("test@test", False)],
 )
 def test_validate_email(email: str, result: bool) -> None:
     """It should validate emails"""

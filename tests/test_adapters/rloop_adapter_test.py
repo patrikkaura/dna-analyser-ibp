@@ -29,7 +29,9 @@ class TestRlooprAdapter:
     def test_rloopr_analysis(self, adapters: Adapters, sequence: Sequence) -> None:
         """It should run rloopr analysis and return RLoopr object"""
         rloopr: RLoopr = adapters.rloopr.create_analyse(
-            id=sequence.id, tags=["test"], riz_model=[0, 1],
+            id=sequence.id,
+            tags=["test"],
+            riz_model=[0, 1],
         )
         assert isinstance(rloopr, RLoopr)
 
