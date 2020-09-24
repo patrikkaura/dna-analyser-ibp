@@ -33,7 +33,7 @@ class G4KillerAdapter(BaseAdapter, BaseAnalyseAdapter):
             G4KillerModel: G4KillerModel object
         """
         # check range of parameters
-        if sequence and (0 <= threshold <= 4):
+        if sequence and (0 < len(sequence) <= 200) and (0 <= threshold <= 4):
             header: dict = {
                 "Authorization": self.user.jwt,
                 "Accept": "application/json",
@@ -58,5 +58,5 @@ class G4KillerAdapter(BaseAdapter, BaseAnalyseAdapter):
             return G4Killer(**response_data)
         else:
             Logger.error(
-                "Value threshold out of interval (0;4) and sequence has to be inserted!"
+                "Value threshold out of interval (0;4) and sequence has to be in interval (0;200)!"
             )
