@@ -21,7 +21,7 @@ stages:
 
 test-models:
   stage: tests
-  image: python:latest
+  image: python:3.7.0
   before_script:
     - pip install poetry
   script:
@@ -30,7 +30,7 @@ test-models:
 
 test-adapters:
   stage: tests
-  image: python:latest
+  image: python:3.7.0
   before_script:
     - pip install poetry
   script:
@@ -39,7 +39,7 @@ test-adapters:
 
 test-utils:
   stage: tests
-  image: python:latest
+  image: python:3.7.0
   before_script:
     - pip install poetry
   script:
@@ -64,7 +64,7 @@ build-changelog:
 
 build-docs:
   stage: build-docs-and-changelog
-  image: python:latest
+  image: python:3.7.0
   only:
     - master
     - *tag_regex
@@ -105,7 +105,7 @@ pages:
 
 build-package:
   stage: deploy
-  image: python:latest
+  image: python:3.7.0
   only:
     - *tag_regex
   allow_failure: false
