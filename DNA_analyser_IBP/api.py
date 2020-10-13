@@ -48,12 +48,16 @@ class Api:
         self.__interfaces = Interfaces(ports=self.__ports)
         self.tools = self.__interfaces.extras
 
-        if self.__user.is_logged_in:
+        if self.__user and self.__user.is_logged_in:
             self.sequence = self.__interfaces.sequence
             self.g4hunter = self.__interfaces.g4hunter
             self.g4killer = self.__interfaces.g4killer
             self.p53_predictor = self.__interfaces.p53_predictor
-            # self.rloopr = self.__interfaces.rloopr
+            self.rloopr = self.__interfaces.rloopr
+        else:
+            Logger.error(
+                f"User {email} cannot be logged in. Either server problem or wrong login information, please try again!"
+            )
 
 
 def __repr__(self):
