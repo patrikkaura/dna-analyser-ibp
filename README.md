@@ -6,7 +6,7 @@
         <img alt="pipeline status" src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/badges/master/pipeline.svg" />
     </a>
     <a href="https://pypi.org/project/dna-analyser-ibp/">
-        <img src="https://img.shields.io/badge/version-3.3.0-brightgreen.svg" alt='version'/>
+        <img src="https://img.shields.io/badge/version-3.3.1-brightgreen.svg" alt='version'/>
     </a>
     <img src="https://img.shields.io/badge/python-3.6-brightgreen.svg" alt='python_version'/>
     <img src="https://img.shields.io/badge/python-3.7-brightgreen.svg" alt='python_version'/>
@@ -18,7 +18,7 @@
 </div>
 
 
-Tool for creating Palindrome, P53predictor, and G4Hunter analysis. Work as API wrapper for IBP DNA analyzer API [bioinformatics.ibp](http://bioinformatics.ibp.cz/).
+Tool for creating R-loop tracker, P53predictor, G4Killer and G4Hunter analysis. Work as API wrapper for IBP DNA analyzer API [bioinformatics.ibp](http://bioinformatics.ibp.cz/).
 Currently working with an instance of DNA analyser server running on http://bioinformatics.ibp.cz computational core but can be switched 
 to the local instance of the server.
 
@@ -59,36 +59,100 @@ Enter your password     ········
 2020-09-16 18:51:17.943398 [INFO]: User host is trying to login ...
 2020-09-16 18:51:17.990580 [INFO]: User host is successfully loged in ...
 ```
-If DNA analyser API server not running on http://bioinformatics.ibp.cz then use this example to create `Api` object.
+If DNA analyser API server is not running on http://bioinformatics.ibp.cz then you have to set server paramether to create `Api` object.
 ```python
 from DNA_analyser_IBP.api import Api
 
-API = Api(server='http://hostname:port/api')
+API = Api(
+    server='http://hostname:port/api'
+)
 ```
-Then upload NCBI sequence for example `Homo sapiens chromosome 12` use.
-```python
-API.sequence.ncbi_creator(circular= True, tags=['Homo','sapiens', 'chromosome'], name='Homo sapiens chromosome 12', ncbi_id='NC_000012.12')
-```
-To analyse NCBI sequence use g4hunter interface.
-```python
-sapiens_sequence = API.sequence.load_all(tags='Homo') # get series with sapiens sequence
 
-# run g4hunter analyses with these params
-API.g4hunter.analyse_creator(sequence=sapiens_sequence, tags=['testovaci','Homo', 'sapiens'], threshold=1.4, window_size=30)
-```
-Last step to see results of g4hunter analysis.
+## Sequence uploading
+Sequences can be uploaded from NCBI, plain text or text file. Example bellow illustrates NCBI sequence uploading `Homo sapiens chromosome 12`.
 ```python
-sapiens = API.g4hunter.load_all(tags=['Homo']) # returns dataframe
-API.g4hunter.load_results(analyse=sapiens.iloc[0]) # iloc[0] to select row from dataframe
-```
-## P53 / G4KILLER TOOL
-To run simple tools using plain text input.
-```python
-# implements g4killer algorithm for generating sequence with lower gscore
-API.g4killer.run(sequence='AATTATTTGGAAAGGGGGGGTTTTCCGA', threshold=0.5) 
+API.sequence.ncbi_creator(
+    circular= True,
+    tags=['Homo','sapiens', 'chromosome'],
+    name='Homo sapiens chromosome 12',
+    ncbi_id='NC_000012.12'
+)
 
-# implements calculations of p53 binding predictor for 20 base pairs sequences 
-API.p53.run(sequence='GGACATGCCCGGGCATGTCC') 
+API.sequence.load_all(
+    tags=['Homo']
+)
+```
+
+## G4Hunter
+G4Hunter is a tool for prediction of G-quadruplex propensity in nucleic acids, this algorithm considers G-richness and G-skewness of a tested sequence and shows a quadruplex propensity score. 
+```python
+sapiens = API.g4hunter.load_all(
+    tags=['Homo']
+)
+
+API.g4hunter.analyse_creator(
+    sequence=sapiens,
+    tags=['analyse','Homo', 'sapiens'],
+    threshold=1.4,
+    window_size=30
+)
+```
+To load results of G4Hunter analysis.
+```python
+API.g4hunter.load_all(
+    tags=['analyse', 'Homo', 'sapiens']
+) 
+```
+
+## R-loop tracker
+ R-loop tracker is a toll for prediction of R-loops in nucleic acids. The algorithms search for R-loop initiation zone based on presence of G-clusters and R-loop elongation zone containing at least 40% of Guanine density.
+```python
+sapiens = API.g4hunter.load_all(
+    tags=['Homo']
+)
+API.rloopr.analyse_creator(
+    sequence=sapiens,
+    tags=['analyse', 'Homo', 'sapiens'],
+    riz_2g_cluster=True,
+    riz_3g_cluster=False
+)
+```
+To load results of R-loop tracker analysis.
+```python
+API.rloopr.load_all(
+    tags=['analyse', 'Homo', 'sapiens']
+) 
+```
+
+## G4Killer
+G4Killer algorithm allows to mutate DNA sequences with desired G4Hunter score with minimal mutation steps.
+```python
+API.g4killer.run(
+    sequence='AATTATTTGGAAAGGGGGGGTTTTCCGA',
+    threshold=0.5
+) 
+
+API.g4killer.run_multiple(
+    sequences=[
+        'AATTATTTGGAAAGGGGGGGTTTTCCGA',
+        'AATTATTTGGAAAGGGGGGGTTTTCCGA'
+    ],
+    threshold=0.5
+)
+```
+## P53 predictor
+P53 binding predictor for 20 base pairs sequences. 
+```python
+API.p53.run(
+    sequence='GGACATGCCCGGGCATGTCC'
+)
+
+API.p53.run_multiple(
+    sequences=[
+        'GGACATGCCCGGGCATGTCC',
+        'GGACATGCCCGGGCATGTCC'
+    ]
+) 
 ```
 
 # Development
@@ -102,6 +166,12 @@ API.p53.run(sequence='GGACATGCCCGGGCATGTCC')
 * pandas >= 0.23
 * matplotlib >= 3.0.3
 * tqdm >= 4.28
+
+## DEV dependencies
+
+* pytest = "^6.0.2"
+* pdoc3 = "^0.9.1"
+* black = "^20.0"
 
 ## Tests
 
