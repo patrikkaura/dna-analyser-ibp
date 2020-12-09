@@ -8,9 +8,9 @@ class ServerConfig:
     Server URIs
     """
 
-    LOCALHOST: str = "http://localhost:8080"
-    PRODUCTION: str = "http://bioinformatics.ibp.cz:8080"
-    DEVELOPMENT: str = "https://bioinformatika.pef.mendelu.cz:8080"
+    LOCALHOST: str = "http://localhost:80"
+    PRODUCTION: str = "http://bioinformatics.ibp.cz:80"
+    DEVELOPMENT: str = "https://bioinformatika.pef.mendelu.cz:80"
 
 
 class EndpointConfig:
