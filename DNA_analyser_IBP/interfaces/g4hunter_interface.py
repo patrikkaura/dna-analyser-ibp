@@ -267,7 +267,7 @@ class G4Hunter(AnalyseInterface):
 
         def _export_csv(id: str, name: str) -> None:
             name: str = normalize_name(name=name)
-            file_path: str = os.path.join(path, f"{name}_result.csv")
+            file_path: str = os.path.join(path, f"{name}_{id}_result.csv")
 
             with open(file_path, "w") as new_file:
                 data: str = self.__ports.g4hunter.export_csv(id=id, aggregate=aggregate)
