@@ -151,7 +151,7 @@ def get_file_name(*, original_path: str, out_path: str, file_format: str) -> str
     """
     path, file = os.path.split(original_path)  # split filename and path
     # new file name with given format
-    new_file_name: str = f'{file.split(".")[0]}.{file_format}'
+    new_file_name: str = f'{file.rsplit(".")[0]}.{file_format}'
     # remove trailing slah or backslash
     out_path: str = (
         out_path[:-1] if out_path.endswith("/") or out_path.endswith("\\") else out_path
