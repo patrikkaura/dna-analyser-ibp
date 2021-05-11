@@ -233,7 +233,7 @@ class Extras:
         file_pairs: list = list()
 
         for annotation in annotation_list:
-            file_name = os.path.basename(annotation).split(".")[0]
+            file_name = os.path.basename(annotation).split(".txt")[0]
             for analyse in analyse_list:
                 compare_name = os.path.basename(analyse)
                 if file_name in compare_name:
