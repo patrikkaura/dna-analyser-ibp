@@ -9,7 +9,7 @@ class ServerConfig:
     """
 
     LOCALHOST: str = "http://localhost:80"
-    PRODUCTION: str = "http://bioinformatics.ibp.cz:80"
+    PRODUCTION: str = "https://bioinformatics.ibp.cz:443"
     DEVELOPMENT: str = "https://bioinformatika.pef.mendelu.cz:80"
 
 
