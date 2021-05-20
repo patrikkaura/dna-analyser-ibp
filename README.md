@@ -6,7 +6,7 @@
         <img alt="pipeline status" src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/badges/master/pipeline.svg" />
     </a>
     <a href="https://pypi.org/project/dna-analyser-ibp/">
-        <img src="https://img.shields.io/badge/version-3.3.1-brightgreen.svg" alt='version'/>
+        <img src="https://img.shields.io/badge/version-3.4.0-brightgreen.svg" alt='version'/>
     </a>
     <img src="https://img.shields.io/badge/python-3.6-brightgreen.svg" alt='python_version'/>
     <img src="https://img.shields.io/badge/python-3.7-brightgreen.svg" alt='python_version'/>
