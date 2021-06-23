@@ -127,10 +127,10 @@ class Extras:
         start: int = int(row[0].replace(">", "").replace("<", "").replace("\n", ""))
         stop: int = int(row[1].replace(">", "").replace("<", "").replace("\n", ""))
         feature: str = row[2].replace("\n", "")
-
+        
         if start < stop:
-            return [start, stop, stop - start, feature]
-        return [stop, start, start - stop, feature]
+            return [start, stop, (stop - start) + 1, feature]
+        return [stop, start, (start - stop) + 1, feature]
 
     def annotation_overlay(
         self,
