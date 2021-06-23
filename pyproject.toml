@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "DNA_analyser_IBP"
-version = "3.4.0"
+version = "3.4.1"
 description = "DNA analyser API wrapper tool for Jupiter notebooks."
 authors = ["Patrik Kaura <patrikkaura@gmail.com>"]
 license = "GPL-3.0-or-later"
