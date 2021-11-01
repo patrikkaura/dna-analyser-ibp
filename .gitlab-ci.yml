@@ -52,7 +52,7 @@ test-utils:
 
 build-changelog:
   stage: build-docs-and-changelog
-  image: node:13
+  image: node:14
   only:
     - master
     - *tag_regex
