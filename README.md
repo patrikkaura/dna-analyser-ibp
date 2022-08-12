@@ -1,7 +1,6 @@
+<h1 align='center'> DNA analyser IBP </h1>
+<br />
 <div align="center">
-    <img src="https://gitlab.com/PatrikKaura/dna_analyser_ibp_logos/-/raw/master/logo.png" alt='logo' width='300px'>
-    <br/>
-    <br/>
     <a href="https://pypi.org/project/dna-analyser-ibp/">
     <img src="https://img.shields.io/badge/Version 3.4.1-green?style=for-the-badge" alt='package_version'/>
     </a>
@@ -10,9 +9,8 @@
     <a href="https://choosealicense.com/licenses/gpl-3.0/">
             <img src="https://img.shields.io/badge/gnu-white?style=for-the-badge&logo=gnu&logoColor=black" alt='licence'/>
     </a>
-    <h1 align='center'> DNA analyser IBP </h1>
 </div>
-
+<br />
 
 Tool for creating R-loop tracker, P53predictor, G4Killer and G4Hunter analysis. Work as API wrapper for IBP DNA analyzer API [bioinformatics.ibp](http://bioinformatics.ibp.cz/).
 Currently working with an instance of DNA analyser server running on http://bioinformatics.ibp.cz computational core but can be switched 
