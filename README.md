@@ -2,17 +2,13 @@
     <img src="https://gitlab.com/PatrikKaura/dna_analyser_ibp_logos/-/raw/master/logo.png" alt='logo' width='300px'>
     <br/>
     <br/>
-    <a href="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/-/commits/master">
-        <img alt="pipeline status" src="https://gitlab.com/PatrikKaura/DNA_analyser_IBP/badges/master/pipeline.svg" />
-    </a>
     <a href="https://pypi.org/project/dna-analyser-ibp/">
-        <img src="https://img.shields.io/badge/version-3.4.1-brightgreen.svg" alt='version'/>
+    <img src="https://img.shields.io/badge/Version 3.4.1-green?style=for-the-badge" alt='package_version'/>
     </a>
-    <img src="https://img.shields.io/badge/python-3.6-brightgreen.svg" alt='python_version'/>
-    <img src="https://img.shields.io/badge/python-3.7-brightgreen.svg" alt='python_version'/>
-    <img src="https://img.shields.io/badge/python-3.8-brightgreen.svg" alt='python_version'/>
+    <img src="https://img.shields.io/badge/Python 3.6+-00599C?style=for-the-badge&logo=python&logoColor=white" alt='python_version'/>
+    <img src="https://img.shields.io/badge/jupyter-gray?style=for-the-badge&logo=jupyter" alt='jupyter'/>
     <a href="https://choosealicense.com/licenses/gpl-3.0/">
-        <img src='https://img.shields.io/badge/licence-GNU%20v3.0-blue.svg' alt='licence'/>
+            <img src="https://img.shields.io/badge/gnu-white?style=for-the-badge&logo=gnu&logoColor=black" alt='licence'/>
     </a>
     <h1 align='center'> DNA analyser IBP </h1>
 </div>
