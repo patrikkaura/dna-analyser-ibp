@@ -2,7 +2,7 @@
 <br />
 <div align="center">
     <a href="https://pypi.org/project/dna-analyser-ibp/">
-    <img src="https://img.shields.io/badge/Version 3.4.1-green?style=for-the-badge" alt='package_version'/>
+    <img src="https://img.shields.io/badge/Version 3.5.0-green?style=for-the-badge" alt='package_version'/>
     </a>
     <img src="https://img.shields.io/badge/Python 3.6+-00599C?style=for-the-badge&logo=python&logoColor=white" alt='python_version'/>
     <img src="https://img.shields.io/badge/jupyter-gray?style=for-the-badge&logo=jupyter" alt='jupyter'/>
@@ -164,7 +164,6 @@ API.p53.run_multiple(
 ## DEV dependencies
 
 * pytest = "^6.0.2"
-* pdoc3 = "^0.9.1"
 * black = "^20.0"
 
 ## Tests
