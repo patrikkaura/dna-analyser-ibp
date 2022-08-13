@@ -1,0 +1,25 @@
+name: DNA ANALYSER IBP
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+ç    steps:
+      - name: git checkout
+        uses: actions/checkout@v2
+      - name: poetry install
+        run: poetry install
+      - name: test-models
+        run: poetry run pytest tests/test_models
+      - name: test-adapters
+        run: poetry run pytest tests/test_adapters
+      - name: test-utils
+        run: poetry run pytest tests/test_utilsß
