@@ -176,7 +176,7 @@ pytest -v tests/
 
 ## Authors
 
-* **Patrik Kaura** - *Main developer* - [patrikkaura](https://gitlab.com/PatrikKaura/)
+* **Patrik Kaura** - *Main developer* - [patrikkaura](https://github.com/patrikkaura)
 * **Jan Kolomaznik** - *Supervisor* - [jankolomaznik](https://github.com/Kolomaznik)
 * **Jiří Šťastný** - *Supervisor*
 
