@@ -1,0 +1,36 @@
+name: dna-analyser-ibp-test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  schedule:
+    cron: "0 12 * * *"
+
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.6"]
+        poetry-version: ["1.1.11"]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: start image
+        uses: abatilo/actions-poetry@v2.0.0
+      - name: poetry install
+        run: poetry install
+      - name: test-models
+        run: poetry run pytest tests/test_models
+      - name: test-adapters
+        run: poetry run pytest tests/test_adapters
+      - name: test-utils
+        run: poetry run pytest tests/test_utils
