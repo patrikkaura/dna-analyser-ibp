@@ -3,8 +3,8 @@ name = "DNA_analyser_IBP"
 version = "3.6.0"
 description = "DNA analyser API wrapper tool for Jupiter notebooks."
 authors = ["Patrik Kaura <patrikkaura@gmail.com>"]
-license = "GPL-3.0-or-later"
 readme = "README.md"
+license = "GPL-3.0-or-later"
 homepage = "http://bioinformatics.ibp.cz/"
 repository = "https://github.com/patrikkaura/dna-analyser-ibp"
 documentation = "https://github.com/patrikkaura/dna-analyser-ibp/"
@@ -21,9 +21,7 @@ classifiers=[
         "Programming Language :: Python :: 3.8",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
-packages = [
-    { include = "DNA_analyser_IBP" }
-]
+packages = [{ include = "DNA_analyser_IBP" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -35,10 +33,9 @@ matplotlib = "3.7.2"
 requests-toolbelt = "1.0.0"
 tenacity = "8.2.3"
 
-
 [tool.poetry.dev-dependencies]
 pytest = "7.4.2"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
