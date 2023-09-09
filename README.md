@@ -2,9 +2,9 @@
 <br />
 <div align="center">
     <a href="https://pypi.org/project/dna-analyser-ibp/">
-    <img src="https://img.shields.io/badge/Version 3.5.0-green?style=for-the-badge" alt='package_version'/>
+    <img src="https://img.shields.io/badge/Version 3.6.0-green?style=for-the-badge" alt='package_version'/>
     </a>
-    <img src="https://img.shields.io/badge/Python 3.6+-00599C?style=for-the-badge&logo=python&logoColor=white" alt='python_version'/>
+    <img src="https://img.shields.io/badge/Python 3.10+-00599C?style=for-the-badge&logo=python&logoColor=white" alt='python_version'/>
     <img src="https://img.shields.io/badge/jupyter-gray?style=for-the-badge&logo=jupyter" alt='jupyter'/>
     <a href="https://choosealicense.com/licenses/gpl-3.0/">
             <img src="https://img.shields.io/badge/gnu-white?style=for-the-badge&logo=gnu&logoColor=black" alt='licence'/>
@@ -20,7 +20,7 @@ to the local instance of the server.
 
 ## Prerequisites
 
-python >= 3.6
+python >= 3.10
 
 ## Installing
 
@@ -148,18 +148,18 @@ API.p53.run_multiple(
 
 ## Dependencies
 
-* tenacity >= 6.1.0
-* requests >= 2.20
-* requests-toolbelt >= 0.9.1
-* pyjwt >= 1.7.1
-* pandas >= 0.23
-* matplotlib >= 3.0.3
-* tqdm >= 4.28
+* requests = "2.31.0"
+* pandas = "2.0.0"
+* tqdm = "4.66.0"
+* pyjwt = "2.8.0"
+* matplotlib = "3.7.2"
+* requests-toolbelt = "1.0.0"
+* tenacity = "8.2.3"
 
 ## DEV dependencies
 
-* pytest = "^6.0.2"
-* black = "^20.0"
+* pytest = "7.4.2"
+
 
 ## Tests
 
@@ -172,8 +172,6 @@ pytest -v tests/
 ## Authors
 
 * **Patrik Kaura** - *Main developer* - [patrikkaura](https://github.com/patrikkaura)
-* **Jan Kolomaznik** - *Supervisor* - [jankolomaznik](https://github.com/Kolomaznik)
-* **Jiří Šťastný** - *Supervisor*
 
 ## License
 
