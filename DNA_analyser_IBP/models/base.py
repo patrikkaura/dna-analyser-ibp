@@ -16,5 +16,5 @@ class Base:
             pd.DataFrame: DataFrame with object data
         """
         return DataFrame().from_records(
-            self.__dict__, columns=self.__dict__.keys(), index=[0]
+            data=self.__dict__, index=[0]
         )

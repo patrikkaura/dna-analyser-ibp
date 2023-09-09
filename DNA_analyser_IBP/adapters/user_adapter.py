@@ -44,7 +44,7 @@ class UserAdapter:
             )
 
         jwt_token: str = validate_text_response(response=response, status_code=201)
-        data: dict = jwt.decode(jwt_token, verify=False)
+        data: dict = jwt.decode(jwt_token, options={"verify_signature": False})
         user.is_logged_in = True
         user.set_login(jwt=jwt_token, id=data.get("id"))
         Logger.info(f"User {user.email} is successfully loged in ...")
