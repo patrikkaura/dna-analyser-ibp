@@ -23,7 +23,7 @@ def status_bar(ports: Ports, func: Callable, name: str, type: str) -> None:
     """
 
     description_text = str()
-    if type in [Types.G4HUNTER, Types.RLOOPR, Types.PALINDROME]:
+    if type in [Types.G4HUNTER, Types.RLOOPR, Types.PALINDROME, Types.ZDNA, Types.CPG]:
         description_text = f"Analysing sequence -> {name}"
     elif type == Types.SEQUENCE:
         description_text = f"Uploading sequence -> {name}"
@@ -51,7 +51,7 @@ def status_bar(ports: Ports, func: Callable, name: str, type: str) -> None:
                     Logger.error(f"Uploading sequence {function_result.name} failed!")
                     return None
 
-            elif type in [Types.G4HUNTER, Types.RLOOPR, Types.PALINDROME]:
+            elif type in [Types.G4HUNTER, Types.RLOOPR, Types.PALINDROME, Types.ZDNA, Types.CPG]:
                 batch: Batch = ports.batch.get_batch_status(
                     id=function_result.id, type=type
                 )

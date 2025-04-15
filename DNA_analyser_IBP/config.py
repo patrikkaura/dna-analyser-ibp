@@ -24,6 +24,8 @@ class EndpointConfig:
     G4KILLER: str = "analyse/g4killer"
     P53: str = "analyse/p53predictor/tool"
     RLOOPR: str = "analyse/rloopr"
+    ZDNA: str = "analyse/zdna"
+    CPG: str = "analyse/cpg"
 
 
 class BatchConfig:
@@ -34,6 +36,8 @@ class BatchConfig:
     G4HUNTER: str = "batch/cz.mendelu.dnaAnalyser.analyse.g4hunter.G4Hunter"
     SEQUENCE: str = "batch/cz.mendelu.dnaAnalyser.sequence.Sequence"
     RLOOPR: str = "batch/cz.mendelu.dnaAnalyser.analyse.rloopr.Rloop"
+    ZDNA: str = "batch/cz.mendelu.dnaAnalyser.analyse.zdna.Zdna"
+    CPG: str = "batch/cz.mendelu.dnaAnalyser.analyse.cpg.Cpg"
 
 
 class ExtrasConfig:

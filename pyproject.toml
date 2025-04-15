@@ -25,11 +25,11 @@ packages = [{ include = "DNA_analyser_IBP" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-requests = "2.31.0"
-pandas = "2.0.0"
+requests = "2.32.3"
+pandas = "2.2.3"
 tqdm = "4.66.0"
 pyjwt = "2.8.0"
-matplotlib = "3.7.2"
+matplotlib = "3.10.1"
 requests-toolbelt = "1.0.0"
 tenacity = "8.2.3"
 

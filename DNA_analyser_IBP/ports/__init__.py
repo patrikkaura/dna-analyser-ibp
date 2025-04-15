@@ -7,6 +7,8 @@ from DNA_analyser_IBP.ports.g4hunter_port import G4HunterPort
 from DNA_analyser_IBP.ports.g4killer_port import G4KillerPort
 from DNA_analyser_IBP.ports.p53_port import P53Port
 from DNA_analyser_IBP.ports.rloopr_port import RlooprPort
+from DNA_analyser_IBP.ports.zdna_port import ZDnaPort
+from DNA_analyser_IBP.ports.cpg_port import CpGPort
 from DNA_analyser_IBP.ports.sequence_port import SequencePort
 
 if TYPE_CHECKING:
@@ -27,3 +29,5 @@ class Ports:
         self.g4hunter: G4HunterPort = G4HunterPort(user=user)
         self.sequence: SequencePort = SequencePort(user=user)
         self.rloopr: RlooprPort = RlooprPort(user=user)
+        self.zdna: ZDnaPort = ZDnaPort(user=user)
+        self.cpg: CpGPort = CpGPort(user=user)

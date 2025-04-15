@@ -169,4 +169,4 @@ def join_url(host, *paths: str) -> str:
     Returns:
         str: joined url
     """
-    return urljoin(host, os.path.join("api", *paths))
+    return urljoin(host, os.path.join("api", *paths)).replace("\\","/")
