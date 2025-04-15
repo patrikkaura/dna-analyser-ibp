@@ -13,10 +13,12 @@ class Types:
     PALINDROME: str = "PALINDROME"
     RLOOPR: str = "RLOOPR"
     SEQUENCE: str = "SEQUENCE"
+    ZDNA: str = "ZDNA"
+    CPG: str = "CPG"
 
     @classmethod
     def all_types(cls) -> List[str]:
         """
         Return all types
         """
-        return [cls.G4HUNTER, cls.PALINDROME, cls.RLOOPR, cls.SEQUENCE]
+        return [cls.G4HUNTER, cls.PALINDROME, cls.RLOOPR, cls.SEQUENCE, cls.ZDNA, cls.CPG]

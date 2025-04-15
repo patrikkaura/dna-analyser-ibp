@@ -33,6 +33,10 @@ class BatchAdapter(BaseAdapter):
             return join_url(self.user.server, Config.BATCH_CONFIG.G4HUNTER, id)
         elif type == Types.RLOOPR:
             return join_url(self.user.server, Config.BATCH_CONFIG.RLOOPR, id)
+        elif type == Types.ZDNA:
+            return join_url(self.user.server, Config.BATCH_CONFIG.ZDNA, id)
+        elif type == Types.CPG:
+            return join_url(self.user.server, Config.BATCH_CONFIG.CPG, id)
         return str()
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)

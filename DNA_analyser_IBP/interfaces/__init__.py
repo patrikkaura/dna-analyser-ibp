@@ -7,6 +7,8 @@ from DNA_analyser_IBP.interfaces.g4hunter_interface import G4Hunter
 from DNA_analyser_IBP.interfaces.g4killer_interface import G4Killer
 from DNA_analyser_IBP.interfaces.p53_interface import P53
 from DNA_analyser_IBP.interfaces.rloopr_interface import Rloopr
+from DNA_analyser_IBP.interfaces.zdna_interface import ZDna
+from DNA_analyser_IBP.interfaces.cpg_interface import CpG
 from DNA_analyser_IBP.interfaces.sequence_interface import Sequence
 
 if TYPE_CHECKING:
@@ -29,4 +31,6 @@ class Interfaces:
         self.g4killer: G4Killer = G4Killer(ports=ports)
         self.p53_predictor: P53 = P53(ports=ports)
         self.rloopr: Rloopr = Rloopr(ports=ports)
+        self.zdna: ZDna = ZDna(ports=ports)
+        self.cpg: CpG = CpG(ports=ports)
         self.extras: Extras = Extras()

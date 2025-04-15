@@ -8,6 +8,8 @@ from DNA_analyser_IBP.adapters.g4killer_adapter import G4KillerAdapter
 from DNA_analyser_IBP.adapters.p53_adapter import P53Adapter
 from DNA_analyser_IBP.adapters.rloopr_adapter import RLooprAdapter
 from DNA_analyser_IBP.adapters.sequence_adapter import SequenceAdapter
+from DNA_analyser_IBP.adapters.zdna_adapter import ZDnaAdapter
+from DNA_analyser_IBP.adapters.cpg_adapter import CpGAdapter
 from DNA_analyser_IBP.adapters.user_adapter import UserAdapter
 
 if TYPE_CHECKING:
@@ -31,3 +33,5 @@ class Adapters:
         self.sequence: SequenceAdapter = SequenceAdapter(user=user)
         self.g4hunter: G4HunterAdapter = G4HunterAdapter(user=user)
         self.rloopr: RLooprAdapter = RLooprAdapter(user=user)
+        self.zdna: ZDnaAdapter = ZDnaAdapter(user=user)
+        self.cpg: CpGAdapter = CpGAdapter(user=user)

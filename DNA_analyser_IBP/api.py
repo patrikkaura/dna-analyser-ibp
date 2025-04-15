@@ -54,6 +54,8 @@ class Api:
             self.g4killer = self.__interfaces.g4killer
             self.p53_predictor = self.__interfaces.p53_predictor
             self.rloopr = self.__interfaces.rloopr
+            self.zdna = self.__interfaces.zdna
+            self.cpg = self.__interfaces.cpg
         else:
             Logger.error(
                 f"User {email} cannot be logged in. Either server problem or wrong login information, please try again!"
