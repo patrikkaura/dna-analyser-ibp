@@ -255,6 +255,8 @@ class G4Hunter(AnalyseInterface):
         analyse: Union[pd.DataFrame, pd.Series],
         path: str,
         aggregate: bool = True,
+        base_start: int = 0,
+        base_end: int = 0,
     ) -> None:
         """
         Export G4Hunter analyses result into csv files
@@ -270,7 +272,12 @@ class G4Hunter(AnalyseInterface):
             file_path: str = os.path.join(path, f"{name}_{id}_result.csv")
 
             with open(file_path, "w") as new_file:
-                data: str = self.__ports.g4hunter.export_csv(id=id, aggregate=aggregate)
+                data: str = self.__ports.g4hunter.export_csv(
+                    id=id,
+                    aggregate=aggregate,
+                    base_start=base_start,
+                    base_end=base_end,
+                )
                 new_file.write(data)
             Logger.info(f"file created -> {file_path}")
 
@@ -279,6 +286,46 @@ class G4Hunter(AnalyseInterface):
                 _export_csv(id=row["id"], name=row["title"])
         else:
             _export_csv(id=analyse["id"], name=analyse["title"])
+
+
+    @exception_handler
+    def export_bedgraph(
+        self,
+        *,
+        analyse: Union[pd.DataFrame, pd.Series],
+        path: str,
+        aggregate: bool = True,
+        base_start: int = 0,
+        base_end: int = 0,
+    ) -> None:
+        """
+        Export G4Hunter analyses result into bedgraph files
+
+        Args:
+            analyse (Union[pd.DataFrame, pd.Series]): g4hunter analyse DataFrame|Series
+            path (str): absolute system path to output folder
+            aggregate (bool): True = aggregation, False = no aggregation
+        """
+
+        def _export_bedgraph(id: str, name: str) -> None:
+            name: str = normalize_name(name=name)
+            file_path: str = os.path.join(path, f"{name}_{id}_result.bed")
+
+            with open(file_path, "w") as new_file:
+                data: str = self.__ports.g4hunter.export_bedgraph(
+                    id=id,
+                    aggregate=aggregate,
+                    base_start=base_start,
+                    base_end=base_end,
+                )
+                new_file.write(data)
+            Logger.info(f"file created -> {file_path}")
+
+        if isinstance(analyse, pd.DataFrame):
+            for _, row in analyse.iterrows():
+                _export_bedgraph(id=row["id"], name=row["title"])
+        else:
+            _export_bedgraph(id=analyse["id"], name=analyse["title"])
 
     @exception_handler
     def delete(self, *, analyse: Union[pd.DataFrame, pd.Series]) -> None:

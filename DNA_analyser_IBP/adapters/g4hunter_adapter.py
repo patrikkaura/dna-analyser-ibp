@@ -194,7 +194,13 @@ class G4HunterAdapter(BaseAdapter, BaseAnalyseAdapter):
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
     @login_required
-    def export_csv(self, id: str, aggregate: bool = True) -> str:
+    def export_csv(
+        self,
+        id: str,
+        aggregate: bool = True,
+        base_start: int = 0,
+        base_end: int = 0,
+    ) -> str:
         """
         Send GET to /analyse/g4hunter/{id}/quadruplex.csv
 
@@ -206,11 +212,54 @@ class G4HunterAdapter(BaseAdapter, BaseAnalyseAdapter):
             str: csv file in string
         """
         header: dict = {"Accept": "text/plain", "Authorization": self.user.jwt}
-        params: dict = {"aggregate": "true" if aggregate else "false"}
+        params: dict = {
+            "aggregate": "true" if aggregate else "false",
+            "base_start": base_start,
+            "base_end": base_end,
+        }
 
         response: Response = requests.get(
             join_url(
                 self.user.server, Config.ENDPOINT_CONFIG.G4HUNTER, id, "quadruplex.csv"
+            ),
+            headers=header,
+            params=params,
+        )
+
+        return validate_text_response(response=response, status_code=200)
+
+    @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
+    def export_bedgraph(
+        self,
+        id: str,
+        aggregate: bool = True,
+        base_start: int = 0,
+        base_end: int = 0,
+    ) -> str:
+        """
+        Send GET to /analyse/g4hunter/{id}/quadruplex.bedgraph
+
+        Args:
+            id (str): g4hunter analyse id
+            aggregate (bool): True if aggregate results else False
+
+        Returns:
+            str: bedgraph file in string
+        """
+        header: dict = {"Accept": "text/plain", "Authorization": self.user.jwt}
+        params: dict = {
+            "aggregate": "true" if aggregate else "false",
+            "base_start": base_start,
+            "base_end": base_end,
+        }
+
+        response: Response = requests.get(
+            join_url(
+                self.user.server,
+                Config.ENDPOINT_CONFIG.G4HUNTER,
+                id,
+                "quadruplex.bedgraph",
             ),
             headers=header,
             params=params,

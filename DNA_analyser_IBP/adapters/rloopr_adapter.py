@@ -153,7 +153,7 @@ class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
 
     @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
     @login_required
-    def export_csv(self, id: str) -> str:
+    def export_csv(self, id: str, base_start: int = 0, base_end: int = 0) -> str:
         """
         Send GET to /analyse/rloopr/{id}/rloopr.csv
 
@@ -165,9 +165,39 @@ class RLooprAdapter(BaseAdapter, BaseAnalyseAdapter):
         """
         header: dict = {"Accept": "text/plain", "Authorization": self.user.jwt}
 
+        params: dict = {"base_start": base_start, "base_end": base_end}
+
         response: Response = requests.get(
             join_url(self.user.server, Config.ENDPOINT_CONFIG.RLOOPR, id, "rloopr.csv"),
             headers=header,
+            params=params,
+        )
+
+        return validate_text_response(response=response, status_code=200)
+
+
+    @tenacity.retry(wait=Config.TENACITY_CONFIG.WAIT, stop=Config.TENACITY_CONFIG.STOP)
+    @login_required
+    def export_bedgraph(self, id: str, base_start: int = 0, base_end: int = 0) -> str:
+        """
+        Send GET to /analyse/rloopr/{id}/rloopr.bedgraph
+
+        Args:
+            id (str): rloopr analyse id
+
+        Returns:
+            str: bedgraph file in string
+        """
+        header: dict = {"Accept": "text/plain", "Authorization": self.user.jwt}
+
+        params: dict = {"base_start": base_start, "base_end": base_end}
+
+        response: Response = requests.get(
+            join_url(
+                self.user.server, Config.ENDPOINT_CONFIG.RLOOPR, id, "rloopr.bedgraph"
+            ),
+            headers=header,
+            params=params,
         )
 
         return validate_text_response(response=response, status_code=200)

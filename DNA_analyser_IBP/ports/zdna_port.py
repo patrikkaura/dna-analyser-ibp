@@ -57,8 +57,12 @@ class ZDnaPort(Port):
     def load_result(self, *, id: str) -> "DataFrame":
         return self.adapter.zdna.load_result(id=id)
 
-    def export_csv(self, *, id: str) -> str:
-        return self.adapter.zdna.export_csv(id=id)
+    def export_csv(self, *, id: str, base_start: int = 0, base_end: int = 0) -> str:
+        return self.adapter.zdna.export_csv(id=id, base_start=base_start, base_end=base_end)
+
+
+    def export_bedgraph(self, *, id: str, base_start: int = 0, base_end: int = 0) -> str:
+        return self.adapter.zdna.export_bedgraph(id=id, base_start=base_start, base_end=base_end)
 
     def load_heatmap(self, *, id: str, segments: int) -> "DataFrame":
         return self.adapter.zdna.load_heatmap(id=id, segments=segments)

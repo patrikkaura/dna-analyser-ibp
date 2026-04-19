@@ -44,8 +44,36 @@ class G4HunterPort(Port):
     def load_result(self, *, id: str) -> "DataFrame":
         return self.adapter.g4hunter.load_result(id=id)
 
-    def export_csv(self, *, id: str, aggregate: bool = True) -> str:
-        return self.adapter.g4hunter.export_csv(id=id, aggregate=aggregate)
+    def export_csv(
+        self,
+        *,
+        id: str,
+        aggregate: bool = True,
+        base_start: int = 0,
+        base_end: int = 0,
+    ) -> str:
+        return self.adapter.g4hunter.export_csv(
+            id=id,
+            aggregate=aggregate,
+            base_start=base_start,
+            base_end=base_end,
+        )
+
+
+    def export_bedgraph(
+        self,
+        *,
+        id: str,
+        aggregate: bool = True,
+        base_start: int = 0,
+        base_end: int = 0,
+    ) -> str:
+        return self.adapter.g4hunter.export_bedgraph(
+            id=id,
+            aggregate=aggregate,
+            base_start=base_start,
+            base_end=base_end,
+        )
 
     def load_heatmap(self, *, id: str, segments: int) -> "DataFrame":
         return self.adapter.g4hunter.load_heatmap(id=id, segments=segments)

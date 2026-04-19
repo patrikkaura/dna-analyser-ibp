@@ -47,8 +47,12 @@ class CpGPort(Port):
     def delete(self, *, id: str) -> bool:
         return self.adapter.cpg.delete(id=id)
     
-    def export_csv(self, *, id: str) -> str:
-        return self.adapter.cpg.export_csv(id=id)
+    def export_csv(self, *, id: str, base_start: int = 0, base_end: int = 0) -> str:
+        return self.adapter.cpg.export_csv(id=id, base_start=base_start, base_end=base_end)
     
+
+    def export_bedgraph(self, *, id: str, base_start: int = 0, base_end: int = 0) -> str:
+        return self.adapter.cpg.export_bedgraph(id=id, base_start=base_start, base_end=base_end)
+
     def load_result(self, *, id: str) -> "DataFrame":
         return self.adapter.cpg.load_result(id=id)
